@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Extension Icons</title>
+</head>
+<body>
+  <h1>Create Extension Icons</h1>
+  <p>Click vào canvas bên dưới để tạo icon cho extension</p>
+  
+  <canvas id="icon16" width="16" height="16"></canvas>
+  <canvas id="icon48" width="48" height="48"></canvas>
+  <canvas id="icon128" width="128" height="128"></canvas>
+  
+  <br><br>
+  <button onclick="downloadIcons()">Download Icons</button>
+  
+  <script>
+    function drawIcon(canvas, size) {
+      const ctx = canvas.getContext('2d');
+      
+      // Background
+      ctx.fillStyle = '#4CAF50';
+      ctx.fillRect(0, 0, size, size);
+      
+      // Draw search/magnifying glass icon
+      ctx.strokeStyle = 'white';
+      ctx.fillStyle = 'white';
+      ctx.lineWidth = size / 8;
+      
+      const centerX = size / 2;
+      const centerY = size / 2;
+      const radius = size / 3;
+      
+      // Circle
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // Handle
+      const handleLength = size / 4;
+      const handleX = centerX + radius * 0.7;
+      const handleY = centerY + radius * 0.7;
+      ctx.beginPath();
+      ctx.moveTo(handleX, handleY);
+      ctx.lineTo(handleX + handleLength, handleY + handleLength);
+      ctx.stroke();
+    }
+    
+    function downloadIcons() {
+      const sizes = [16, 48, 128];
+      sizes.forEach(size => {
+        const canvas = document.getElementById(`icon${size}`);
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `icon${size}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      });
+    }
+    
+    // Draw icons on load
+    window.onload = () => {
+      drawIcon(document.getElementById('icon16'), 16);
+      drawIcon(document.getElementById('icon48'), 48);
+      drawIcon(document.getElementById('icon128'), 128);
+    };
+  </script>
+</body>
+</html>
+

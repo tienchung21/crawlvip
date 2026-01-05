@@ -1,0 +1,133 @@
+async with WebScraper(headless=not show_browser, verbose=False) as new_scraper:
+                result = await new_scraper.scrape_simple(url, bypass_cache=True)
+        
+        if not result['success']:
+            return {'success': False, 'url': url, 'error': result.get('error'), 'timestamp': datetime.now().isoformat()}
+
+        # 2. Dùng lxml để xử lý XPath/CSS "thủ công" nhưng chính xác
+        html_content = result.get('html', '')
+        if not html_content:
+            return {'success': False, 'url': url, 'error': 'Empty HTML', 'timestamp': datetime.now().isoformat()}
+
+        tree = lxml_html.fromstring(html_content)
+        extracted_data = {}
+
+        for field in template.get('fields', []):
+            field_name = field.get('name')
+            selector = field.get('selector', '').strip()
+            value_type = field.get('valueType', 'text')
+            
+            if not selector:
+                extracted_data[field_name] = None
+                continue
+
+            try:
+                elements = []
+                # Tự động nhận diện XPath (bắt đầu bằng / hoặc () )
+                if selector.startswith('/') or selector.startswith('('):
+                    elements = tree.xpath(selector)
+                else:
+                    # Nếu là CSS, chuyển sang dùng cssselect
+                    elements = tree.cssselect(selector)
+
+                # --- ĐOẠN CODE TỐI ƯU MỚI: QUÉT SẠCH ẢNH/LINK ---
+                values = []
+                for el in elements:
+                    # 1. Xử lý lấy ẢNH (src)
+                    if value_type == 'src':
+                        # Nếu bản thân nó là thẻ img -> Lấy luôn
+                        if hasattr(el, 'tag') and el.tag == 'img':
+                            val = el.get('data-src') or el.get('data-lazy-src') or el.get('src')
+                            if val: values.append(val)
+                        
+                        # Nếu nó là thẻ Div/Span/Khung -> Chui vào tìm TẤT CẢ thẻ img con
+                        elif hasattr(el, 'xpath'):
+                            child_imgs = el.xpath('.//img')
+                            for img in child_imgs:
+                                val = img.get('data-src') or img.get('data-lazy-src') or img.get('src')
+                                if val: values.append(val)
+
+                    # 2. Xử lý lấy LINK (href)
+                    elif value_type == 'href':
+                        if hasattr(el, 'tag') and el.tag == 'a':
+                            val = el.get('href')
+                            if val: values.append(val)
+                        elif hasattr(el, 'xpath'):
+                            child_as = el.xpath('.//a')
+                            for a in child_as:
+                                val = a.get('href')
+                                if val: values.append(val)
+
+                    # 3. Xử lý TEXT (Mặc định)
+                    else:
+                        val = el if isinstance(el, str) else el.text_content().strip()
+                        if val: values.append(val)
+                # ------------------------------------------------
+
+                # Gán kết quả: Ảnh/Link lấy cả list, Text lấy cái đầu tiên
+                if not values:
+                    extracted_data[field_name] = None
+                elif value_type in ['src', 'href']:
+                     extracted_data[field_name] = values # <--- Lấy trọn bộ list ảnh
+                else:
+                     extracted_data[field_name] = values[0] # <--- Text chỉ lấy 1 cái đầu
+
+            except Exception as e:
+                print(f"❌ Lỗi extract field '{field_name}': {e}")
+                extracted_data[field_name] = None
+
+        # 3. Format dữ liệu
+        formatted_data = format_extracted_data_fixed(extracted_data, template)
+
+        return {
+            'success': True,
+            'url': url,
+            'data': formatted_data,
+            'timestamp': datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        return {'success': False, 'url': url, 'error': str(e), 'timestamp': datetime.now().isoformat()}
+
+        # 3. Format dữ liệu (Bỏ logic tự điền textContent)
+        formatted_data = format_extracted_data_fixed(extracted_data, template)
+
+        return {
+            'success': True,
+            'url': url,
+            'data': formatted_data,
+            'timestamp': datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        return {'success': False, 'url': url, 'error': str(e), 'timestamp': datetime.now().isoformat()}
+
+def format_extracted_data_fixed(extracted_data: Any, template: Dict) -> Dict:
+    """
+    Format dữ liệu: Trung thực, có sao nói vậy, không tự bịa số liệu.
+    """
+    if not isinstance(extracted_data, dict): return {}
+    formatted = {}
+    
+    for field in template.get('fields', []):
+        name = field.get('name')
+        val = extracted_data.get(name)
+        
+        # Nếu có dữ liệu thì lấy, không có thì để None (Tuyệt đối không lấy textContent)
+        formatted[name] = val if val else None
+        
+    return formatted
+async def scrape_bulk(urls: List[str], schema: Dict, template: Dict, progress_callback=None):
+    """
+    Scrape multiple URLs sequentially
+    """
+    results = []
+    total = len(urls)
+    
+    # Giữ browser mở sau khi hoàn thành để người dùng quan sát
+    async with WebScraper(headless=not show_browser, verbose=False, keep_open=True) as scraper:
+        for i, url in enumerate(urls, 1):
+            if progress_callback:
+                progress_callback(i, total, f"Scraping {i}/{total}: {url[:50]}...")
+            
+            

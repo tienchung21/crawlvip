@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tôi yêu khoa học</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔍 tôi yêu khoa học</h1>
+      <p class="subtitle">Click để chọn trường cần lấy</p>
+    </div>
+
+    <!-- Tab Switcher -->
+    <div class="tab-switcher" style="margin: 15px 0; border-bottom: 2px solid #e0e0e0;">
+      <button class="tab-btn active" data-mode="detail" style="padding: 10px 20px; background: none; border: none; border-bottom: 3px solid #4CAF50; cursor: pointer; font-weight: 600; color: #4CAF50;">
+        📋 Detail Mode
+      </button>
+      <button class="tab-btn" data-mode="listing" style="padding: 10px 20px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-weight: 600; color: #666;">
+        📄 Listing Mode
+      </button>
+    </div>
+
+    <!-- Detail Mode Content -->
+    <div id="detailModeContent">
+    <div class="controls">
+      <button id="toggleBtn" class="btn btn-primary">
+        <span id="toggleText">Bật chế độ chọn</span>
+      </button>
+      <button id="clearBtn" class="btn btn-secondary">Xóa tất cả</button>
+    </div>
+
+    <div class="selector-type-section" style="margin: 15px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+      <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">Loại Selector:</label>
+      <div style="display: flex; gap: 15px;">
+        <label style="display: flex; align-items: center; cursor: pointer;">
+          <input type="radio" name="selectorType" value="css" id="selectorTypeCss" style="margin-right: 5px;">
+          <span>CSS Selector</span>
+        </label>
+        <label style="display: flex; align-items: center; cursor: pointer;">
+          <input type="radio" name="selectorType" value="xpath" id="selectorTypeXpath" checked style="margin-right: 5px;">
+          <span>XPath</span>
+        </label>
+      </div>
+      <small style="display: block; margin-top: 5px; color: #666; font-size: 12px;">Chọn loại selector để tạo khi click vào phần tử (hoặc nhấn phím X để toggle)</small>
+    </div>
+  
+
+    <div class="status" id="status">
+      <span class="status-indicator" id="statusIndicator"></span>
+      <span id="statusText">Tắt</span>
+    </div>
+
+    <div class="fields-section">
+      <h3>Danh sách trường đã chọn:</h3>
+      <div id="fieldsList" class="fields-list">
+        <p class="empty-message">Chưa có trường nào được chọn</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="scrapeBtn" class="btn btn-success" disabled>
+        🚀 Cào dữ liệu (JS)
+      </button>
+      <button id="scrapeCrawl4AIBtn" class="btn btn-success" disabled>
+        🤖 Cào với Crawl4AI
+      </button>
+      <button id="exportBtn" class="btn btn-info" disabled>
+        💾 Export JSON
+      </button>
+      <button id="saveTemplateBtn" class="btn btn-warning" disabled>
+        📋 Lưu Template
+      </button>
+      <button id="scrapeWithTemplateBtn" class="btn btn-primary">
+        📋 Cào bằng Template
+      </button>
+    </div>
+    </div>
+
+    <!-- Listing Mode Content -->
+    <div id="listingModeContent" style="display: none;">
+      <div class="listing-info" style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+        <p style="margin: 0; color: #1976d2; font-size: 14px;">
+          <strong>Listing Mode:</strong> Chọn selector để lấy danh sách link sản phẩm và nút Next Page
+        </p>
+      </div>
+
+      <div class="listing-fields" style="margin: 15px 0;">
+        <!-- Item Link Field -->
+        <div class="listing-field-item" style="margin-bottom: 20px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 5px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+            1. Item Link (Two-Click Strategy)
+          </label>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="itemLinkSelector" readonly placeholder="Chưa chọn - Click vào 2 link sản phẩm tương tự" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #f5f5f5;">
+            <button id="selectItemLinkBtn" class="btn btn-primary" style="white-space: nowrap;">
+              🎯 Click Item 1
+            </button>
+            <button id="resetItemLinkBtn" class="btn btn-secondary" style="white-space: nowrap; display: none;">
+              🔄 Reset
+            </button>
+          </div>
+          <div id="itemLinkStatus" style="margin-top: 5px; padding: 8px; background: #e3f2fd; border-radius: 4px; display: none;">
+            <div id="itemLinkStatusText" style="font-size: 12px; color: #1976d2;"></div>
+          </div>
+          <small style="display: block; margin-top: 5px; color: #666; font-size: 12px;">
+            Click vào 2 link sản phẩm tương tự để tự động tìm pattern chung
+          </small>
+          <!-- Preview URLs -->
+          <div id="itemLinkPreview" style="margin-top: 10px; padding: 10px; background: #f0f8ff; border-radius: 4px; display: none;">
+            <div style="font-weight: 600; margin-bottom: 5px; color: #1976d2;">📋 Preview URLs:</div>
+            <div id="itemLinkPreviewUrls" style="max-height: 150px; overflow-y: auto; font-size: 12px; font-family: monospace;">
+              <!-- URLs will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Page Button Field -->
+        <div class="listing-field-item" style="margin-bottom: 20px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 5px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+            2. Next Page Button (Click vào nút Next/Trang sau)
+          </label>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="nextPageSelector" readonly placeholder="Chưa chọn - Click vào nút Next Page trên trang" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #f5f5f5;">
+            <button id="selectNextPageBtn" class="btn btn-primary" style="white-space: nowrap;">
+              🎯 Chọn
+            </button>
+                      <button id="selectNextPageV1Btn" class="btn btn-primary" style="white-space: nowrap;">
+              Next trang v1
+            </button>
+            <button id="selectNextLiBtn" class="btn btn-primary" style="white-space: nowrap;">
+              next li
+            </button>
+            <button id="selectNextLastPaginationBtn" class="btn btn-primary" style="white-space: nowrap;">
+              next last pagination
+            </button>
+</div>
+          <small style="display: block; margin-top: 5px; color: #666; font-size: 12px;">
+            Selector cho nút Next Page duy nhất
+          </small>
+        </div>
+      </div>
+
+      <div class="listing-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="resetListingBtn" class="btn btn-secondary" style="flex: 1;">
+          🔄 Reset
+        </button>
+        <button id="saveListingTemplateBtn" class="btn btn-warning" style="flex: 1;" disabled>
+          💾 Lưu Listing Template
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal cho Cào bằng Template -->
+    <div id="templateModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>📋 Cào bằng Template</h3>
+          <span class="modal-close" id="closeTemplateModal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Chọn Template File:</label>
+            <input type="file" id="templateFileInput" accept=".json" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <small style="color: #666; display: block; margin-top: 5px;">Chọn file template JSON đã lưu từ extension</small>
+          </div>
+          
+          <div class="form-group" style="margin-top: 15px;">
+            <label>Danh sách URL (mỗi URL một dòng):</label>
+            <textarea id="urlsInput" rows="8" placeholder="https://batdongsan.com.vn/ban-nha-1&#10;https://batdongsan.com.vn/ban-nha-2&#10;https://batdongsan.com.vn/ban-nha-3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 12px;"></textarea>
+            <small style="color: #666; display: block; margin-top: 5px;">Nhập nhiều URL, mỗi URL một dòng</small>
+          </div>
+
+          <div id="templateScrapeProgress" style="display: none; margin-top: 15px;">
+            <div style="background: #f5f5f5; padding: 10px; border-radius: 4px;">
+              <div style="font-weight: 500; margin-bottom: 5px;">Đang cào...</div>
+              <div id="templateProgressText" style="font-size: 12px; color: #666;">Chuẩn bị...</div>
+              <div style="background: #e0e0e0; height: 20px; border-radius: 10px; margin-top: 8px; overflow: hidden;">
+                <div id="templateProgressBar" style="background: #4CAF50; height: 100%; width: 0%; transition: width 0.3s;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="startTemplateScrapeBtn" class="btn btn-success" style="width: 100%;">
+            🚀 Bắt đầu cào
+          </button>
+          <button id="cancelTemplateScrapeBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="result" class="result hidden"></div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
+

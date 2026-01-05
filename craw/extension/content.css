@@ -1,0 +1,28 @@
+/* Styles for selected fields */
+.scraper-field-selected {
+  outline: 2px solid #2196F3 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(33, 150, 243, 0.1) !important;
+  position: relative !important;
+}
+
+/* Prevent text selection when selecting mode is on */
+body.scraper-selecting {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+body.scraper-selecting * {
+  cursor: crosshair !important;
+}
+
+/* Highlight overlay */
+#scraper-highlight {
+  position: fixed !important;
+  border: 2px solid #4CAF50 !important;
+  background: rgba(76, 175, 80, 0.1) !important;
+  pointer-events: none !important;
+  z-index: 999999 !important;
+  box-sizing: border-box !important;
+}
+

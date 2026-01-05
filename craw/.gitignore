@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Output files
+output/
+*.json
+!example*.json
+
+# Environment variables
+.env
+.llm.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Crawl4AI cache
+.crawl4ai/
+crawl4ai_profile/
+playwright_profile*/
+nodriver_profile_listing*/
+playwright_profile_tab3_detail/
+playwright_profile/
+
+# Logs
+*.log
+

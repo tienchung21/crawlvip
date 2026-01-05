@@ -1,0 +1,7 @@
+                 # Thêm scroll giả để giống người dùng thật
+                    print("[...] Dang cuon gia...")
+                    await page.evaluate("""
+                        () => {
+                            let scrollHeight = document.body.scrollHeight;
+                            let currentScroll = 0;
+                            let step = scrollHeight / 10; // Cuộn 

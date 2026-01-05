@@ -1,0 +1,2 @@
+browser = await uc.start(headless=False, browser_args=BROWSER_CONFIG_TIET_KIEM)
+        # --- BẮT ĐẦU ĐOẠN CODE
