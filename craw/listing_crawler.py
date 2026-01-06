@@ -33,6 +33,10 @@ BROWSER_CONFIG_TIET_KIEM = [
     "--blink-settings=imagesEnabled=false", 
     "--disable-images",
     "--mute-audio",
+    # Anti-detection flags - ẩn webdriver để bypass Cloudflare
+    "--disable-blink-features=AutomationControlled",
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
 ]
 
 
@@ -161,6 +165,11 @@ async def crawl_listing(
         if not os.path.exists(profile_dir_listing):
             os.makedirs(profile_dir_listing)
 
+        # Cảnh báo nếu headless với site có Cloudflare (có thể bị chặn)
+        if "batdongsan.com.vn" in start_url or "nhatot.com" in start_url:
+            if not show_browser:
+                print("[Listing] WARNING: Headless mode với Cloudflare site - có thể bị chặn 'Just a moment...'")
+
         # 2. Khởi động với tham số user_data_dir để nhớ Token/Cookie
         # Thay thế cho dòng browser = await uc.start(...) cũ
         browser = await uc.start(
@@ -171,6 +180,24 @@ async def crawl_listing(
 
 
         page = await browser.get(start_url)
+        
+        # Chờ Cloudflare challenge hoàn thành (nếu có)
+        cloudflare_wait_attempts = 0
+        max_cloudflare_wait = 10  # Tối đa 10 lần check = 30 giây
+        while cloudflare_wait_attempts < max_cloudflare_wait:
+            try:
+                title = await page.evaluate("document.title")
+                if title and "just a moment" in title.lower():
+                    cloudflare_wait_attempts += 1
+                    print(f"[Listing] Cloudflare challenge detected, waiting... ({cloudflare_wait_attempts}/{max_cloudflare_wait})")
+                    await asyncio.sleep(3)
+                else:
+                    break
+            except Exception:
+                break
+        
+        if cloudflare_wait_attempts >= max_cloudflare_wait:
+            print("[Listing] WARNING: Cloudflare challenge timeout - page may not load correctly")
         
         # Khởi động crawl4ai để cào links (dùng profile cố định để giữ cookie/cấu hình)
         profile_dir = Path(__file__).parent / ("playwright_profile" + (f"_{profile_suffix}" if profile_suffix else ""))

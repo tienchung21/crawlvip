@@ -15,6 +15,10 @@ BROWSER_CONFIG_TIET_KIEM = [
     "--blink-settings=imagesEnabled=false",
     "--disable-images",
     "--mute-audio",
+    # Anti-detection flags
+    "--disable-blink-features=AutomationControlled",
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
 ]
 
 
@@ -42,6 +46,7 @@ async def crawl_listing_simple(
     wait_load_max: float = 30,
     wait_next_min: float = 10,
     wait_next_max: float = 20,
+    profile_suffix: Optional[str] = None,
 ):
     if sys.platform == "win32":
         try:
@@ -64,8 +69,16 @@ async def crawl_listing_simple(
         print(f"[Scheduler Listing] Using item_selector: {item_selector}")
         print(f"[Scheduler Listing] Using next_selector: {next_selector}")
 
-        profile_dir_listing = os.path.join(os.path.dirname(os.path.abspath(__file__)), "nodriver_profile_listing")
+        # Dùng profile có suffix để share cookie với listing_crawler.py
+        profile_name = "nodriver_profile_listing" + (f"_{profile_suffix}" if profile_suffix else "")
+        profile_dir_listing = os.path.join(os.path.dirname(os.path.abspath(__file__)), profile_name)
         os.makedirs(profile_dir_listing, exist_ok=True)
+        print(f"[Scheduler Listing] Using profile: {profile_dir_listing}")
+
+        # Cảnh báo nếu headless với site có Cloudflare (có thể bị chặn)
+        if "batdongsan.com.vn" in target_url or "nhatot.com" in target_url:
+            if not show_browser:
+                print("[Scheduler Listing] WARNING: Headless mode với Cloudflare site - có thể bị chặn 'Just a moment...'")
 
         browser = await uc.start(
             headless=not show_browser,
@@ -74,6 +87,25 @@ async def crawl_listing_simple(
         )
 
         page = await browser.get(target_url)
+        
+        # Chờ Cloudflare challenge hoàn thành (nếu có)
+        cloudflare_wait_attempts = 0
+        max_cloudflare_wait = 10  # Tối đa 10 lần check = 30 giây
+        while cloudflare_wait_attempts < max_cloudflare_wait:
+            try:
+                title = await page.evaluate("document.title")
+                if title and "just a moment" in title.lower():
+                    cloudflare_wait_attempts += 1
+                    print(f"[Scheduler Listing] Cloudflare challenge detected, waiting... ({cloudflare_wait_attempts}/{max_cloudflare_wait})")
+                    await asyncio.sleep(3)
+                else:
+                    break
+            except Exception:
+                break
+        
+        if cloudflare_wait_attempts >= max_cloudflare_wait:
+            print("[Scheduler Listing] WARNING: Cloudflare challenge timeout - page may not load correctly")
+        
         await asyncio.sleep(random.uniform(wait_load_min, wait_load_max))
 
         for current_page in range(1, max_pages + 1):

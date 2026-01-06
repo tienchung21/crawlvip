@@ -12,6 +12,7 @@ import hashlib
 import random
 import signal
 import sys
+import atexit
 from datetime import datetime, timedelta, date
 from typing import Optional, List
 
@@ -57,6 +58,59 @@ if hasattr(signal, 'SIGTERM'):
 from listing_crawler import crawl_listing
 from scraper_core import scrape_url
 from web_scraper import WebScraper
+
+
+async def _sleep_with_cancel(total_seconds: float, cancel_callback=None, step: float = 0.5) -> bool:
+    if not total_seconds or total_seconds <= 0:
+        return True
+    remaining = float(total_seconds)
+    while remaining > 0:
+        if cancel_callback and cancel_callback():
+            return False
+        chunk = step if remaining > step else remaining
+        await asyncio.sleep(chunk)
+        remaining -= chunk
+    return True
+
+
+def _is_pid_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+        return True
+    except PermissionError:
+        return True
+    except Exception:
+        return False
+
+
+def _acquire_service_lock(lock_path: str) -> bool:
+    if os.path.exists(lock_path):
+        try:
+            with open(lock_path, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+            old_pid = int(content) if content else None
+        except Exception:
+            old_pid = None
+        if old_pid and _is_pid_alive(old_pid):
+            print(f"[Scheduler] Another scheduler_service is running (pid={old_pid}). Exit.")
+            return False
+        try:
+            os.remove(lock_path)
+        except Exception:
+            pass
+    try:
+        with open(lock_path, "w", encoding="utf-8") as f:
+            f.write(str(os.getpid()))
+    except Exception:
+        return False
+    def _cleanup():
+        try:
+            if os.path.exists(lock_path):
+                os.remove(lock_path)
+        except Exception:
+            pass
+    atexit.register(_cleanup)
+    return True
 
 
 def run_async_safe(coro):
@@ -295,11 +349,6 @@ async def scrape_pending_links(
     stop_on_block: bool = True,
 ):
     ok_count = 0
-    force_show_browser = True
-    if not detail_show_browser and force_show_browser:
-        detail_show_browser = True
-        if log_callback:
-            log_callback("[detail observe] force show_browser=True (no headless)")
     try:
         import database as _db_mod
         print(f"[detail observe] database module: {_db_mod.__file__}")
@@ -457,147 +506,169 @@ async def scrape_pending_links(
                 except Exception:
                     pass
 
-            for idx, link in enumerate(links, 1):
-                if cancel_callback and cancel_callback():
-                    if log_callback:
-                        remaining = total_links - (ok_count + fail_count)
-                        log_callback(f"Cancel requested mid-run at {idx}/{total_links}, ok={ok_count}, fail={fail_count}, remaining={remaining}")
-                    return ok_count, fail_count, total_links, False
+            def _is_cloudflare_block(html_text: str, err_text: str, status_code: Optional[str]) -> bool:
+                text = (html_text or "")[:5000].lower()
+                err_lower = (err_text or "").lower()
+                patterns = [
+                    "attention required",
+                    "cloudflare",
+                    "cf-error-details",
+                    "cf-chl-bypass",
+                    "verify you are human",
+                    "checking your browser",
+                ]
+                if any(p in text for p in patterns):
+                    return True
+                if any(p in err_lower for p in patterns):
+                    return True
+                if status_code in ("403", "503", "429"):
+                    return True
+                return False
 
-                url = link.get('url')
-                link_id = link.get('id')
-                if not url:
-                    db.add_scheduler_log(None, "detail", "SKIP", "Empty URL")
-                    continue
+            try:
+                for idx, link in enumerate(links, 1):
+                    if cancel_callback and cancel_callback():
+                        if log_callback:
+                            remaining = total_links - (ok_count + fail_count)
+                            log_callback(f"Cancel requested mid-run at {idx}/{total_links}, ok={ok_count}, fail={fail_count}, remaining={remaining}")
+                        return ok_count, fail_count, total_links, False
 
-                try:
-                    if log_callback:
-                        log_callback(f"[{idx}/{total_links}] Crawling detail: {url[:120]}")
+                    url = link.get('url')
+                    link_id = link.get('id')
+                    if not url:
+                        db.add_scheduler_log(None, "detail", "SKIP", "Empty URL")
+                        continue
 
-                    attempt = 1
-                    while attempt <= max_retries:
-                        if detail_delay_min is not None and detail_delay_max is not None and detail_delay_max >= detail_delay_min:
-                            wait_time = random.uniform(detail_delay_min, detail_delay_max)
-                            if wait_time > 0:
-                                await asyncio.sleep(wait_time)
+                    try:
+                        if log_callback:
+                            log_callback(f"[{idx}/{total_links}] Crawling detail: {url[:120]}")
 
-                        # Đảm bảo có page để dùng - tạo lại nếu bị đóng
-                        if shared_page is None:
-                            shared_page = await scraper.get_active_page()
-                        
-                        # Kiểm tra page còn sống không
-                        try:
-                            if shared_page:
-                                _ = shared_page.url  # Thử truy cập để kiểm tra
-                        except Exception:
-                            print(f"[detail] Page closed, recreating...")
-                            shared_page = await scraper.get_active_page()
-                        
-                        # Gán display_page cho scraper - scrape_url sẽ dùng page này để navigate và cào
-                        scraper.display_page = shared_page
-                        
-                        # Gọi scrape_url - nó sẽ tự navigate display_page đến URL và lấy HTML
-                        result = await scrape_url(
-                            url,
-                            template,
-                            scraper=scraper,
-                            wait_load_min=detail_wait_load_min,
-                            wait_load_max=detail_wait_load_max,
-                            show_browser=detail_show_browser,
-                            fake_scroll=bool(detail_fake_scroll),
-                            fake_hover=bool(detail_fake_hover),
-                        )
+                        attempt = 1
+                        while attempt <= max_retries:
+                            if cancel_callback and cancel_callback():
+                                if log_callback:
+                                    remaining = total_links - (ok_count + fail_count)
+                                    log_callback(f"Cancel requested mid-run at {idx}/{total_links}, ok={ok_count}, fail={fail_count}, remaining={remaining}")
+                                return ok_count, fail_count, total_links, False
 
-                        last_error = result.get('error')
-                        html_content = result.get('html') if result.get('success') else ""
-                        
-                        # Kiểm tra lỗi browser/page closed - cần recreate page
-                        if last_error and ("closed" in str(last_error).lower() or "target" in str(last_error).lower()):
-                            print(f"[detail] Browser/page closed error, will retry with new page")
-                            shared_page = None
-                            scraper.display_page = None
-                            if attempt < max_retries:
-                                attempt += 1
-                                await asyncio.sleep(2)
-                                continue
-                        
-                        status_code = None
-                        if last_error:
-                            import re as _re
-                            m = _re.search(r"\b(4\d{2}|5\d{2})\b", str(last_error))
-                            if m:
-                                status_code = m.group(1)
+                            if detail_delay_min is not None and detail_delay_max is not None and detail_delay_max >= detail_delay_min:
+                                wait_time = random.uniform(detail_delay_min, detail_delay_max)
+                                if wait_time > 0:
+                                    ok_sleep = await _sleep_with_cancel(wait_time, cancel_callback)
+                                    if not ok_sleep:
+                                        if log_callback:
+                                            remaining = total_links - (ok_count + fail_count)
+                                            log_callback(f"Cancel requested during delay at {idx}/{total_links}, ok={ok_count}, fail={fail_count}, remaining={remaining}")
+                                        return ok_count, fail_count, total_links, False
 
-                        def _is_cloudflare_block(html_text: str, err_text: str) -> bool:
-                            text = (html_text or "")[:5000].lower()
-                            err_lower = (err_text or "").lower()
-                            patterns = [
-                                "attention required",
-                                "cloudflare",
-                                "cf-error-details",
-                                "cf-chl-bypass",
-                                "verify you are human",
-                                "checking your browser",
-                            ]
-                            if any(p in text for p in patterns):
-                                return True
-                            if any(p in err_lower for p in patterns):
-                                return True
-                            if status_code in ("403", "503", "429"):
-                                return True
-                            return False
+                            if shared_page is None:
+                                shared_page = await scraper.get_active_page()
 
-                        if _is_cloudflare_block(html_content, last_error) and stop_on_block:
-                            db.update_link_status(url, 'ERROR')
-                            fail_count += 1
-                            if log_callback:
-                                log_callback(f"[{idx}/{total_links}] CANCEL Cloudflare/anti-bot detected (code={status_code or 'n/a'})")
-                            return ok_count, fail_count, total_links, True
+                            try:
+                                if shared_page:
+                                    _ = shared_page.url
+                            except Exception:
+                                print(f"[detail] Page closed, recreating...")
+                                shared_page = await scraper.get_active_page()
 
-                        if result.get('success'):
-                            data = result.get('data')
-                            print(f"[detail] Saving to DB: url={url[:60]}, data_keys={list(data.keys()) if data else 'None'}")
-                            detail_id = db.add_scraped_detail_flat(
-                                url=url,
-                                data=data,
-                                domain=link.get('domain'),
-                                link_id=link_id
+                            scraper.display_page = shared_page
+
+                            result = await scrape_url(
+                                url,
+                                template,
+                                scraper=scraper,
+                                wait_load_min=detail_wait_load_min,
+                                wait_load_max=detail_wait_load_max,
+                                show_browser=detail_show_browser,
+                                fake_scroll=bool(detail_fake_scroll),
+                                fake_hover=bool(detail_fake_hover),
                             )
-                            print(f"[detail] Saved detail_id={detail_id}")
-                            imgs = data.get('img') if isinstance(data, dict) else None
-                            if detail_id and imgs:
-                                if isinstance(imgs, list):
-                                    db.add_detail_images(detail_id, imgs)
-                                elif isinstance(imgs, str):
-                                    db.add_detail_images(detail_id, [imgs])
-                            db.update_link_status(url, 'CRAWLED')
-                            ok_count += 1
-                            if log_callback:
-                                log_callback(f"[{idx}/{total_links}] OK - saved detail_id={detail_id}")
-                            break
-                        else:
-                            should_retry = attempt < max_retries
-                            if status_code and status_code.startswith("4") and status_code not in ("429",):
-                                should_retry = False
-                            if log_callback:
-                                log_callback(f"[{idx}/{total_links}] FAIL{f' HTTP {status_code}' if status_code else ''}: {last_error or 'Unknown error'}" + (f" (retry {attempt}/{max_retries})" if should_retry else ""))
-                            if not should_retry:
+                            if cancel_callback and cancel_callback():
+                                if log_callback:
+                                    remaining = total_links - (ok_count + fail_count)
+                                    log_callback(f"Cancel requested after scrape at {idx}/{total_links}, ok={ok_count}, fail={fail_count}, remaining={remaining}")
+                                return ok_count, fail_count, total_links, False
+
+                            last_error = result.get('error')
+                            html_content = result.get('html') if result.get('success') else ""
+
+                            if last_error and ("closed" in str(last_error).lower() or "target" in str(last_error).lower()):
+                                print(f"[detail] Browser/page closed error, will retry with new page")
+                                shared_page = None
+                                scraper.display_page = None
+                                if attempt < max_retries:
+                                    attempt += 1
+                                    ok_sleep = await _sleep_with_cancel(2, cancel_callback)
+                                    if not ok_sleep:
+                                        if log_callback:
+                                            remaining = total_links - (ok_count + fail_count)
+                                            log_callback(f"Cancel requested during retry delay at {idx}/{total_links}, ok={ok_count}, fail={fail_count}, remaining={remaining}")
+                                        return ok_count, fail_count, total_links, False
+                                    continue
+
+                            status_code = None
+                            if last_error:
+                                import re as _re
+                                m = _re.search(r"\b(4\d{2}|5\d{2})\b", str(last_error))
+                                if m:
+                                    status_code = m.group(1)
+
+                            if _is_cloudflare_block(html_content, last_error, status_code) and stop_on_block:
                                 db.update_link_status(url, 'ERROR')
                                 fail_count += 1
-                                break
-                            attempt += 1
-                            await asyncio.sleep(random.uniform(1, 5))
-                except Exception as e:
-                    db.update_link_status(url, 'ERROR')
-                    fail_count += 1
-                    if log_callback:
-                        log_callback(f"[{idx}/{total_links}] ERROR: {e}")
+                                if log_callback:
+                                    log_callback(f"[{idx}/{total_links}] CANCEL Cloudflare/anti-bot detected (code={status_code or 'n/a'})")
+                                return ok_count, fail_count, total_links, True
 
-            if shared_page:
-                try:
-                    await shared_page.close()
-                except Exception:
-                    pass
+                            if result.get('success'):
+                                data = result.get('data')
+                                print(f"[detail] Saving to DB: url={url[:60]}, data_keys={list(data.keys()) if data else 'None'}")
+                                detail_id = db.add_scraped_detail_flat(
+                                    url=url,
+                                    data=data,
+                                    domain=link.get('domain'),
+                                    link_id=link_id
+                                )
+                                print(f"[detail] Saved detail_id={detail_id}")
+                                imgs = data.get('img') if isinstance(data, dict) else None
+                                if detail_id and imgs:
+                                    if isinstance(imgs, list):
+                                        db.add_detail_images(detail_id, imgs)
+                                    elif isinstance(imgs, str):
+                                        db.add_detail_images(detail_id, [imgs])
+                                db.update_link_status(url, 'CRAWLED')
+                                ok_count += 1
+                                if log_callback:
+                                    log_callback(f"[{idx}/{total_links}] OK - saved detail_id={detail_id}")
+                                break
+                            else:
+                                should_retry = attempt < max_retries
+                                if status_code and status_code.startswith("4") and status_code not in ("429",):
+                                    should_retry = False
+                                if log_callback:
+                                    log_callback(f"[{idx}/{total_links}] FAIL{f' HTTP {status_code}' if status_code else ''}: {last_error or 'Unknown error'}" + (f" (retry {attempt}/{max_retries})" if should_retry else ""))
+                                if not should_retry:
+                                    db.update_link_status(url, 'ERROR')
+                                    fail_count += 1
+                                    break
+                                attempt += 1
+                                ok_sleep = await _sleep_with_cancel(random.uniform(1, 5), cancel_callback)
+                                if not ok_sleep:
+                                    if log_callback:
+                                        remaining = total_links - (ok_count + fail_count)
+                                        log_callback(f"Cancel requested during retry delay at {idx}/{total_links}, ok={ok_count}, fail={fail_count}, remaining={remaining}")
+                                    return ok_count, fail_count, total_links, False
+                    except Exception as e:
+                        db.update_link_status(url, 'ERROR')
+                        fail_count += 1
+                        if log_callback:
+                            log_callback(f"[{idx}/{total_links}] ERROR: {e}")
+            finally:
+                if shared_page:
+                    try:
+                        await shared_page.close()
+                    except Exception:
+                        pass
     finally:
         if has_lock:
             try:
@@ -684,7 +755,7 @@ def run_task(db: Database, task: dict):
                             log_callback=_log_listing,
                             domain=task.get('domain'),
                             loaihinh=task.get('loaihinh'),
-                            show_browser=bool(int(task.get('listing_show_browser') or 1)),
+                            show_browser=bool(int(task.get('listing_show_browser') or 0)),
                             enable_fake_scroll=bool(int(task.get('listing_fake_scroll') or 1)),
                             enable_fake_hover=bool(int(task.get('listing_fake_hover') or 0)),
                             wait_load_min=float(task.get('listing_wait_load_min') or 20),
@@ -969,4 +1040,6 @@ def run_scheduler_loop():
 
 
 if __name__ == "__main__":
-    run_scheduler_loop()
+    lock_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".scheduler_service.lock")
+    if _acquire_service_lock(lock_path):
+        run_scheduler_loop()

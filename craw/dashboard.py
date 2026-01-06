@@ -4167,9 +4167,10 @@ with tab5:
         with col_d:
             if st.button("Run now"):
                 if cur:
+                    # Quan trọng: clear cancel_requested để scheduler có thể pick task
                     st.session_state.db_scheduler.update_scheduler_task(
                         task_id,
-                        {'run_now': 1, 'next_run_at': datetime.now(), 'active': 1}
+                        {'run_now': 1, 'next_run_at': datetime.now(), 'active': 1, 'cancel_requested': 0}
                     )
                     st.session_state.db_scheduler.add_scheduler_log(
                         task_id, "task", "RUN_NOW", "Run now requested"
@@ -4180,9 +4181,9 @@ with tab5:
             if st.button("Cancel (stop)", type="secondary"):
                 st.session_state.db_scheduler.request_task_cancel(task_id)
                 st.session_state.db_scheduler.add_scheduler_log(
-                    task_id, "task", "CANCEL", "Cancel requested by user"
+                    task_id, "task", "CANCEL", "Cancel requested by user - Task deactivated"
                 )
-                st.success("Cancel requested")
+                st.success("Cancel requested - Task đã được TẮT để không tự chạy lại. Bật lại bằng Toggle active.")
                 st.rerun()
 
         logs = st.session_state.db_scheduler.get_scheduler_logs(task_id, limit=200)

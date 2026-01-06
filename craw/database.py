@@ -1421,8 +1421,10 @@ class Database:
         self.update_scheduler_task(task_id, {'active': 1 if active else 0})
 
     def request_task_cancel(self, task_id: int):
-        """Yêu cầu hủy task - set cancel_requested=1 VÀ is_running=0"""
-        self.update_scheduler_task(task_id, {'cancel_requested': 1, 'is_running': 0})
+        """Yêu cầu hủy task - set cancel_requested=1, is_running=0, VÀ active=0 để ngăn task tự chạy lại"""
+        # Quan trọng: phải set active=0 để tránh scheduler pick lại ngay lập tức
+        # vì get_due_tasks() sẽ pick task khi active=1 và is_running=0
+        self.update_scheduler_task(task_id, {'cancel_requested': 1, 'is_running': 0, 'active': 0})
 
     def clear_task_cancel(self, task_id: int):
         self.update_scheduler_task(task_id, {'cancel_requested': 0})
@@ -1499,7 +1501,8 @@ class Database:
                        image_dir, images_per_minute,
                        last_run_at, next_run_at
                 FROM scheduler_tasks
-                WHERE active = 1 AND is_running = 0 AND (run_now = 1 OR next_run_at IS NULL OR next_run_at <= %s)
+                WHERE active = 1 AND is_running = 0 AND cancel_requested = 0 
+                  AND (run_now = 1 OR next_run_at IS NULL OR next_run_at <= %s)
                 ORDER BY run_now DESC, id ASC
             ''', (now_ts,))
             rows = cursor.fetchall()
