@@ -1,93 +1,165 @@
-# PHÂN TÍCH CHI TIẾT CHỨC NĂNG CÀO (TAB 3, 4, 5 TRONG DASHBOARD)
+# CHI TIET TAB 3, TAB 4, TAB 5 (DASHBOARD)
 
-## 1. Tổng quan các tab
-- **Tab 3: Crawl Listing**
-  - Cào danh sách link bài viết từ trang listing (danh mục) sử dụng nodriver (undetected-chromedriver).
-  - Lưu link vào database (collected_links), hỗ trợ lọc theo domain, loại hình.
-  - Cho phép upload template (JSON) để tự động lấy selector.
-  - Cho phép cấu hình nâng cao: fake scroll, fake hover, delay, số trang, v.v.
-- **Tab 4: Download Images**
-  - Tải ảnh từ danh sách URL hoặc từ bảng scraped_detail_images trong database.
-  - Lưu ảnh vào thư mục chỉ định, ghi log trạng thái vào database.
-  - Hỗ trợ tải theo ID range, phân trang, giới hạn tốc độ tải.
-- **Tab 5: Auto Schedule**
-  - Quản lý các task tự động: listing -> detail -> image.
-  - Cho phép thêm/sửa/xóa task, cấu hình chi tiết từng bước, chọn template, domain, loại hình, lịch chạy.
-  - Hiển thị trạng thái, log, lịch sử chạy task.
+Tài liệu này mô tả chi tiết: file nào đang chạy, hàm nào phụ trách phần nào, và chức năng cụ thể của từng tab.
 
-## 2. File và hàm liên quan
+---
 
-### Tab 3: Crawl Listing
-- **dashboard.py**: Toàn bộ UI và logic tab 3 nằm trong file này.
-- **listing_simple_core.py**: Hàm `crawl_listing_simple` thực hiện cào link sử dụng nodriver.
-- **database.py**: Lưu link vào database, truy vấn link đã thu thập.
-- **template/*.json**: Template chứa selector cho từng site.
-- **Các hàm chính:**
-  - `crawl_listing_simple`: Nhận URL, item_selector, next_selector, số trang, domain, loại hình, v.v. Mở browser, fake scroll, lấy link, lưu vào DB.
-  - `check_and_print_cookie`: Kiểm tra cookie cf_clearance để debug anti-bot.
-  - UI: Nhận input từ user, upload template, hiển thị kết quả, lọc link theo domain/loại hình.
+## 1) Tong quan cac tab
 
-### Tab 4: Download Images
-- **dashboard.py**: UI và logic tab 4.
-- **database.py**: Lưu log tải ảnh, truy vấn ảnh đã tải, cập nhật trạng thái.
-- **output/images/**: Thư mục lưu ảnh tải về.
-- **Các hàm chính:**
-  - Đọc danh sách URL ảnh từ textarea hoặc từ DB (scraped_detail_images).
-  - Dùng requests tải ảnh, lưu file, log trạng thái (SUCCESS/FAILED) vào DB.
-  - Hỗ trợ tải theo ID range, phân trang, hiển thị lịch sử tải.
+### Tab 3 - Crawl Listing + Detail (thu cong)
+- Mục tiêu: cào link listing và cào detail theo template ngay trong UI.
+- File chính: `craw/dashboard.py`
+- Các khối logic chính:
+  - Crawl listing bằng nodriver.
+  - Cào detail bằng Crawl4AI + Playwright với template JSON.
+  - Lưu kết quả detail vào DB và lưu ảnh vào bảng ảnh.
 
-### Tab 5: Auto Schedule
-- **dashboard.py**: UI và logic tab 5.
-- **scheduler_service.py**: Chạy nền, thực thi các task theo lịch.
-- **database.py**: Lưu task, log, trạng thái, truy vấn task.
-- **listing_crawler.py, scraper_core.py, web_scraper.py**: Thực thi từng bước của pipeline (listing -> detail -> image).
-- **template/*.json**: Template cho từng bước.
-- **Các hàm chính:**
-  - UI: Thêm/sửa/xóa task, chọn template, domain, loại hình, cấu hình chi tiết từng bước.
-  - `run_scheduler_loop` (scheduler_service.py): Vòng lặp nền, lấy task đến hạn, gọi `run_task`.
-  - `run_task`: Gọi lần lượt các bước: crawl_listing -> scrape_pending_links -> download_images.
-  - Log trạng thái, cập nhật DB, gửi thông báo Telegram nếu cấu hình.
+### Tab 4 - Download Images
+- Mục tiêu: tải ảnh từ danh sách URL hoặc từ bảng `scraped_detail_images`.
+- File chính: `craw/dashboard.py`
+- Dùng requests để tải ảnh, lưu vào thư mục chỉ định, ghi log vào DB.
 
-## 3. Luồng xử lý chi tiết
+### Tab 5 - Auto Schedule
+- Mục tiêu: tạo task tự động listing -> detail -> image theo lịch.
+- UI trong `craw/dashboard.py`
+- Nền chạy trong `craw/scheduler_service.py`
 
-### Tab 3: Crawl Listing
-1. User nhập URL, selector, số trang, domain, loại hình hoặc upload template.
-2. Nhấn "Start Crawling" -> gọi `crawl_listing_simple` (listing_simple_core.py):
-   - Mở browser với profile riêng, fake scroll, lấy link theo item_selector, chuyển trang bằng next_selector.
-   - Lưu link vào DB (collected_links), gán domain, loại hình.
-   - Hiển thị kết quả, cho phép lọc, xóa, reset ID, xuất dữ liệu.
-3. Có thể tiếp tục cào detail (bằng template) từ các link đã thu thập.
+---
 
-### Tab 4: Download Images
-1. User nhập danh sách URL ảnh hoặc chọn tải từ scraped_detail_images (theo trang hoặc ID range).
-2. Nhấn "Bắt đầu tải ảnh" -> dùng requests tải từng ảnh, lưu file theo hash, log trạng thái vào DB.
-3. Hiển thị lịch sử tải, trạng thái từng ảnh, cho phép phân trang, lọc domain.
+## 2) File va ham dang dung
 
-### Tab 5: Auto Schedule
-1. User thêm task mới: chọn template, URL, domain, loại hình, cấu hình từng bước (listing/detail/image), lịch chạy.
-2. Chạy `python scheduler_service.py` để kích hoạt scheduler nền.
-3. Scheduler lấy task đến hạn, gọi lần lượt:
-   - **crawl_listing** (listing_crawler.py): Cào link theo template, lưu vào DB.
-   - **scrape_pending_links** (scheduler_service.py): Cào detail từ link PENDING, lưu kết quả vào DB.
-   - **download_images** (scheduler_service.py): Tải ảnh từ scraped_detail_images, cập nhật trạng thái.
-4. Log trạng thái từng bước, cập nhật DB, gửi thông báo Telegram nếu cấu hình.
-5. UI tab 5 cho phép xem, sửa, xóa, chạy ngay, xem log từng task.
+### 2.1. UI Dashboard (Tab 3/4/5)
+**File:** `craw/dashboard.py`
 
-## 4. Tác dụng từng hàm chính
-- **crawl_listing_simple**: Cào link từ trang listing, fake scroll, chuyển trang, lưu link vào DB.
-- **check_and_print_cookie**: Debug cookie cf_clearance để kiểm tra anti-bot.
-- **download_images**: Tải ảnh từ URL, lưu file, log trạng thái vào DB.
-- **run_scheduler_loop**: Vòng lặp nền, lấy task đến hạn, gọi run_task.
-- **run_task**: Thực thi pipeline: listing -> detail -> image, log trạng thái, cập nhật DB.
-- **scrape_pending_links**: Cào detail từ link PENDING, lưu kết quả vào DB, cập nhật trạng thái.
+Các hàm/chức năng chính:
+- `convert_template_to_schema(...)`: chuyển template JSON thành schema cho Crawl4AI.
+- `scrape_url(...)`: cào detail trực tiếp bằng lxml (hỗ trợ XPath + CSS), có bước click hiện số điện thoại.
+- `format_extracted_data_fixed(...)`: chuẩn hoá dữ liệu sau extract.
+- `scrape_detail_pages(...)` (trong Tab 3): vòng lặp cào detail theo danh sách link, lưu DB.
+- Tab 4: block download ảnh dùng requests + `_save_image_bytes(...)`.
+- Tab 5: form tạo task, hiển thị logs, trigger scheduler.
 
-## 5. Kết nối giữa các file
-- **dashboard.py**: UI chính, gọi các hàm cào/link/image, thao tác với DB.
-- **listing_simple_core.py, listing_crawler.py**: Cào link listing.
-- **scraper_core.py, web_scraper.py**: Cào detail, extract dữ liệu.
-- **database.py**: Lưu/truy vấn link, ảnh, task, log.
-- **scheduler_service.py**: Chạy nền, thực thi pipeline tự động.
+Các helper quan trọng:
+- `_reveal_phone_before_extract(...)`: click hiện số điện thoại trước khi extract.
+- `_get_phone_text_from_page(...)`: đọc số từ DOM (tel:, data-phone, mobile, button nhatot, v.v.).
+- `_fetch_cities(...)`, `_fetch_city_children(...)`: lấy tỉnh/xã (transaction_city_merge).
 
-## 6. Tham khảo thêm
-- Xem chi tiết code trong dashboard.py, scheduler_service.py, listing_simple_core.py, web_scraper.py, database.py để hiểu rõ từng bước xử lý, các hàm và class liên quan.
-- Template JSON trong thư mục template/ dùng để định nghĩa selector cho từng site, từng bước (listing/detail).
+### 2.2. Listing crawl (Tab 3)
+**File:** `craw/listing_simple_core.py`
+
+Hàm chính:
+- `crawl_listing_simple(...)`: dùng nodriver để mở trang listing, lấy link item, phân trang, lưu vào DB.
+
+Chức năng:
+- Lấy item link bằng selector.
+- Bấm next page theo selector.
+- Lưu vào bảng `collected_links` kèm domain/loaihinh và thông tin tỉnh/xã.
+
+### 2.3. Detail crawl (Tab 3)
+**File:** `craw/dashboard.py`
+
+Hàm chính:
+- `scrape_url(...)`: chạy cho từng link detail.
+- `scrape_detail_pages(...)`: quản lý vòng lặp, delay, fake hover/scroll, lưu DB.
+
+Chức năng:
+- Mở trang detail (display_page).
+- Click hiện số điện thoại nếu domain là batdongsan/nhatot.
+- Extract dữ liệu theo template JSON (CSS/XPath).
+- Lưu vào bảng `scraped_details_flat` + `scraped_details`.
+- Lưu ảnh vào `scraped_detail_images`.
+
+### 2.4. Scheduler (Tab 5)
+**File:** `craw/scheduler_service.py`
+
+Hàm chính:
+- `run_scheduler_loop()`: vòng lặp nền đọc task đến hạn, spawn thread.
+- `run_task(...)`: chạy pipeline listing -> detail -> image.
+- `scrape_pending_links(...)`: cào detail từ các link PENDING.
+- `download_images(...)`: tải ảnh từ DB.
+
+Chức năng quan trọng:
+- Dùng `cancel_requested` để dừng nhanh khi bấm Cancel.
+- Dùng lock `.scheduler_service.lock` để tránh chạy 2 scheduler.
+- Reset task treo (`reset_stale_running_tasks()`).
+
+### 2.5. Core crawl detail (Scheduler)
+**File:** `craw/scraper_core.py`
+
+Hàm chính:
+- `scrape_url(...)`: logic cào detail giống Tab 3, hỗ trợ click hiện số điện thoại.
+
+### 2.6. Crawl4AI wrapper
+**File:** `craw/web_scraper.py`
+
+Hàm chính:
+- `WebScraper.scrape_simple(...)`: load trang và lấy HTML/markdown.
+- `WebScraper.get_active_page(...)`: lấy page để thao tác trực tiếp.
+
+---
+
+## 3) Luong xu ly chi tiet
+
+### 3.1. Tab 3 - Listing (thu cong)
+1) User nhập URL + selector hoặc upload template.
+2) UI gọi `crawl_listing_simple(...)`.
+3) Nodriver mở trang listing -> lấy link -> bấm next -> lặp.
+4) Lưu link vào `collected_links` (kèm domain, loaihinh, tỉnh/xã).
+
+### 3.2. Tab 3 - Detail (thu cong)
+1) User chọn khoảng ID link để cào.
+2) Load template detail JSON.
+3) Mỗi link:
+   - delay theo cấu hình
+   - (nếu bật) fake hover/scroll
+   - gọi `scrape_url(...)`
+   - click hiện số điện thoại (batdongsan/nhatot)
+   - extract theo template
+   - lưu DB: `scraped_details_flat`, `scraped_details`, `scraped_detail_images`
+
+### 3.3. Tab 4 - Download Images
+1) Nhập list URL hoặc lấy từ `scraped_detail_images`.
+2) Dùng requests tải ảnh, lưu file theo hash.
+3) Ghi log vào DB (SUCCESS/FAILED).
+
+### 3.4. Tab 5 - Auto Schedule
+1) User tạo task (listing/detail/image + lịch).
+2) Chạy `python scheduler_service.py`.
+3) Scheduler đọc task đến hạn:
+   - Listing: `listing_crawler.crawl_listing(...)`
+   - Detail: `scrape_pending_links(...)`
+   - Image: `download_images(...)`
+4) Log vào `scheduler_logs`, cập nhật trạng thái task.
+
+---
+
+## 4) Bang du lieu lien quan
+
+- `collected_links`: lưu link listing (domain, loaihinh, tỉnh/xã cũ & mới).
+- `scraped_details`: lưu raw detail JSON.
+- `scraped_details_flat`: lưu detail dạng phẳng (các cột rõ ràng).
+- `scraped_detail_images`: lưu URL ảnh theo detail_id.
+- `scheduler_tasks`: lưu task tự động.
+- `scheduler_logs`: log chạy task.
+
+---
+
+## 5) Template JSON
+
+**Thư mục:** `craw/template/`
+
+Mỗi template gồm:
+- `name`, `url`, `createdAt`, `fields`
+- `fields[]` có `name`, `selector`, `valueType`
+- Cả CSS và XPath đều được hỗ trợ.
+
+---
+
+## 6) Tóm tắt nhanh theo file
+
+- `craw/dashboard.py`: UI + logic Tab 3/4/5, extract detail bằng lxml.
+- `craw/listing_simple_core.py`: cào link listing bằng nodriver.
+- `craw/scheduler_service.py`: chạy task tự động theo lịch.
+- `craw/scraper_core.py`: cào detail cho scheduler.
+- `craw/web_scraper.py`: wrapper Crawl4AI + Playwright.
+- `craw/database.py`: thao tác DB (links, details, images, tasks, logs).
