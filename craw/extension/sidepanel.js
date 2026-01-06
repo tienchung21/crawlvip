@@ -651,6 +651,7 @@ function updateUI() {
                 <option value="alt" ${valueType === 'alt' ? 'selected' : ''}>Alt (Image)</option>
                 <option value="title" ${valueType === 'title' ? 'selected' : ''}>Title</option>
                 <option value="data-id" ${valueType === 'data-id' ? 'selected' : ''}>Data ID</option>
+                <option value="data-phone" ${valueType === 'data-phone' ? 'selected' : ''}>Data Phone</option>
                 <option value="innerText" ${valueType === 'innerText' ? 'selected' : ''}>Inner Text</option>
                 <option value="all" ${valueType === 'all' || valueType === 'container' ? 'selected' : ''}>All (Container - lấy toàn bộ giá trị)</option>
               </select>

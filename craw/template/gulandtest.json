@@ -1,0 +1,31 @@
+{
+  "name": "gulandtest",
+  "url": "https://guland.vn/post/so-huu-can-biet-thu-3-tang-cao-cap-mat-bien-bao-ninh-dong-hoi-quang-binh-1324543",
+  "createdAt": "2026-01-06T16:03:43.729Z",
+  "fields": [
+    {
+      "name": "sodienthoai",
+      "valueType": "data-phone",
+      "textContent": "Gọi điện",
+      "selector": "#btn-call"
+    },
+    {
+      "name": "img",
+      "valueType": "src",
+      "textContent": "",
+      "selector": "#SlickSlider-DetailList"
+    },
+    {
+      "name": "huongnha",
+      "valueType": "text",
+      "textContent": "Tây Bắc",
+      "selector": "//div[contains(@class, \"s-dtl-inf\")]/div[contains(@class, \"s-dtl-inf__lbl\")][contains(text(), \"Hướng cửa chính:\")]/following-sibling::div[contains(@class, \"s-dtl-inf__val\")][1]"
+    },
+    {
+      "name": "khoanggia",
+      "valueType": "text",
+      "textContent": "22.8 tỷ",
+      "selector": ".dtl-main > .row-dtl-sub > .col-12 > .dtl-prc > .dtl-prc__row > .dtl-prc__sgl"
+    }
+  ]
+}

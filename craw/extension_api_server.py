@@ -90,7 +90,7 @@ class ExtensionAPIHandler(BaseHTTPRequestHandler):
                 'type': 'text'
             }
             
-            if value_type in ['src', 'href', 'alt', 'title', 'data-id']:
+            if value_type in ['src', 'href', 'alt', 'title', 'data-id', 'data-phone']:
                 if value_type == 'src':
                     # Đảm bảo selector trỏ đến <img> tags
                     # Nếu selector chưa có "img", thêm " img" để tìm tất cả img tags bên trong
@@ -126,7 +126,7 @@ class ExtensionAPIHandler(BaseHTTPRequestHandler):
                         }]
                     }
                 else:
-                    # Các attribute khác (href, alt, title, data-id) - giữ nguyên
+                    # Các attribute khác (href, alt, title, data-id, data-phone) - giữ nguyên
                     field_config['type'] = 'attribute'
                     field_config['attribute'] = value_type
             elif value_type == 'html':
@@ -500,7 +500,7 @@ class ExtensionAPIHandler(BaseHTTPRequestHandler):
                 'type': 'text'
             }
             
-            if value_type in ['src', 'href', 'alt', 'title', 'data-id']:
+            if value_type in ['src', 'href', 'alt', 'title', 'data-id', 'data-phone']:
                 if value_type == 'src':
                     # Đảm bảo selector trỏ đến <img> tags
                     # Nếu selector chưa có "img", thêm " img" để tìm tất cả img tags bên trong
@@ -536,7 +536,7 @@ class ExtensionAPIHandler(BaseHTTPRequestHandler):
                         }]
                     }
                 else:
-                    # Các attribute khác (href, alt, title, data-id) - giữ nguyên
+                    # Các attribute khác (href, alt, title, data-id, data-phone) - giữ nguyên
                     field_config['type'] = 'attribute'
                     field_config['attribute'] = value_type
             elif value_type == 'html':

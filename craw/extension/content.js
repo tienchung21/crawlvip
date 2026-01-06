@@ -723,6 +723,9 @@ function extractFieldData(element, field) {
     case 'data-id':
       value = element.getAttribute('data-id') || null;
       break;
+    case 'data-phone':
+      value = element.getAttribute('data-phone') || null;
+      break;
     case 'innerText':
       value = element.innerText.trim();
       break;
@@ -2786,6 +2789,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         break;
       case 'data-id':
         value = element.getAttribute('data-id') || null;
+        break;
+      case 'data-phone':
+        value = element.getAttribute('data-phone') || null;
         break;
       case 'innerText':
         value = element.innerText.trim();

@@ -1,0 +1,13 @@
+{
+  "name": "mogi",
+  "url": "https://mogi.vn/quan-ba-dinh/mua-can-ho-chung-cu/ban-can-ho-full-noi-that-dep-pho-doc-ngu-ba-dinh-ha-noi-id22724370",
+  "createdAt": "2026-01-06T16:22:31.121Z",
+  "fields": [
+    {
+      "name": "sodienthoai",
+      "valueType": "text",
+      "textContent": "0989 941 xxx",
+      "selector": "a > .ng-binding"
+    }
+  ]
+}

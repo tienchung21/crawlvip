@@ -53,7 +53,11 @@ def _is_target_phone_domain(url: str) -> bool:
         host = urlparse(url).netloc.lower()
     except Exception:
         return False
-    return ("batdongsan.com.vn" in host) or ("nhatot.com" in host)
+    return (
+        ("batdongsan.com.vn" in host)
+        or ("nhatot.com" in host)
+        or ("mogi.vn" in host)
+    )
 
 
 def _get_phone_selector(template: Dict[str, Any]) -> Optional[str]:
@@ -98,6 +102,18 @@ def _clean_phone_text(text: Optional[str]) -> Optional[str]:
     if match:
         return match.group(1).strip()
     return text.strip()
+
+
+def _extract_phone_from_ng_bind(attr_text: Optional[str]) -> Optional[str]:
+    if not attr_text:
+        return None
+    match = re.search(r"PhoneFormat\(['\"]([^'\"]+)['\"]\)", attr_text)
+    if match:
+        return match.group(1).strip()
+    match = re.search(r'(\+?\d[\d\s\.\-]{7,}\d)', attr_text)
+    if match:
+        return match.group(1).strip()
+    return None
 
 
 def _is_masked_phone(text: Optional[str]) -> bool:
@@ -150,10 +166,23 @@ async def _get_phone_text_from_page(page, selector: str) -> Optional[str]:
                     }
                     return '';
                 };
+                const extractFromNgBind = (node) => {
+                    if (!node || !node.getAttribute) return '';
+                    const raw = node.getAttribute('ng-bind') || '';
+                    if (!raw) return '';
+                    const m = raw.match(/PhoneFormat\\(['"]([^'"]+)['"]\\)/);
+                    if (m && m[1]) return m[1];
+                    const digits = raw.match(/(\\+?\\d[\\d\\s\\.-]{7,}\\d)/);
+                    return digits ? digits[1] : '';
+                };
                 const findBdsPhone = () => {
                     const bdsSel = '.js__phone-event[mobile], .js__phone[mobile], .phoneEvent[mobile]';
                     const bdsNode = document.querySelector(bdsSel);
                     return readPhone(bdsNode);
+                };
+                const findMogiPhone = () => {
+                    const mogiNode = document.querySelector('.agent-contact .ng-binding');
+                    return extractFromNgBind(mogiNode) || getText(mogiNode);
                 };
                 const findTel = (root) => {
                     if (!root) return '';
@@ -167,6 +196,8 @@ async def _get_phone_text_from_page(page, selector: str) -> Optional[str]:
                 if (nhatot) return nhatot;
                 const bds = findBdsPhone();
                 if (bds && !isMasked(bds)) return bds;
+                const mogi = findMogiPhone();
+                if (mogi && !isMasked(mogi)) return mogi;
                 const el = findEl();
                 let text = getText(el);
                 if (text && !isMasked(text)) return text;
@@ -216,6 +247,16 @@ async def _reveal_phone_before_extract(page, url: str, template: Dict[str, Any])
                                 el = res.singleNodeValue;
                             } else {
                                 el = document.querySelector(sel);
+                            }
+                            const mogiNode = document.querySelector('.agent-contact .ng-binding');
+                            if (mogiNode && !isMasked((mogiNode.innerText || mogiNode.textContent || '').trim())) return true;
+                            const mogiNode = document.querySelector('.agent-contact .ng-binding');
+                            if (mogiNode && !isMasked((mogiNode.innerText || mogiNode.textContent || '').trim())) return true;
+                            const mogiNode = document.querySelector('.agent-contact .ng-binding');
+                            if (mogiNode) {
+                                const raw = mogiNode.getAttribute && mogiNode.getAttribute('ng-bind');
+                                const m = raw ? raw.match(/PhoneFormat\(['"]([^'"]+)['"]\)/) : null;
+                                if (m && m[1]) return true;
                             }
                             if (!el) return false;
                             const text = (el.innerText || el.textContent || '').trim();
@@ -868,7 +909,7 @@ def convert_template_to_schema(template: Dict) -> Dict:
 
         # Handle different value types
 
-        if value_type in ['src', 'href', 'alt', 'title', 'data-id']:
+        if value_type in ['src', 'href', 'alt', 'title', 'data-id', 'data-phone']:
 
             if value_type == 'src':
 
@@ -1778,11 +1819,29 @@ async def scrape_url(
 
 
                     # 3. Xử lý TEXT (Mặc định) + iframe map lat,lng
+                    # 2b. Xu ly attribute (data-*)
+                    elif value_type in ['data-id', 'data-phone']:
+                        if hasattr(el, 'get'):
+                            val = el.get(value_type)
+                            _add_value(val)
+                        elif hasattr(el, 'xpath'):
+                            # Fallback: tim attribute trong con
+                            attr_name = value_type.replace('data-', '')
+                            child_nodes = el.xpath(f'.//*[@data-{attr_name}]')
+                            for child in child_nodes:
+                                val = child.get(value_type)
+                                _add_value(val)
+
                     elif value_type == 'html':
                         val = _get_inner_html(el)
                         _add_value(val)
                     else:
                         val = None
+                        if field_name and field_name.strip().lower() == 'sodienthoai' and hasattr(el, 'get'):
+                            ng_bind = el.get('ng-bind')
+                            ng_val = _extract_phone_from_ng_bind(ng_bind)
+                            if ng_val:
+                                val = ng_val
                         # Nếu là iframe, thử lấy lat,lng từ src/data-src/data-lat/data-lng
                         if hasattr(el, 'tag') and el.tag == 'iframe':
                             src = el.get('src') or el.get('data-src')

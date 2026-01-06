@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".c-sdb-card__tle a",
+  "nextPageSelector": "#btn-load-more",
+  "url": "https://guland.vn/mua-ban-bat-dong-san-quang-binh",
+  "createdAt": "2026-01-06T15:19:10.749Z"
+}
