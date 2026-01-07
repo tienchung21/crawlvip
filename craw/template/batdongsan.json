@@ -1,0 +1,77 @@
+{
+  "name": "batdongsan",
+  "url": "https://batdongsan.com.vn/ban-dat-duong-tinh-lo-413-xa-xuan-son-5/nha-em-can-ban-gap-suat-noi-bo-khu-phuong-tung-thien-sat-tl413-dang-mo-rong-40m-100-tho-cu-pr44802666",
+  "createdAt": "2025-12-17T07:57:33.664Z",
+  "fields": [
+    {
+      "name": "img",
+      "selector": ".re__pr-media-slide",
+      "cssSelector": ".re__pr-media-slide",
+      "valueType": "src",
+      "textContent": ""
+    },
+    {
+      "name": "title",
+      "selector": "//span[contains(normalize-space(), \"Đường Tỉnh lộ 413, Xã Xuân Sơn, Sơn Tây, Hà Nội\")]/ancestor::div[contains(@class, \"re__pr-info\") and contains(@class, \"pr-info\") and contains(@class, \"js__product-detail-web\")]//h1[contains(@class, \"re__pr-title\") and contains(@class, \"pr-title\") and contains(@class, \"js__pr-title\")]",
+      "cssSelector": "div#product-detail-web > h1:nth-of-type(2)",
+      "valueType": "text",
+      "textContent": "Nhà em có suất nội bộ khu đất phường Tùng Thiện. Sát TL413 đang mở rộng 40m. 100% thổ cư"
+    },
+    {
+      "name": "mota",
+      "selector": "//div[contains(@class, \"re__section\") and contains(@class, \"re__pr-description\") and contains(@class, \"js__section\") and contains(@class, \"js__li-description\")]/span[contains(@class, \"re__section-title\")][contains(text(), \"Thông tin mô tả\")]/following-sibling::div[contains(@class, \"re__section-body\") and contains(@class, \"re__detail-content\") and contains(@class, \"js__section-body\") and contains(@class, \"js__pr-description\") and contains(@class, \"js__tracking\")][1]",
+      "cssSelector": "div#product-detail-web > div:nth-of-type(5) > div:nth-of-type(2)",
+      "valueType": "text",
+      "textContent": "Nhà em có suất nội bộ tiết kiệm 100tr khu đất phường Tùng Thiện.- Diện tích 100m². 100% thổ cư. Mặt tiền 7.5m.- Đất có vỉa hè. Đường rộng 2oto tránh nhau thoải mái.- 300m ra TL413 đang mở rộng 40m. Cơ hội x2 tài sản sau khi đường làm xong.- Sổ đỏ riêng sang tên ngay.- Khu dân cư phát triển nhanh tiềm năng tăng giá mạnh.- Phù hợp cho người ít vốn nhưng muốn đầu tư chắc tay, giữ tiền sinh lời bền vững.Gọi ngay em Trường 0926 639 *** để xem đất và sổ đỏ."
+    },
+    {
+      "name": "gia",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Khoảng giá\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]",
+      "cssSelector": "div#product-detail-web > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+      "valueType": "text"
+
+    },
+    {
+      "name": "dientich",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Diện tích\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]",
+      "cssSelector": "div#product-detail-web > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(2) > span:nth-of-type(3)",
+      "valueType": "text",
+      "textContent": "100 m²"
+    },
+    {
+      "name": "mattien",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Mặt tiền\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]",
+      "cssSelector": "div#product-detail-web > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(3) > span:nth-of-type(3)",
+      "valueType": "text",
+      "textContent": "7,5 m"
+    },
+    {
+      "name": "duongvao",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Đường vào\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]",
+      "cssSelector": "div#product-detail-web > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(4) > span:nth-of-type(3)",
+      "valueType": "text",
+      "textContent": "6 m"
+    },
+    {
+      "name": "phaply",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Pháp lý\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]",
+      "cssSelector": "div#product-detail-web > div:nth-of-type(7) > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(5) > span:nth-of-type(3)",
+      "valueType": "text",
+      "textContent": "Sổ đỏ/ Sổ hồng."
+    },
+    {
+      "name": "ten",
+      "selector": ".re__ldp-contact-box > .re__ldp-agent-wrap > .re__avatar-area > .re__agent-infor > .re__contact-name > .js__agent-contact-name",
+      "cssSelector": ".re__ldp-contact-box > .re__ldp-agent-wrap > .re__avatar-area > .re__agent-infor > .re__contact-name > .js__agent-contact-name",
+      "valueType": "text",
+      "textContent": "Lê Trường"
+    },
+    {
+      "name": "so",
+      "selector": ".re__contact-area > .re__btn > span",
+      "cssSelector": ".re__contact-area > .re__btn > span",
+      "valueType": "text",
+      "textContent": "0926 639 *** · Hiện số"
+    }
+  ]
+}

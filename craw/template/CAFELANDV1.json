@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".realTitle",
+  "nextPageSelector": ".property-list > .pagination-all > nav > ul > li > a",
+  "url": "https://nhadat.cafeland.vn/nha-dat-ban/",
+  "createdAt": "2025-12-22T11:30:32.625Z"
+}

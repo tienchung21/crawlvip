@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": "a.realTitle[href]",
+  "nextPageSelector": ".pagination-all nav ul li a[href*=\"/page-\"]",
+  "url": "https://nhadat.cafeland.vn/cho-thue/",
+  "createdAt": "2025-12-13T11:56:39.309Z"
+}

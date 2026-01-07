@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".ct-title a",
+  "nextPageSelector": ".pagination a.page-link",
+  "url": "https://nhadat24h.net.vn/search?keyword=&category_id=50&loai_bds=&city_id=0&district_id=0&commune_id=0&huongnha=0&price=0&submit=",
+  "createdAt": "2025-12-24T03:26:17.960Z"
+}

@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".link",
+  "nextPageSelector": ".page a.scraper-field-selected",
+  "url": "https://alonhadat.com.vn/can-ban-nha-dat",
+  "createdAt": "2025-12-18T01:23:40.171Z"
+}

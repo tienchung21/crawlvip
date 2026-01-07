@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".card-image a",
+  "nextPageSelector": "#list-post-content-block > aside > div > .KinhDoanhNhaDat-index-page",
+  "url": "http://localhost:8501/",
+  "createdAt": "2025-12-24T04:17:38.215Z"
+}

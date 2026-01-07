@@ -1,0 +1,52 @@
+{
+  "name": "batdongsan_strict_fixed",
+  "url": "https://batdongsan.com.vn",
+  "createdAt": "2025-12-18T10:00:00.000Z",
+  "fields": [
+    {
+      "name": "img",
+      "selector": ".re__pr-media-slide img",
+      "valueType": "src"
+    },
+    {
+      "name": "title",
+      "selector": ".re__pr-title, .pr-title",
+      "valueType": "text"
+    },
+    {
+      "name": "gia",
+      "selector": "//div[contains(@class, 're__pr-specs-content-item')]//span[contains(@class, 're__pr-specs-content-item-title')][normalize-space(text())='Khoảng giá']/following-sibling::span[contains(@class, 're__pr-specs-content-item-value')]",
+      "valueType": "text"
+    },
+    {
+      "name": "dientich",
+      "selector": "//div[contains(@class, 're__pr-specs-content-item')]//span[contains(@class, 're__pr-specs-content-item-title')][normalize-space(text())='Diện tích']/following-sibling::span[contains(@class, 're__pr-specs-content-item-value')]",
+      "valueType": "text"
+    },
+    {
+      "name": "mattien",
+      "selector": "//div[contains(@class, 're__pr-specs-content-item')]//span[contains(@class, 're__pr-specs-content-item-title')][normalize-space(text())='Mặt tiền']/following-sibling::span[contains(@class, 're__pr-specs-content-item-value')]",
+      "valueType": "text"
+    },
+    {
+      "name": "duongvao",
+      "selector": "//div[contains(@class, 're__pr-specs-content-item')]//span[contains(@class, 're__pr-specs-content-item-title')][normalize-space(text())='Đường vào']/following-sibling::span[contains(@class, 're__pr-specs-content-item-value')]",
+      "valueType": "text"
+    },
+    {
+      "name": "phaply",
+      "selector": "//div[contains(@class, 're__pr-specs-content-item')]//span[contains(@class, 're__pr-specs-content-item-title')][normalize-space(text())='Pháp lý']/following-sibling::span[contains(@class, 're__pr-specs-content-item-value')]",
+      "valueType": "text"
+    },
+    {
+      "name": "ten",
+      "selector": ".re__contact-name .js__agent-contact-name",
+      "valueType": "text"
+    },
+    {
+      "name": "so",
+      "selector": ".re__btn-phone",
+      "valueType": "text"
+    }
+  ]
+}

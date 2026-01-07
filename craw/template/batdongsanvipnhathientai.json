@@ -1,0 +1,170 @@
+{
+  "name": "batdongsanvipnhathientai",
+  "url": "https://batdongsan.com.vn/ban-nha-biet-thu-lien-ke-duong-co-loa-xa-dong-hoi-prj-vinhomes-global-gate/tong-hop-quy-can-va-shop-ong-mai-dich-vu-gia-tot-nhat-thang-12-pr44826658",
+  "createdAt": "2025-12-19T06:50:30.769Z",
+  "fields": [
+    {
+      "name": "img",
+      "valueType": "src",
+      "textContent": "hhahaha",
+      "selector": ".re__pr-media-slide"
+    },
+    {
+      "name": "title",
+      "valueType": "text",
+      "textContent": "Giá tốt nhất tháng 12 quỹ căn liền kề biệt thự Vinhomes Cổ Loa sổ lâu dài",
+      "selector": ".re__pr-title"
+    },
+    {
+      "name": "mota",
+      "valueType": "text",
+      "textContent": "Tổng hợp quỹ căn liền kề biệt thự Vinhomes Cổ Loa và shop thương mại dịch vụ giá tốt nhất tháng 12.A/ 18 Quỹ căn sở hữu lâu dài.* Quỹ tứ lập, song lập, và đơn lập mặt hồ Thiên Nga Vinhomes Cổ Loa.- Song lập Thiên Nga 5: TN5 - 6x 136m² giá 5x tỷ bao phí (Đông bắc, cạnh góc, gần hồ đối diện bể bơi, công viên).- Song lập Thiên Nga 3: TN3 - 15x 136m² giá 6x tỷ bao phí (Tây nam, đối diện công viên).- Song lập Hoàng Gia 6: HG6 - 14x 144.5m² giá 58. X tỷ (gần hồ 32ha).* Quỹ căn liền kề Góc, song lập góc Vinhomes Cổ Loa.- Góc Thiên Nga 6: TN6 - 21x 144m² giá 6x tỷ bao phí (đường 17m, gần công viên).- Góc Thiên Nga 2: TN2 - 6x 125m² giá 6x tỷ (Tây bắc + đông bắc, đường 20m, gần chung cư, công viên).- Góc Hoàng Gia 6: HG6 - 9x 191m² giá 9x tỷ (Tây bắc + đông bắc, góc view hồ 32ha).* Quỹ Căn Liền kề xẻ khe, lô thường giá rẻ.- Liền kề Thiên Nga 3: TN3 - 14x 80m² giá 26.5 tỷ.- Xẻ khe Thiên Nga 2: TN2 - 16x 80m² giá 28 tỷ.- Liền kề Nhật Nguyệt 5: NN5 - 4x 62.5m² giá 19.5 tỷ.B/ Quỹ căn shop TMDV 50 năm vị trí đẹp gần chung cư.Đơn giá rẻ tự kinh doanh chiết khấu 19%.- Vị trí đẹp gần chung cư, tòa văn phòng 25 tầng, nhận cam kết tiền thuê 25%/5 năm.- Đảo Ngọc: TP4.1.SP1 - 1x: 127m² giá 26.21 tỷ.- Bình Minh: TV3D. SP - 1x: 90m² giá 17.2 tỷ.- Expo: CT1B. SP - 1x: 82m² giá 17.8 tỷ.(Bàn giao full tầng 1, có hầm chung, được quy hoạch ngành hàng).Mr Lâm 0936 848 *** - Số 1 thấp tầng Vinhomes Cổ Loa.- Cam kết quỹ hàng cạnh tranh về giá, nhiều căn vị trí đẹp, đảm bảo giá trị đầu tư tốt nhất thị trường.- Hỗ trợ thủ tục chủ đầu tư, chuyển nhượng hợp đồng mua bán nhanh gọn.- Tư vấn pháp lý, hỗ trợ chuyển tiếp khoản vay với các ngân hàng, đảm bảo lãi suất tốt nhất. Sở hữu các mối quan - hệ tốt nhất với các đầu mối ngân hàng Big4.- Luôn đặt quyền lợi khách hàng lên trên hết là tôn chỉ nghề nghiệp đã và đang đồng hành hơn 10 năm trong nghề.- Tư vấn lộ trình ra hàng, chốt lời, phương án đầu tư phù hợp dòng tiền tài chính của khách hàng.Trân trọng cảm ơn!",
+      "selector": "//div[contains(@class, \"re__section\") and contains(@class, \"re__pr-description\") and contains(@class, \"js__section\") and contains(@class, \"js__li-description\")]/span[contains(@class, \"re__section-title\")][contains(text(), \"Thông tin mô tả\")]/following-sibling::div[contains(@class, \"re__section-body\") and contains(@class, \"re__detail-content\") and contains(@class, \"js__section-body\") and contains(@class, \"js__pr-description\") and contains(@class, \"js__tracking\")][1]"
+    },
+    {
+      "name": "khoanggia",
+      "valueType": "text",
+      "textContent": "26,5 tỷ",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Khoảng giá\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "dientich",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Diện tích\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "sophongngu",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Số phòng ngủ\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "sophongvesinh",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Số phòng tắm, vệ sinh\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "huongnha",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Hướng nhà\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "huongbancong",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Hướng ban công\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "mattien",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Mặt tiền\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "duongvao",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Đường vào\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "phaply",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Pháp lý\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "noithat",
+      "valueType": "text",
+      "textContent": "80 m²",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Nội thất\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "thuocduan",
+      "valueType": "text",
+      "textContent": "Vinhomes Global Gate",
+      "selector": ".re__project-title"
+    },
+    {
+      "name": "trangthaiduan",
+      "valueType": "text",
+      "textContent": "Đang mở bán",
+      "selector": ".re__project-card-info > .re__section-body > .re__section-content > .re__row-item > .re__prj-card-config-value > .re__long-text"
+    },
+    {
+      "name": "tenmoigioi",
+      "valueType": "text",
+      "textContent": "Tùng Lâm",
+      "selector": ".re__agent-infor :is(.re__contact-name, .js__agent-contact-name)"
+    },
+    {
+      "name": "sodienthoai",
+      "valueType": "text",
+      "textContent": "0936 848 *** · Hiện số",
+      "selector": ".re__contact-area > .re__btn > span"
+    },
+    {
+      "name": "map",
+      "valueType": "text",
+      "textContent": "21.0388321765065,105.934539129008",
+      "selector": ".re__section-body > iframe"
+    },
+    {
+      "name": "matin",
+      "valueType": "text",
+      "textContent": "44845038",
+      "selector": "//div[contains(@class, \"re__pr-short-info-item\") and contains(@class, \"js__pr-config-item\")]/span[contains(@class, \"title\")][contains(text(), \"Mã tin\")]/following-sibling::span[contains(@class, \"value\")][1]"
+    },
+    {
+      "name": "loaitin",
+      "valueType": "text",
+      "textContent": "Tin VIP Kim Cương",
+      "selector": "//div[contains(@class, \"re__pr-short-info-item\") and contains(@class, \"js__pr-config-item\")]/span[contains(@class, \"title\")][contains(text(), \"Loại tin\")]/following-sibling::span[contains(@class, \"value\")][1]"
+    },
+    {
+      "name": "ngayhethan",
+      "valueType": "text",
+      "textContent": "26/12/2025",
+      "selector": "//div[contains(@class, \"re__pr-short-info-item\") and contains(@class, \"js__pr-config-item\")]/span[contains(@class, \"title\")][contains(text(), \"Ngày hết hạn\")]/following-sibling::span[contains(@class, \"value\")][1]"
+    },
+    {
+      "name": "ngaydang",
+      "valueType": "text",
+      "textContent": "19/12/2025",
+      "selector": "//div[contains(@class, \"re__pr-short-info-item\") and contains(@class, \"js__pr-config-item\")]/span[contains(@class, \"title\")][contains(text(), \"Ngày đăng\")]/following-sibling::span[contains(@class, \"value\")][1]"
+    },
+    {
+      "name": "diachi",
+      "valueType": "text",
+      "textContent": "Dự án ParkCity Hà Nội, Đường Lê Trọng Tấn, Phường La Khê, Hà Đông, Hà Nội",
+      "selector": ".re__pr-short-description"
+    },
+    {
+      "name": "thoigianvaoo",
+      "valueType": "text",
+      "textContent": "D? ?n ParkCity H? N?i, ???ng L? Tr?ng T?n, Ph??ng La Kh?, H? ??ng, H? N?i",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Thời gian dự kiến vào ở\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "giadien",
+      "valueType": "text",
+      "textContent": "D? ?n ParkCity H? N?i, ???ng L? Tr?ng T?n, Ph??ng La Kh?, H? ??ng, H? N?i",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Mức giá điện\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "gianuoc",
+      "valueType": "text",
+      "textContent": "D? ?n ParkCity H? N?i, ???ng L? Tr?ng T?n, Ph??ng La Kh?, H? ??ng, H? N?i",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Mức giá nước\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+    },
+    {
+      "name": "giainternet",
+      "valueType": "text",
+      "textContent": "D? ?n ParkCity H? N?i, ???ng L? Tr?ng T?n, Ph??ng La Kh?, H? ??ng, H? N?i",
+      "selector": "//div[contains(@class, \"re__pr-specs-content-item\")]/span[contains(@class, \"re__pr-specs-content-item-title\")][contains(text(), \"Mức giá internet\")]/following-sibling::span[contains(@class, \"re__pr-specs-content-item-value\")][1]"
+      
+    }
+  ]
+}

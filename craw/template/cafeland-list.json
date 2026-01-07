@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".realTitle",
+  "nextPageSelector": ".pagination a.scraper-field-selected",
+  "url": "https://nhadat.cafeland.vn/nha-dat-ban/ban-nha-rieng/",
+  "createdAt": "2025-12-27T04:38:00.022Z"
+}

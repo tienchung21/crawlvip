@@ -1,0 +1,151 @@
+{
+  "name": "nhatotdetail",
+  "url": "https://www.nhatot.com/mua-ban-nha-dat-quan-12-tp-ho-chi-minh/129684646.htm",
+  "createdAt": "2025-12-23T07:49:50.175Z",
+  "fields": [
+    {
+      "name": "img",
+      "valueType": "src",
+      "textContent": "<img alt=\"nhà sổ hồng riêng đúc lững,hẻm thông xe hơi,sh riêng. Mua bán Nhà ở tại Quận 12 Tp Hồ Chí Minh được đăng bởi cường hình 2\" src=\"https://cdn.chotot.com/nE_uaaaNUM5kzGrtppLW80w7Xj2GkGmnUbLMBrdW_w4/preset:view/plain/c3b3542515599dd93e7d4b1a2ef8773f-2962457784379867623.jpg\" decoding=\"async\" data-nimg=\"fill\" style=\"position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%\" loading=\"lazy\"/>Chia sẻ qua:Báo cáo tin đăngCần trợ giúp?5 / 13<img alt=\"nhà sổ hồng riêng đúc lững,hẻm thông xe hơi,sh riêng. Mua bán Nhà ở tại Quận 12 Tp Hồ Chí Minh được đăng bởi cường hình 2\" src=\"https://cdn.chotot.com/nE_uaaaNUM5kzGrtppLW80w7Xj2GkGmnUbLMBrdW_w4/preset:view/plain/c3b3542515599dd93e7d4b1a2ef8773f-2962457784379867623.jpg\" decoding=\"async\" data-nimg=\"fill\" style=\"position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%\" loading=\"lazy\"/><img alt=\"nhà sổ hồng riêng đúc lững,hẻm thông xe hơi,sh riêng. Mua bán Nhà ở tại Quận 12 Tp Hồ Chí Minh được đăng bởi cường hình 3\" src=\"https://cdn.chotot.com/Sprd-Uu41I7jzTl9arpFUMnEi0LETgVif7sixSA8zFk/preset:view/plain/0d5f7daa928cdada8c301251d7ac3344-2962457785060054655.jpg\" decoding=\"async\" data-nimg=\"fill\" style=\"position:absolute;top:0;left:0;bottom:0;right:0;box-sizing:border-box;padding:0;border:none;margin:auto;display:block;width:0;height:0;min-width:100%;max-width:100%;min-height:100%;max-height:100%\" loading=\"lazy\"/><img alt=\"nhà sổ hồng riêng đúc lững,hẻm thông xe hơi,sh riêng. Mua bán Nhà ở tại Quận 12 Tp Hồ Chí Minh được đăng bởi cường hình 4\" src=\"https://cdn.chotot.com/2AwumQKIgQxSav7OOg60D3CpRJ3TtU2mf8WbUwIEwaI/preset:view/plain/1860a3ef512ade9af87fda718ff183e4-2962457785060171652.jpg\" decoding=\"async\" data-nimg=\"fill\" style=\"position:absolute;top:0",
+      "selector": ".c1i8w2wa"
+    },
+    {
+      "name": "title",
+      "valueType": "text",
+      "textContent": "nhà sổ hồng riêng đúc lững,hẻm thông xe hơi,sh riêng",
+      "selector": "h1"
+    },
+    {
+      "name": "diachi",
+      "valueType": "text",
+      "textContent": "Thạnh Xuân 24, Phường Thạnh Xuân, Quận 12, Tp Hồ Chí Minh",
+      "selector": "//span[contains(normalize-space(), \"(Phường Thới An, TP Hồ Chí Minh mới)\")]/ancestor::div[contains(@class, \"r9vw5if\")]//span[contains(@class, \"bwq0cbs\") and contains(@class, \"tunpaa5\")]"
+    },
+    {
+      "name": "loaihinhnhao",
+      "valueType": "text",
+      "textContent": "Nhà ngõ, hẻm",
+      "selector": "//strong[@itemprop=\"house_type\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "dientich",
+      "valueType": "text",
+      "textContent": "48 m²",
+      "selector": "//strong[@itemprop=\"size\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "dientichsudung",
+      "valueType": "text",
+      "textContent": "90 m²",
+      "selector": "//strong[@itemprop=\"living_size\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "gia/m2",
+      "valueType": "text",
+      "textContent": "80,83 triệu/m²",
+      "selector": "//strong[@itemprop=\"price_m2\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "phaply",
+      "valueType": "text",
+      "textContent": "Đã có sổ",
+      "selector": "//strong[@itemprop=\"property_legal_document\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "sophongngu",
+      "valueType": "text",
+      "textContent": "2 phòng",
+      "selector": "//strong[@itemprop=\"rooms\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "sophongvesinh",
+      "valueType": "text",
+      "textContent": "2 phòng",
+      "selector": "//strong[@itemprop=\"toilets\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "noithat",
+      "valueType": "text",
+      "textContent": "Hoàn thiện cơ bản",
+      "selector": "//strong[@itemprop=\"furnishing_sell\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "huongnha",
+      "valueType": "text",
+      "textContent": "Đông Nam",
+      "selector": "//strong[@itemprop=\"direction\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "dacdiemnhadat",
+      "valueType": "text",
+      "textContent": "Hẻm xe hơi",
+      "selector": "//strong[@itemprop=\"pty_characteristics\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "chieungang",
+      "valueType": "text",
+      "textContent": "4 m",
+      "selector": "//strong[@itemprop=\"width\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "chieudai",
+      "valueType": "text",
+      "textContent": "12 m",
+      "selector": "//strong[@itemprop=\"length\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "sotang",
+      "valueType": "text",
+      "textContent": "1",
+      "selector": "//strong[@itemprop=\"floors\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "mota",
+      "valueType": "text",
+      "textContent": "❇️Nhà Tx24 đường thông phường thạnh Xuân q12\n✅Diện tich: 4x12m \n✅Tk 1 trệt 1 lửng\n✅Gồm 2 phòng ngủ,2wc,phòng khách,bếp\n✅Nhà mới sạch sẽ vào ở ngay\n✅Giá 3 tỷ 880 triệu còn bớt",
+      "selector": "//p[@itemprop=\"description\" and contains(@class, \"styles_adBody__vGW74\")]"
+    },
+    {
+      "name": "moigioi",
+      "valueType": "text",
+      "textContent": "cường",
+      "selector": "a > div > div > div > b"
+    },
+    {
+      "name": "sodienthoai",
+      "valueType": "text",
+      "textContent": "Hiện số 097502 ***",
+      "selector": "div > div > div > .r-normal > div > span"
+    },
+    {
+      "name": "sotiencoc",
+      "valueType": "text",
+      "textContent": "3.500.000 đ/tháng",
+      "selector": "//strong[@itemprop=\"deposit\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "tangso",
+      "valueType": "text",
+      "textContent": "5",
+      "selector": "//strong[@itemprop=\"floornumber\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "loaihinhvanphong",
+      "valueType": "text",
+      "textContent": "Văn phòng",
+      "selector": "//strong[@itemprop=\"commercial_type\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "loaihinhdat",
+      "valueType": "text",
+      "textContent": "Đất thổ cư",
+      "selector": "//strong[@itemprop=\"land_type\" and contains(@class, \"a3jfi3v\")]"
+    },
+    {
+      "name": "loaihinhcanho",
+      "valueType": "text",
+      "textContent": "Căn hộ dịch vụ, mini",
+      "selector": "//strong[@itemprop=\"apartment_type\" and contains(@class, \"a3jfi3v\")]"
+    }
+  ]
+}

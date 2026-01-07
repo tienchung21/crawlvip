@@ -1,0 +1,19 @@
+{
+  "name": "CHITIETCAFFELAN",
+  "url": "https://nhadat.cafeland.vn/hem-xe-tai-7m-ngang-hon-4m-4-tang-btct-4pn4wc-noi-that-dep-nha-1-doi-chu-at-2288011.html",
+  "createdAt": "2025-12-22T11:31:24.249Z",
+  "fields": [
+    {
+      "name": "",
+      "valueType": "src",
+      "textContent": "",
+      "selector": ".col-md-9 > .owl-carousel > .owl-stage-outer > .owl-stage"
+    },
+    {
+      "name": "Bán nhà riêng",
+      "valueType": "text",
+      "textContent": "Bán nhà riêng",
+      "selector": "//div[contains(@class, \"reals-house-item\") and contains(@class, \"opt-mattien\")]/span[contains(@class, \"title-item\")][contains(text(), \"Loại địa ốc\")]/following-sibling::span[contains(@class, \"value-item\")][1]"
+    }
+  ]
+}

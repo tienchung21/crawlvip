@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".link-overlay",
+  "nextPageSelector": "#property > .property-listing > div > ul li:last-child a",
+  "url": "https://mogi.vn/ha-noi/quan-long-bien/mua-nha-hem-ngo",
+  "createdAt": "2026-01-06T11:53:47.542Z"
+}

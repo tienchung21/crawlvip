@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".link",
+  "nextPageSelector": "nav.page li[aria-current='page'] + li a",
+  "url": "https://alonhadat.com.vn/can-ban-nha-dat",
+  "createdAt": "2025-12-24T03:56:32.806Z"
+}

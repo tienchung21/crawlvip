@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".js__product-link-for-product-id",
+  "nextPageSelector": "a.re__pagination-icon:has(.re__icon-chevron-right--sm)",
+  "url": "https://alonhadat.com.vn/",
+  "createdAt": "2025-12-24T03:50:48.839Z"
+}

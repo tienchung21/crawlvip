@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": "a.js__product-link-for-product-id[href]",
+  "nextPageSelector": "a.re__pagination-icon[href][aria-label*=\"sau\"], a.re__pagination-icon[href][aria-label*=\"next\"]",
+  "url": "https://batdongsan.com.vn/nha-dat-ban",
+  "createdAt": "2025-12-13T10:34:35.246Z"
+}

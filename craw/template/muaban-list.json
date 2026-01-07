@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": ".over",
+  "nextPageSelector": ".sc-1f4o606-0 a:last-child",
+  "url": "http://localhost:8501/",
+  "createdAt": "2025-12-24T04:12:34.327Z"
+}

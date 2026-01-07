@@ -1,0 +1,164 @@
+{
+  "name": "alonhadatdetail",
+  "url": "https://alonhadat.com.vn/chinh-chu-ban-can-nha-1-lau-64m2-750tr-binh-hung-binh-chanh-hcm-17861912.html",
+  "createdAt": "2025-12-31T10:04:35.124Z",
+  "fields": [
+    {
+      "name": "img",
+      "valueType": "src",
+      "textContent": "",
+      "selector": ".image-list"
+    },
+    {
+      "name": "title",
+      "valueType": "text",
+      "textContent": "Bán gấp nhà 1 trệt 1 lầu - 1,2 tỷ - 80m2, ngay Bến xe Q8, SHR",
+      "selector": "h1"
+    },
+    {
+      "name": "mota",
+      "valueType": "text",
+      "textContent": "Cần sang lại căn nhà đẹp 1 trệt 1 lầu ngay bến xe Quận 8, HCM\n- Vị trí: Đường QL50, Quận 8, HCM\n- Diện tích: 80m2 (6x30) full thổ cư. hoàn công đầy đủ\n- Pháp lý: SHR\n- Nhà 1 trệt 1 lầu: 3pn, 3wc, 1 bếp, 1 phòng khách, hệ thống điện nước đầy đủ, đường trước nhà 12m nhựa, 2 xe oto quay đầu, có thể cho thuê 10-12tr/ tháng\n- Tiện ích: Bán kính 500m có đầy đủ, bệnh viện, trường học, bệnh viện, TTTM, uỷ ban nhân dân, bến xe quận 8\n- Trước gia đình tôi ở nên nhà rất mới, nhưng nay Vì chuyển nhà nơi khác và trả nợ ngân hàng nên cần bán gấp trong năm\nLH a Xuân để xem nhà",
+      "selector": "//section[contains(@class, \"detail\") and contains(@class, \"text-content\")]/h2[contains(text(), \"Thông tin chi tiết\")]/following-sibling::p[1]"
+    },
+    {
+      "name": "khoanggia",
+      "valueType": "text",
+      "textContent": "1,2 tỷ",
+      "selector": "//data[@itemprop=\"price\" and contains(@class, \"value\")]"
+    },
+    {
+      "name": "dientich",
+      "valueType": "text",
+      "textContent": "80\n                  m²",
+      "selector": "//span[@itemprop=\"floorSize\" and contains(@class, \"value\")]"
+    },
+    {
+      "name": "matin",
+      "valueType": "text",
+      "textContent": "17861912",
+      "selector": "//tr/td[contains(text(), \"Mã tin\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "loaitin",
+      "valueType": "text",
+      "textContent": "Cần bán",
+      "selector": "//tr/td[contains(text(), \"Loại tin\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "loaibds",
+      "valueType": "text",
+      "textContent": "Nhà mặt tiền",
+      "selector": "//tr/td[contains(text(), \"Loại BDS\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "chieungang",
+      "valueType": "text",
+      "textContent": "4m",
+      "selector": "//tr/td[contains(text(), \"Chiều ngang\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "chieungang",
+      "valueType": "text",
+      "textContent": "4m",
+      "selector": "//tr/td[contains(text(), \"Chiều ngang\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "chieudai",
+      "valueType": "text",
+      "textContent": "20m",
+      "selector": "//tr/td[contains(text(), \"Chiều dài\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "huongnha",
+      "valueType": "text",
+      "textContent": "_",
+      "selector": "//tr/td[contains(text(), \"Hướng\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "mattien",
+      "valueType": "text",
+      "textContent": "12m",
+      "selector": "//tr/td[contains(text(), \"Đường trước nhà\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "phaply",
+      "valueType": "text",
+      "textContent": "---",
+      "selector": "//tr/td[contains(text(), \"Pháp lý\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "sotang",
+      "valueType": "text",
+      "textContent": "1",
+      "selector": "//tr/td[contains(text(), \"Số lầu\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "sophongngu",
+      "valueType": "text",
+      "textContent": "3",
+      "selector": "//tr/td[contains(text(), \"Số phòng ngủ\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "sophongngu",
+      "valueType": "text",
+      "textContent": "3",
+      "selector": "//tr/td[contains(text(), \"Số phòng ngủ\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "phongan",
+      "valueType": "html",
+      "textContent": "---",
+      "selector": "//tr/td[contains(text(), \"Phòng ăn\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "nhabep",
+      "valueType": "html",
+      "textContent": "---",
+      "selector": "//tr/td[contains(text(), \"Nhà bếp\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "santhuong",
+      "valueType": "html",
+      "textContent": "---",
+      "selector": "//tr/td[contains(text(), \"Sân thượng\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "chodexehoi",
+      "valueType": "html",
+      "textContent": "---",
+      "selector": "//tr/td[contains(text(), \"Chổ để xe hơi\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "chinhchu",
+      "valueType": "html",
+      "textContent": "---",
+      "selector": "//tr/td[contains(text(), \"Chính chủ\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "diachi",
+      "valueType": "text",
+      "textContent": "Quốc lộ 50,\n                                                    Phường Bình Đông, \n                                                    Hồ Chí Minh",
+      "selector": ".current-address"
+    },
+    {
+      "name": "diachicu",
+      "valueType": "text",
+      "textContent": "Quốc lộ 50, Phường 5, Quận 8, Hồ Chí Minh",
+      "selector": ".old-address"
+    },
+    {
+      "name": "sodienthoai",
+      "valueType": "text",
+      "textContent": "0909.653.342",
+      "selector": ".contact-info > p > span > a",
+      "excludeWords": "."
+    },
+    {
+      "name": "tenmoigioi",
+      "valueType": "text",
+      "textContent": "Trịnh Xuân Hiếu",
+      "selector": "#ctl00_content_pc_content > aside > div > .contact-info > p > span"
+    }
+  ]
+}

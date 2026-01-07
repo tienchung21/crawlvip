@@ -1,0 +1,91 @@
+{
+  "name": "migidetails",
+  "url": "https://mogi.vn/quan-long-bien/mua-nha-hem-ngo/ban-nha-to-5-thach-ban-chi-2-ty-40m2-x-4t-o-to-vao-duoc-ngo-id21205142",
+  "createdAt": "2026-01-06T11:52:48.191Z",
+  "fields": [
+    {
+      "name": "title",
+      "valueType": "text",
+      "textContent": "Bán nhà tổ 5 Thạch Bàn chỉ 2 tỷ 40m2 x 4T, ô tô vào được ngõ",
+      "selector": "h1"
+    },
+    {
+      "name": "diachi",
+      "valueType": "text",
+      "textContent": "Cổ Linh, Phường Thạch Bàn, Quận Long Biên, Hà Nội",
+      "selector": ".address"
+    },
+    {
+      "name": "2 tỷ",
+      "valueType": "text",
+      "textContent": "2 tỷ",
+      "selector": ".price"
+    },
+    {
+      "name": "dientich",
+      "valueType": "text",
+      "textContent": "40 m2 (4x10)",
+      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Diện tích đất\")]/following-sibling::span[1]"
+    },
+    {
+      "name": "dientichsudung",
+      "valueType": "text",
+      "textContent": "40 m2",
+      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Diện tích sử dụng\")]/following-sibling::span[1]"
+    },
+    {
+      "name": "sophongngu",
+      "valueType": "text",
+      "textContent": "3",
+      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Phòng ngủ\")]/following-sibling::span[1]"
+    },
+    {
+      "name": "sophongvesinh",
+      "valueType": "text",
+      "textContent": "4",
+      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Nhà tắm\")]/following-sibling::span[1]"
+    },
+    {
+      "name": "phaply",
+      "valueType": "text",
+      "textContent": "Sổ đỏ",
+      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Pháp lý\")]/following-sibling::span[1]"
+    },
+    {
+      "name": "ngaydang",
+      "valueType": "text",
+      "textContent": "06/01/2026",
+      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Ngày đăng\")]/following-sibling::span[1]"
+    },
+    {
+      "name": "matin",
+      "valueType": "text",
+      "textContent": "21205142",
+      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Mã BĐS\")]/following-sibling::span[1]"
+    },
+    {
+      "name": "mota",
+      "valueType": "text",
+      "textContent": "Nhà bao việc phải lo, nhưng lo nhất là việc có một mái ấm để đoàn viên. Mua về là ở luôn. Nhà còn rất mới, xây dựng 4 tầng tại đường Cổ Linh, tổ 5, Thạch Bàn, Long Biên, Hà Nội. Diện tích: 40m2 mặt tiền: 4m ngõ rộng, vừa ô tô con. Gần với đường lớn trung tâm. Thiết kế: 4 tầng.- Tầng 1: Phòng khách, bếp, nhà vệ sinh.- Tầng 2: 2 phòng ngủ, 1 nhà vệ sinh.- Tầng 3: 2 phòng ngủ, 1 nhà vệ sinh.- Tầng 4: Phòng thờ, phòng giặt, phòng để đồ, phơi đồ.Liên hệ xem nhà: Mr Tùng: 0912017115 để đi xem nhà trực tiếp và miễn phí.",
+      "selector": "//div[contains(@class, \"main-info\")]/h2[contains(@class, \"info-title\")][contains(text(), \"Giới thiệu\")]/following-sibling::div[contains(@class, \"info-content-body\")][1]"
+    },
+    {
+      "name": "map",
+      "valueType": "text",
+      "textContent": "21.02143669,105.91858673000002",
+      "selector": "//div[contains(@class,\"map-content\")]//iframe"
+    },
+    {
+      "name": "moigioi",
+      "valueType": "text",
+      "textContent": "Trần Kim Tùng",
+      "selector": ".agent-widget > .agent-info > .agent-name > a"
+    },
+    {
+      "name": "sodienthoai",
+      "valueType": "text",
+      "textContent": "0912 017 115",
+      "selector": "a > .ng-binding"
+    }
+  ]
+}

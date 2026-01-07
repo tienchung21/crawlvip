@@ -1,0 +1,7 @@
+{
+  "type": "listing",
+  "itemSelector": "a.wrap-img",
+  "nextPageSelector": ".page-content > .box-content > .nav-paging > ul > li > a",
+  "url": "https://cafeland.vn/du-an/",
+  "createdAt": "2025-12-13T10:39:09.156Z"
+}
