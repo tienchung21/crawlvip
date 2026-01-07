@@ -29,6 +29,9 @@ from crawl4ai import PruningContentFilter, BM25ContentFilter
 class WebScraper:
     """Tool cào dữ liệu từ trang web"""
     
+    # Counter để tạo unique ID cho mỗi instance
+    _instance_counter = 0
+    
     # Sửa trong file web_scraper.py
     def __init__(
         self,
@@ -43,6 +46,13 @@ class WebScraper:
         Args:
             user_data_dir: Đường dẫn thư mục lưu Profile (Cookie, Cache...)
         """
+        # Tạo unique instance ID để đảm bảo không bị share browser
+        WebScraper._instance_counter += 1
+        self._instance_id = WebScraper._instance_counter
+        import time
+        self._unique_id = f"{self._instance_id}_{int(time.time() * 1000)}"
+        print(f"[WebScraper] Creating instance #{self._instance_id} with unique_id={self._unique_id}")
+        
         self.keep_open = keep_open
 
         stealth_args = [
@@ -63,16 +73,25 @@ class WebScraper:
                 "--disable-backgrounding-occluded-windows",
                 "--disable-session-crashed-bubble",
             ])
+        
+        # Thêm unique window name để tránh browser bị share
+        extra_args.append(f"--class=crawl4ai-instance-{self._unique_id}")
+        
         ua_xin = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
         
         # Xác định có dùng persistent context hay không
         # Chỉ bật persistent context khi có user_data_dir
         use_persistent = bool(user_data_dir)
         
+        # Tính debugging port unique dựa trên instance ID để tránh conflict
+        # Base port 9222, mỗi instance +1
+        unique_debug_port = 9222 + (self._instance_id % 100)
+        
         self.browser_config = BrowserConfig(
             headless=headless,
             verbose=verbose,
             browser_mode="dedicated",  # Dùng dedicated browser, không chia sẻ
+            debugging_port=unique_debug_port,  # Unique port cho mỗi instance
             viewport_width=1920,
             viewport_height=1040,
             user_data_dir=user_data_dir,
@@ -81,6 +100,7 @@ class WebScraper:
             extra_args=extra_args,
             user_agent=ua_xin
         )
+        print(f"[WebScraper] Instance #{self._instance_id}: debug_port={unique_debug_port}, user_data_dir={user_data_dir}")
         self.crawler = None
     
     async def __aenter__(self):
@@ -104,30 +124,75 @@ class WebScraper:
         """
         Lấy page đang active từ Crawl4AI's browser context.
         Dùng cho việc hiển thị và cào trực tiếp.
+        QUAN TRỌNG: Không tạo page mới khi context đã đóng - trả về None để caller xử lý.
         """
         try:
             ctx = getattr(self.crawler, "crawler_strategy", None)
             if not ctx:
+                print(f"[WebScraper #{self._instance_id}] get_active_page: No crawler_strategy")
                 return None
             bm = getattr(ctx, "browser_manager", None)
             if not bm:
+                print(f"[WebScraper #{self._instance_id}] get_active_page: No browser_manager")
                 return None
+            
+            # Debug: Log browser manager và context để xác định có bị share không
+            bm_id = id(bm)
+            crawler_id = id(self.crawler)
+            user_data = getattr(self.browser_config, 'user_data_dir', 'N/A')
+            print(f"[WebScraper #{self._instance_id}] get_active_page: crawler_id={crawler_id}, browser_manager_id={bm_id}, user_data_dir={user_data}")
+            
             context = getattr(bm, "default_context", None)
             if not context:
+                print(f"[WebScraper #{self._instance_id}] get_active_page: No default_context")
                 return None
+            
+            ctx_id = id(context)
+            print(f"[WebScraper #{self._instance_id}] get_active_page: context_id={ctx_id}")
+            
+            # Kiểm tra context còn sống không trước khi truy cập pages
+            try:
+                # Thử truy cập thuộc tính của context để kiểm tra còn sống
+                if hasattr(context, '_closed') and context._closed:
+                    print("[WebScraper] Context is closed, returning None")
+                    return None
+            except Exception:
+                pass
+            
             pages = []
             try:
                 pages = list(context.pages) if hasattr(context, 'pages') else []
-            except Exception:
-                pages = []
+            except Exception as e:
+                # Context có thể đã bị đóng
+                print(f"[WebScraper] Cannot get pages from context: {e}")
+                return None
             
             page = None
             if pages:
                 # Trả về page cuối cùng (thường là page đang active)
-                page = pages[-1]
-            else:
-                # Nếu không có page nào, tạo mới
-                page = await context.new_page()
+                # Kiểm tra page còn sống không
+                for p in reversed(pages):
+                    try:
+                        # Kiểm tra page còn sống bằng cách truy cập url
+                        _ = p.url
+                        page = p
+                        break
+                    except Exception:
+                        continue
+                        
+            # KHÔNG tạo page mới nếu không có page nào - để caller quyết định
+            # Việc tạo page mới khi context đóng sẽ gây lỗi "Target page, context or browser has been closed"
+            if not page and pages:
+                # Có pages nhưng tất cả đều đã đóng
+                print("[WebScraper] All pages are closed")
+                return None
+            elif not page and not pages:
+                # Không có page nào, thử tạo mới NẾU context còn sống
+                try:
+                    page = await context.new_page()
+                except Exception as e:
+                    print(f"[WebScraper] Cannot create new page: {e}")
+                    return None
             
             # Set viewport to match window size (full screen)
             if page:

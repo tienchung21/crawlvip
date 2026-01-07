@@ -199,6 +199,14 @@ async def _get_phone_text_from_page(page, selector: str) -> Optional[str]:
                 const mogi = findMogiPhone();
                 if (mogi && !isMasked(mogi)) return mogi;
                 const el = findEl();
+                if (el) {
+                    let cur = el;
+                    for (let i = 0; i < 4 && cur; i += 1) {
+                        const fromNg = extractFromNgBind(cur);
+                        if (fromNg) return fromNg;
+                        cur = cur.parentElement;
+                    }
+                }
                 let text = getText(el);
                 if (text && !isMasked(text)) return text;
                 const scope = el ? (el.closest('section,div,li,article') || el.parentElement) : null;
@@ -507,6 +515,10 @@ def _open_chrome_profile(profile_dir: str, url: str):
     exe = _find_playwright_chrome_exe()
     if not exe:
         raise RuntimeError("Cannot find Playwright Chromium executable")
+    
+    # Đảm bảo profile_dir là đường dẫn tuyệt đối
+    profile_dir = os.path.abspath(profile_dir)
+    
     args = [
         exe,
         f"--user-data-dir={profile_dir}",
@@ -517,9 +529,19 @@ def _open_chrome_profile(profile_dir: str, url: str):
         "--no-first-run",
         "--no-default-browser-check",
         "--disable-popup-blocking",
+        # Thêm flag để tránh crash
+        "--no-sandbox",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
         url or "about:blank",
     ]
-    subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    print(f"[Profile Manager] Opening Chrome with profile: {profile_dir}")
+    print(f"[Profile Manager] Chrome exe: {exe}")
+    print(f"[Profile Manager] Args: {args}")
+    
+    # Không ẩn output để debug được nếu có lỗi
+    proc = subprocess.Popen(args)
+    print(f"[Profile Manager] Chrome started with PID: {proc.pid}")
 
 
 def _clear_profile_cache(profile_dir: str):
@@ -603,25 +625,34 @@ async def _open_playwright_profile(profile_dir: str, url: str, wait_seconds: int
 
 async def _open_nodriver_profile(profile_dir: str, url: str, wait_seconds: int, keep_open: bool):
     import nodriver as uc
+    
+    print(f"[Profile Manager] Opening nodriver profile: {profile_dir}")
+    print(f"[Profile Manager] URL: {url}")
+    
     browser = await uc.start(
         headless=False,
         user_data_dir=profile_dir
     )
     try:
         await browser.get(url)
+        print(f"[Profile Manager] Browser started, waiting...")
+        
         if keep_open:
-            # Wait until browser is closed manually by user
+            # Đợi cho đến khi user đóng browser thủ công
+            # Kiểm tra mỗi 5 giây xem browser còn sống không
             try:
                 while True:
-                    await asyncio.sleep(2)
-                    # Check if browser is still running
-                    if not browser or not browser.connection:
-                        break
+                    await asyncio.sleep(5)
+                    # Check if browser is still running bằng cách kiểm tra connection
                     try:
-                        # Try to get current tabs to check connection
-                        _ = await browser.get("about:blank")
-                        await browser.back()
+                        if browser and browser.connection:
+                            # Chỉ kiểm tra connection còn sống, không navigate
+                            pass
+                        else:
+                            print("[Profile Manager] Browser connection lost")
+                            break
                     except Exception:
+                        print("[Profile Manager] Browser closed by user")
                         break
             except Exception:
                 pass
@@ -632,6 +663,7 @@ async def _open_nodriver_profile(profile_dir: str, url: str, wait_seconds: int, 
             except Exception:
                 pass
     except Exception as e:
+        print(f"[Profile Manager] Error: {e}")
         if not keep_open:
             try:
                 await browser.stop()
@@ -641,6 +673,15 @@ async def _open_nodriver_profile(profile_dir: str, url: str, wait_seconds: int, 
 
 # City lookup helpers (transaction_city_new)
 def _fetch_cities(db):
+    def _safe_text(val):
+        if val is None:
+            return ""
+        if isinstance(val, bytes):
+            try:
+                return val.decode("utf-8", errors="replace")
+            except Exception:
+                return str(val)
+        return str(val)
     conn = db.get_connection()
     cursor = conn.cursor()
     try:
@@ -656,9 +697,9 @@ def _fetch_cities(db):
         return [
             {
                 "old_city_id": row[0],
-                "old_city_name": row[1],
+                "old_city_name": _safe_text(row[1]),
                 "new_city_id": row[2],
-                "new_city_name": row[3],
+                "new_city_name": _safe_text(row[3]),
             }
             for row in rows
             if row and row[0] is not None
@@ -673,6 +714,15 @@ def _fetch_cities(db):
 def _fetch_city_children(db, parent_id):
     if not parent_id:
         return []
+    def _safe_text(val):
+        if val is None:
+            return ""
+        if isinstance(val, bytes):
+            try:
+                return val.decode("utf-8", errors="replace")
+            except Exception:
+                return str(val)
+        return str(val)
     conn = db.get_connection()
     cursor = conn.cursor()
     try:
@@ -689,9 +739,9 @@ def _fetch_city_children(db, parent_id):
         return [
             {
                 "old_city_id": row[0],
-                "old_city_name": row[1],
+                "old_city_name": _safe_text(row[1]),
                 "new_city_id": row[2],
-                "new_city_name": row[3],
+                "new_city_name": _safe_text(row[3]),
             }
             for row in rows
             if row and row[0] is not None
@@ -1744,6 +1794,13 @@ async def scrape_url(
                     # 1. Xử lý lấy ẢNH (src)
 
                     if value_type == 'src':
+                        # Support background-image in style attribute
+                        if hasattr(el, 'get'):
+                            style_val = el.get('style') or ''
+                            if 'background-image' in style_val:
+                                m = re.search(r'url\((["\']?)(.*?)\1\)', style_val, re.IGNORECASE)
+                                if m and m.group(2):
+                                    _add_value(m.group(2))
 
                         # Nếu bản thân nó là thẻ img -> Lấy luôn
 
@@ -1793,6 +1850,13 @@ async def scrape_url(
                                 val = media.get('data-src') or media.get('data-lazy-src') or media.get('src')
 
                                 _add_value(val)
+                            # Also check any element with inline background-image
+                            for node in el.xpath('.//*[@style]'):
+                                style_val = node.get('style') or ''
+                                if 'background-image' in style_val:
+                                    m = re.search(r'url\((["\']?)(.*?)\1\)', style_val, re.IGNORECASE)
+                                    if m and m.group(2):
+                                        _add_value(m.group(2))
 
 
 
@@ -2286,7 +2350,7 @@ with tab3:
 
     # Province/ward selection
     city_options = _fetch_cities(st.session_state.db_crawl_listing)
-    city_choices = [("", "(Tat ca)")] + [
+    city_choices = [(None, "(Tat ca)", None, None)] + [
         (c["old_city_id"], c["old_city_name"], c["new_city_id"], c["new_city_name"])
         for c in city_options
     ]
@@ -2302,7 +2366,7 @@ with tab3:
     new_city_name = selected_city[3] if isinstance(selected_city, (list, tuple)) and selected_city[0] else None
 
     ward_options = _fetch_city_children(st.session_state.db_crawl_listing, city_id)
-    ward_choices = [("", "(Tat ca)")] + [
+    ward_choices = [(None, "(Tat ca)", None, None)] + [
         (c["old_city_id"], c["old_city_name"], c["new_city_id"], c["new_city_name"])
         for c in ward_options
     ]
@@ -4037,6 +4101,39 @@ with tab5:
     with enable_cols[2]:
         enable_image = st.checkbox("Bat hinh anh", value=False, key="task_enable_image")
 
+    st.markdown("Chon tinh/xa (luu kem vao collected_links)")
+    city_options_task = _fetch_cities(st.session_state.db_scheduler)
+    city_choices_task = [(None, "(Tat ca)", None, None)] + [
+        (c["old_city_id"], c["old_city_name"], c["new_city_id"], c["new_city_name"])
+        for c in city_options_task
+    ]
+    selected_city_task = st.selectbox(
+        "Tinh/TP (task)",
+        options=city_choices_task,
+        format_func=lambda x: x[1] if isinstance(x, (list, tuple)) else x,
+        key="task_city",
+    )
+    task_city_id = selected_city_task[0] if isinstance(selected_city_task, (list, tuple)) and selected_city_task[0] else None
+    task_city_name = selected_city_task[1] if isinstance(selected_city_task, (list, tuple)) and selected_city_task[0] else None
+    task_new_city_id = selected_city_task[2] if isinstance(selected_city_task, (list, tuple)) and selected_city_task[0] else None
+    task_new_city_name = selected_city_task[3] if isinstance(selected_city_task, (list, tuple)) and selected_city_task[0] else None
+
+    ward_options_task = _fetch_city_children(st.session_state.db_scheduler, task_city_id)
+    ward_choices_task = [(None, "(Tat ca)", None, None)] + [
+        (c["old_city_id"], c["old_city_name"], c["new_city_id"], c["new_city_name"])
+        for c in ward_options_task
+    ]
+    selected_ward_task = st.selectbox(
+        "Huyen/Xa (task)",
+        options=ward_choices_task,
+        format_func=lambda x: x[1] if isinstance(x, (list, tuple)) else x,
+        key="task_ward",
+    )
+    task_ward_id = selected_ward_task[0] if isinstance(selected_ward_task, (list, tuple)) and selected_ward_task[0] else None
+    task_ward_name = selected_ward_task[1] if isinstance(selected_ward_task, (list, tuple)) and selected_ward_task[0] else None
+    task_new_ward_id = selected_ward_task[2] if isinstance(selected_ward_task, (list, tuple)) and selected_ward_task[0] else None
+    task_new_ward_name = selected_ward_task[3] if isinstance(selected_ward_task, (list, tuple)) and selected_ward_task[0] else None
+
     with st.form("add_task_form"):
         col_a, col_b, col_c = st.columns(3)
         with col_a:
@@ -4147,6 +4244,14 @@ with tab5:
             'max_pages': max_pages,
             'domain': domain,
             'loaihinh': loaihinh,
+            'city_id': task_city_id,
+            'city_name': task_city_name,
+            'ward_id': task_ward_id,
+            'ward_name': task_ward_name,
+            'new_city_id': task_new_city_id,
+            'new_city_name': task_new_city_name,
+            'new_ward_id': task_new_ward_id,
+            'new_ward_name': task_new_ward_name,
             'listing_show_browser': 1 if listing_show_browser else 0,
             'listing_fake_scroll': 1 if listing_fake_scroll else 0,
             'listing_fake_hover': 1 if listing_fake_hover else 0,

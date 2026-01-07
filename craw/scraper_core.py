@@ -83,6 +83,18 @@ def _clean_phone_text(text: Optional[str]) -> Optional[str]:
     return text.strip()
 
 
+def _extract_phone_from_ng_bind(attr_text: Optional[str]) -> Optional[str]:
+    if not attr_text:
+        return None
+    match = re.search(r"PhoneFormat\(['\"]([^'\"]+)['\"]\)", attr_text)
+    if match:
+        return match.group(1).strip()
+    match = re.search(r'(\+?\d[\d\s\.\-]{7,}\d)', attr_text)
+    if match:
+        return match.group(1).strip()
+    return None
+
+
 def _is_masked_phone(text: Optional[str]) -> bool:
     if not text:
         return True
@@ -133,10 +145,23 @@ async def _get_phone_text_from_page(page, selector: str) -> Optional[str]:
                     }
                     return '';
                 };
+                const extractFromNgBind = (node) => {
+                    if (!node || !node.getAttribute) return '';
+                    const raw = node.getAttribute('ng-bind') || '';
+                    if (!raw) return '';
+                    const m = raw.match(/PhoneFormat\\(['"]([^'"]+)['"]\\)/);
+                    if (m && m[1]) return m[1];
+                    const digits = raw.match(/(\\+?\\d[\\d\\s\\.-]{7,}\\d)/);
+                    return digits ? digits[1] : '';
+                };
                 const findBdsPhone = () => {
                     const bdsSel = '.js__phone-event[mobile], .js__phone[mobile], .phoneEvent[mobile]';
                     const bdsNode = document.querySelector(bdsSel);
                     return readPhone(bdsNode);
+                };
+                const findMogiPhone = () => {
+                    const mogiNode = document.querySelector('.ng-binding[ng-bind*="PhoneFormat"]');
+                    return extractFromNgBind(mogiNode) || getText(mogiNode);
                 };
                 const findTel = (root) => {
                     if (!root) return '';
@@ -150,7 +175,17 @@ async def _get_phone_text_from_page(page, selector: str) -> Optional[str]:
                 if (nhatot) return nhatot;
                 const bds = findBdsPhone();
                 if (bds && !isMasked(bds)) return bds;
+                const mogi = findMogiPhone();
+                if (mogi && !isMasked(mogi)) return mogi;
                 const el = findEl();
+                if (el) {
+                    let cur = el;
+                    for (let i = 0; i < 4 && cur; i += 1) {
+                        const fromNg = extractFromNgBind(cur);
+                        if (fromNg) return fromNg;
+                        cur = cur.parentElement;
+                    }
+                }
                 let text = getText(el);
                 if (text && !isMasked(text)) return text;
                 const scope = el ? (el.closest('section,div,li,article') || el.parentElement) : null;
@@ -353,7 +388,23 @@ async def scrape_url(
             page = scraper.display_page
             try:
                 print(f"[scrape_url] Navigating display_page to: {url[:100]}")
-                await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                
+                # Thử navigate với retry nếu bị ERR_ABORTED
+                max_nav_retries = 3
+                for nav_attempt in range(max_nav_retries):
+                    try:
+                        await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                        break  # Thành công, thoát loop
+                    except Exception as nav_err:
+                        err_str = str(nav_err).lower()
+                        if "err_aborted" in err_str or "net::" in err_str:
+                            if nav_attempt < max_nav_retries - 1:
+                                wait_secs = (nav_attempt + 1) * 3  # 3s, 6s, 9s
+                                print(f"[scrape_url] ERR_ABORTED, retrying in {wait_secs}s (attempt {nav_attempt + 1}/{max_nav_retries})")
+                                await asyncio.sleep(wait_secs)
+                                continue
+                        raise  # Re-raise nếu không phải ERR_ABORTED hoặc hết retry
+                
                 try:
                     await page.wait_for_load_state("networkidle", timeout=15000)
                 except Exception:
@@ -482,6 +533,13 @@ async def scrape_url(
                         values.append(val)
                 for el in elements:
                     if value_type == 'src':
+                        # Support background-image in style attribute
+                        if hasattr(el, 'get'):
+                            style_val = el.get('style') or ''
+                            if 'background-image' in style_val:
+                                m = re.search(r'url\((["\']?)(.*?)\1\)', style_val, re.IGNORECASE)
+                                if m and m.group(2):
+                                    _add_value(m.group(2))
                         if hasattr(el, 'tag') and el.tag in ('img', 'video', 'source', 'iframe'):
                             val = el.get('data-src') or el.get('data-lazy-src') or el.get('src')
                             _add_value(val)
@@ -517,6 +575,13 @@ async def scrape_url(
                             for media in child_media:
                                 val = media.get('data-src') or media.get('data-lazy-src') or media.get('src')
                                 _add_value(val)
+                            # Also check any element with inline background-image
+                            for node in el.xpath('.//*[@style]'):
+                                style_val = node.get('style') or ''
+                                if 'background-image' in style_val:
+                                    m = re.search(r'url\((["\']?)(.*?)\1\)', style_val, re.IGNORECASE)
+                                    if m and m.group(2):
+                                        _add_value(m.group(2))
                     elif value_type == 'href':
                         if hasattr(el, 'tag') and el.tag == 'a':
                             val = el.get('href')
@@ -529,8 +594,52 @@ async def scrape_url(
                     elif value_type == 'html':
                         val = _get_inner_html(el)
                         _add_value(val)
+                    elif value_type == 'data-phone':
+                        # Lấy số điện thoại từ các attributes phổ biến
+                        val = None
+                        if hasattr(el, 'get'):
+                            # Thử các attribute phổ biến cho số điện thoại
+                            phone_attrs = ['data-phone', 'data-mobile', 'mobile', 'data-phone-number', 
+                                           'data-phonenumber', 'data-full-phone', 'data-contact', 'data-call',
+                                           'data-tel', 'tel', 'phone']
+                            for attr in phone_attrs:
+                                attr_val = el.get(attr)
+                                if attr_val and attr_val.strip():
+                                    val = attr_val.strip()
+                                    break
+                            # Nếu không có attribute, thử lấy href từ tel: link
+                            if not val:
+                                href = el.get('href') or ''
+                                if href.startswith('tel:'):
+                                    val = href.replace('tel:', '').strip()
+                            # Nếu vẫn không có, lấy text content
+                            if not val:
+                                val = el.text_content().strip() if hasattr(el, 'text_content') else str(el).strip()
+                                # Kiểm tra xem text có phải số điện thoại không (có ít nhất 8 chữ số)
+                                if val:
+                                    digits = re.sub(r'\D', '', val)
+                                    if len(digits) < 8:
+                                        val = None  # Không phải số điện thoại, bỏ qua
+                        if val:
+                            val = _clean_phone_text(val)
+                        _add_value(val)
                     else:
                         val = None
+                        if field_name and field_name.strip().lower() == 'sodienthoai' and hasattr(el, 'get'):
+                            # Thử lấy từ attributes trước
+                            phone_attrs = ['data-phone', 'data-mobile', 'mobile', 'data-phone-number', 
+                                           'data-phonenumber', 'data-full-phone', 'data-contact', 'data-call']
+                            for attr in phone_attrs:
+                                attr_val = el.get(attr)
+                                if attr_val and attr_val.strip():
+                                    val = attr_val.strip()
+                                    break
+                            # Thử ng-bind cho Mogi
+                            if not val:
+                                ng_bind = el.get('ng-bind')
+                                ng_val = _extract_phone_from_ng_bind(ng_bind)
+                                if ng_val:
+                                    val = ng_val
                         if hasattr(el, 'tag') and el.tag == 'iframe':
                             src = el.get('src') or el.get('data-src')
                             coord = parse_latlng_from_url(src)

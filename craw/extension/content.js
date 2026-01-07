@@ -2039,6 +2039,31 @@ function handleElementClick(e) {
       }
     }
   }
+
+  // If selector matches multiple elements, tighten it to the clicked element
+  if (!forceXpath && allMatches.length > 1 && Array.from(allMatches).includes(element)) {
+    let preferredSelector = null;
+    if (selector.startsWith('//') || selectorTypePreference === 'xpath') {
+      preferredSelector = getAbsoluteXPath(element);
+    } else {
+      preferredSelector = getFullSelector(element) || getUniqueCssPath(element);
+    }
+
+    if (!preferredSelector && selector.startsWith('//')) {
+      preferredSelector = getUniqueCssPath(element);
+    }
+
+    if (preferredSelector) {
+      const preferredMatches = preferredSelector.startsWith('//')
+        ? getElementsByXPath(preferredSelector)
+        : Array.from(document.querySelectorAll(preferredSelector));
+
+      if (preferredMatches.length > 0 && preferredMatches[0] === element) {
+        selector = preferredSelector;
+        allMatches = preferredMatches;
+      }
+    }
+  }
   
   // ... (Phần còn lại của hàm giữ nguyên) ...
   

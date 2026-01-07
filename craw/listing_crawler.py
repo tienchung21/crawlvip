@@ -1,7 +1,7 @@
 """
 Listing Crawler - Collects item links from listing pages
 Uses nodriver (undetected-chromedriver) to navigate and avoid bot detection
-Uses crawl4ai to extract links from pages
+NOTE: Crawl4AI đã bị loại bỏ vì links được lấy trực tiếp bằng nodriver
 """
 
 import asyncio
@@ -15,8 +15,8 @@ from typing import Dict, List, Optional
 from urllib.parse import urljoin, urlparse
 
 import nodriver as uc
-from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, CacheMode, BrowserConfig
-from crawl4ai import JsonCssExtractionStrategy
+# NOTE: Crawl4AI imports đã bị loại bỏ - không còn sử dụng trong file này
+# Việc import và khởi tạo Crawl4AI gây mở thêm browser không cần thiết
 
 from database import Database
 
@@ -87,6 +87,14 @@ async def crawl_listing(
     log_callback=None,
     domain: Optional[str] = None,
     loaihinh: Optional[str] = None,
+    city_id: Optional[int] = None,
+    city_name: Optional[str] = None,
+    ward_id: Optional[int] = None,
+    ward_name: Optional[str] = None,
+    new_city_id: Optional[int] = None,
+    new_city_name: Optional[str] = None,
+    new_ward_id: Optional[int] = None,
+    new_ward_name: Optional[str] = None,
     show_browser: bool = True,
     enable_fake_scroll: bool = True,
     enable_fake_hover: bool = False,
@@ -150,7 +158,7 @@ async def crawl_listing(
 
     # Khởi động nodriver browser để navigate (tránh bot detection)
     browser = None
-    crawler = None
+    # NOTE: crawler = None đã bị loại bỏ - Crawl4AI không còn được sử dụng
     try:
         # browser = await uc.start(headless=not show_browser, browser_args=BROWSER_CONFIG_TIET_KIEM)
         # 1. Định nghĩa đường dẫn lưu Profile "nhà riêng"
@@ -199,16 +207,9 @@ async def crawl_listing(
         if cloudflare_wait_attempts >= max_cloudflare_wait:
             print("[Listing] WARNING: Cloudflare challenge timeout - page may not load correctly")
         
-        # Khởi động crawl4ai để cào links (dùng profile cố định để giữ cookie/cấu hình)
-        profile_dir = Path(__file__).parent / ("playwright_profile" + (f"_{profile_suffix}" if profile_suffix else ""))
-        profile_dir.mkdir(parents=True, exist_ok=True)
-        crawler_config = BrowserConfig(
-            headless=False,  # Crawl4AI chạy headless
-            verbose=False,
-            user_data_dir=str(profile_dir)
-        )
-        crawler = AsyncWebCrawler(config=crawler_config)
-        await crawler.__aenter__()
+        # NOTE: Crawl4AI crawler đã bị loại bỏ vì không còn sử dụng
+        # Links được lấy trực tiếp bằng nodriver (querySelectorAll) ở bên dưới
+        # Việc khởi tạo Crawl4AI ở đây chỉ gây mở thêm browser không cần thiết
 
         for page_num in range(1, max_pages + 1):
             raw_links = []
@@ -445,23 +446,41 @@ async def crawl_listing(
                     raw_links = []
 
                 page_links = [make_absolute_url(current_url, href) for href in raw_links if href and href.strip()]
-                total_links_collected.extend(page_links)
                 
-                print(f"[OK] Tim thay {len(page_links)} link(s) tren trang {page_num}")
+                # Loại bỏ links đã có trong total_links_collected (quan trọng với trang "Load more")
+                # Vì trang load more giữ lại items cũ, querySelectorAll sẽ lấy cả cũ lẫn mới
+                existing_links_set = set(total_links_collected)
+                new_page_links = [link for link in page_links if link not in existing_links_set]
+                
+                total_links_collected.extend(new_page_links)
+                
+                print(f"[OK] Tim thay {len(page_links)} link(s) tren trang, {len(new_page_links)} link(s) moi")
                 print(f"[*] Tong so link da thu thap: {len(total_links_collected)}")
                 if log_callback:
-                    log_callback(f"[Listing] Page {page_num}: {len(page_links)} links, total {len(total_links_collected)}")
+                    log_callback(f"[Listing] Page {page_num}: {len(new_page_links)} new links (found {len(page_links)}), total {len(total_links_collected)}")
 
                 if progress_callback:
                     progress_callback(
                         page_num,
                         max_pages,
-                        f"Found {len(page_links)} links on page {page_num}...",
+                        f"Found {len(new_page_links)} new links on page {page_num}...",
                         len(total_links_collected)
                     )
 
-                if page_links:
-                    new_count = db.add_collected_links(page_links, domain=domain, loaihinh=loaihinh)
+                if new_page_links:
+                    new_count = db.add_collected_links(
+                        new_page_links,  # Chỉ thêm links mới, không thêm links đã có
+                        domain=domain,
+                        loaihinh=loaihinh,
+                        city_id=city_id,
+                        city_name=city_name,
+                        ward_id=ward_id,
+                        ward_name=ward_name,
+                        new_city_id=new_city_id,
+                        new_city_name=new_city_name,
+                        new_ward_id=new_ward_id,
+                        new_ward_name=new_ward_name,
+                    )
                     if progress_callback:
                         progress_callback(
                             page_num,
@@ -545,12 +564,7 @@ async def crawl_listing(
                 break
 
     finally:
-        # Đóng crawl4ai crawler
-        if crawler:
-            try:
-                await crawler.__aexit__(None, None, None)
-            except:
-                pass
+        # NOTE: Crawl4AI crawler đã bị loại bỏ, không cần đóng nữa
         
         # Không đóng browser tự động - để user có thể xem kết quả
         # Browser sẽ tự đóng khi script kết thúc hoặc user đóng thủ công

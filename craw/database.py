@@ -189,6 +189,19 @@ class Database:
             cursor.execute("ALTER TABLE collected_links ADD COLUMN new_ward_name VARCHAR(255) DEFAULT NULL")
         except Exception:
             pass
+        
+        # Thêm cột updated_at để track thời điểm cập nhật status (dùng cho reset IN_PROGRESS)
+        try:
+            cursor.execute("""
+                ALTER TABLE collected_links 
+                ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            """)
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE collected_links ADD INDEX idx_collected_links_updated_at (updated_at)")
+        except Exception:
+            pass
 
         # Create scraped_details table (lưu kết quả cào chi tiết)
         cursor.execute('''
@@ -228,6 +241,7 @@ class Database:
                 loaihinhnhao VARCHAR(255),
                 dientichsudung VARCHAR(255),
                 gia_m2 VARCHAR(255),
+                gia_mn VARCHAR(255),
                 dacdiemnhadat VARCHAR(255),
                 chieungang VARCHAR(255),
                 chieudai VARCHAR(255),
@@ -301,6 +315,10 @@ class Database:
             pass
         try:
             cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN gia_m2 VARCHAR(255)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN gia_mn VARCHAR(255)")
         except Exception:
             pass
         try:
@@ -446,6 +464,14 @@ class Database:
                 max_pages INT DEFAULT 1,
                 domain VARCHAR(255) DEFAULT NULL,
                 loaihinh VARCHAR(255) DEFAULT NULL,
+                city_id INT DEFAULT NULL,
+                city_name VARCHAR(255) DEFAULT NULL,
+                ward_id INT DEFAULT NULL,
+                ward_name VARCHAR(255) DEFAULT NULL,
+                new_city_id INT DEFAULT NULL,
+                new_city_name VARCHAR(255) DEFAULT NULL,
+                new_ward_id INT DEFAULT NULL,
+                new_ward_name VARCHAR(255) DEFAULT NULL,
                 cancel_requested TINYINT(1) NOT NULL DEFAULT 0,
                 listing_show_browser TINYINT(1) DEFAULT 1,
                 listing_fake_scroll TINYINT(1) DEFAULT 1,
@@ -494,6 +520,14 @@ class Database:
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_wait_load_max FLOAT DEFAULT 5",
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_delay_min FLOAT DEFAULT 2",
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_delay_max FLOAT DEFAULT 3",
+            "ALTER TABLE scheduler_tasks ADD COLUMN city_id INT DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN city_name VARCHAR(255) DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN ward_id INT DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN ward_name VARCHAR(255) DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN new_city_id INT DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN new_city_name VARCHAR(255) DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN new_ward_id INT DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN new_ward_name VARCHAR(255) DEFAULT NULL",
         ]:
             try:
                 cursor.execute(col_sql)
@@ -715,6 +749,28 @@ class Database:
         """
         if not data:
             return None
+        data_lower = {}
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if isinstance(k, str):
+                    data_lower[k.strip().lower()] = v
+
+        def _get_data_value(key: str, *aliases: str):
+            val = data.get(key) if isinstance(data, dict) else None
+            if val is not None:
+                return val
+            for alias in aliases:
+                val = data.get(alias) if isinstance(data, dict) else None
+                if val is not None:
+                    return val
+            key_lower = key.strip().lower()
+            if key_lower in data_lower:
+                return data_lower.get(key_lower)
+            for alias in aliases:
+                alias_lower = alias.strip().lower()
+                if alias_lower in data_lower:
+                    return data_lower.get(alias_lower)
+            return None
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
@@ -734,13 +790,13 @@ class Database:
                 INSERT INTO scraped_details_flat (
                     link_id, url, domain, title, img_count, mota, khoanggia, dientich,
                     sophongngu, sophongvesinh, huongnha, huongbancong, mattien, duongvao, phaply, noithat,
-                    sotang, loaihinhnhao, dientichsudung, gia_m2, dacdiemnhadat, chieungang, chieudai, thuocduan,
+                    sotang, loaihinhnhao, dientichsudung, gia_m2, gia_mn, dacdiemnhadat, chieungang, chieudai, thuocduan,
                     trangthaiduan, tenmoigioi, sodienthoai, map, matin, loaitin, ngayhethan, ngaydang, diachi,
                     thoigianvaoo, giadien, gianuoc, giainternet, sotiencoc, tangso, loaihinhvanphong, loaihinhdat, loaihinhcanho,
                     diachicu, loaibds, phongan, nhabep, santhuong, chodexehoi, chinhchu
                 ) VALUES (
                     %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                     %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                 )
             ''', (
@@ -763,13 +819,14 @@ class Database:
                 data.get('sotang'),
                 data.get('loaihinhnhao') or data.get('loaibds'),
                 data.get('dientichsudung'),
-                data.get('gia/m2'),
+                _get_data_value('gia_m2', 'gia/m2', 'gia m2', 'gia_m²', 'gia/m²', 'gia m²'),
+                _get_data_value('gia_mn', 'gia/mn', 'gia mn'),
                 data.get('dacdiemnhadat'),
                 data.get('chieungang'),
                 data.get('chieudai'),
                 data.get('thuocduan'),
                 data.get('trangthaiduan'),
-                data.get('tenmoigioi'),
+                _get_data_value('tenmoigioi', 'moigioi', 'ten moi gioi', 'ten_moi_gioi'),
                 data.get('sodienthoai'),
                 map_value,
                 data.get('matin'),
@@ -1115,6 +1172,40 @@ class Database:
         conn.close()
         return result
     
+    def reset_stale_in_progress_links(self, timeout_minutes: int = 30) -> int:
+        """
+        Reset các link bị kẹt ở status IN_PROGRESS quá lâu về PENDING.
+        Điều này xảy ra khi task crash/bị tắt giữa chừng.
+        
+        Args:
+            timeout_minutes: Số phút tối đa cho phép link ở trạng thái IN_PROGRESS
+            
+        Returns:
+            Số link đã được reset
+        """
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            # Tìm và reset các link IN_PROGRESS quá timeout_minutes phút
+            cursor.execute('''
+                UPDATE collected_links
+                SET status = 'PENDING'
+                WHERE status = 'IN_PROGRESS'
+                  AND updated_at < DATE_SUB(NOW(), INTERVAL %s MINUTE)
+            ''', (timeout_minutes,))
+            affected = cursor.rowcount
+            conn.commit()
+            if affected > 0:
+                print(f"[Database] Reset {affected} stale IN_PROGRESS link(s) back to PENDING")
+            return affected
+        except Exception as e:
+            print(f"[Database] Error resetting stale links: {e}")
+            conn.rollback()
+            return 0
+        finally:
+            cursor.close()
+            conn.close()
+    
     def update_link_status(self, url: str, status: str):
         """
         Update status of a link
@@ -1258,6 +1349,8 @@ class Database:
                            schedule_type, interval_minutes, run_times,
                            listing_template_path, detail_template_path, start_url, max_pages,
                            domain, loaihinh,
+                           city_id, city_name, ward_id, ward_name,
+                           new_city_id, new_city_name, new_ward_id, new_ward_name,
                            cancel_requested, listing_show_browser, listing_fake_scroll, listing_fake_hover,
                            listing_wait_load_min, listing_wait_load_max,
                            listing_wait_next_min, listing_wait_next_max,
@@ -1276,6 +1369,8 @@ class Database:
                            schedule_type, interval_minutes, run_times,
                            listing_template_path, detail_template_path, start_url, max_pages,
                            domain, loaihinh,
+                           city_id, city_name, ward_id, ward_name,
+                           new_city_id, new_city_name, new_ward_id, new_ward_name,
                            cancel_requested, listing_show_browser, listing_fake_scroll, listing_fake_hover,
                            listing_wait_load_min, listing_wait_load_max,
                            listing_wait_next_min, listing_wait_next_max,
@@ -1309,27 +1404,35 @@ class Database:
                         'max_pages': row[14],
                         'domain': row[15],
                         'loaihinh': row[16],
-                        'cancel_requested': row[17],
-                        'listing_show_browser': row[18],
-                        'listing_fake_scroll': row[19],
-                        'listing_fake_hover': row[20],
-                        'listing_wait_load_min': row[21],
-                        'listing_wait_load_max': row[22],
-                        'listing_wait_next_min': row[23],
-                        'listing_wait_next_max': row[24],
-                        'detail_show_browser': row[25],
-                        'detail_fake_scroll': row[26],
-                        'detail_fake_hover': row[27],
-                        'detail_wait_load_min': row[28],
-                        'detail_wait_load_max': row[29],
-                        'detail_delay_min': row[30],
-                        'detail_delay_max': row[31],
-                        'image_dir': row[32],
-                        'images_per_minute': row[33],
-                        'last_run_at': row[34],
-                        'next_run_at': row[35],
-                        'created_at': row[36],
-                        'updated_at': row[37],
+                        'city_id': row[17],
+                        'city_name': row[18],
+                        'ward_id': row[19],
+                        'ward_name': row[20],
+                        'new_city_id': row[21],
+                        'new_city_name': row[22],
+                        'new_ward_id': row[23],
+                        'new_ward_name': row[24],
+                        'cancel_requested': row[25],
+                        'listing_show_browser': row[26],
+                        'listing_fake_scroll': row[27],
+                        'listing_fake_hover': row[28],
+                        'listing_wait_load_min': row[29],
+                        'listing_wait_load_max': row[30],
+                        'listing_wait_next_min': row[31],
+                        'listing_wait_next_max': row[32],
+                        'detail_show_browser': row[33],
+                        'detail_fake_scroll': row[34],
+                        'detail_fake_hover': row[35],
+                        'detail_wait_load_min': row[36],
+                        'detail_wait_load_max': row[37],
+                        'detail_delay_min': row[38],
+                        'detail_delay_max': row[39],
+                        'image_dir': row[40],
+                        'images_per_minute': row[41],
+                        'last_run_at': row[42],
+                        'next_run_at': row[43],
+                        'created_at': row[44],
+                        'updated_at': row[45],
                     })
                 else:
                     result.append(row)
@@ -1347,7 +1450,10 @@ class Database:
                     name, active, is_running, enable_listing, enable_detail, enable_image,
                     schedule_type, interval_minutes, run_times,
                     listing_template_path, detail_template_path, start_url, max_pages,
-                    domain, loaihinh, cancel_requested,
+                    domain, loaihinh,
+                    city_id, city_name, ward_id, ward_name,
+                    new_city_id, new_city_name, new_ward_id, new_ward_name,
+                    cancel_requested,
                     listing_show_browser, listing_fake_scroll, listing_fake_hover,
                     listing_wait_load_min, listing_wait_load_max,
                     listing_wait_next_min, listing_wait_next_max,
@@ -1355,7 +1461,7 @@ class Database:
                     detail_wait_load_min, detail_wait_load_max,
                     detail_delay_min, detail_delay_max,
                     image_dir, images_per_minute, last_run_at, next_run_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 task.get('name'),
                 1 if task.get('active', True) else 0,
@@ -1372,6 +1478,14 @@ class Database:
                 task.get('max_pages', 1),
                 task.get('domain'),
                 task.get('loaihinh'),
+                task.get('city_id'),
+                task.get('city_name'),
+                task.get('ward_id'),
+                task.get('ward_name'),
+                task.get('new_city_id'),
+                task.get('new_city_name'),
+                task.get('new_ward_id'),
+                task.get('new_ward_name'),
                 1 if task.get('cancel_requested', False) else 0,
                 task.get('listing_show_browser', 1),
                 task.get('listing_fake_scroll', 1),
@@ -1491,7 +1605,10 @@ class Database:
                        enable_listing, enable_detail, enable_image,
                        schedule_type, interval_minutes, run_times,
                        listing_template_path, detail_template_path, start_url, max_pages,
-                       domain, loaihinh, cancel_requested,
+                       domain, loaihinh,
+                       city_id, city_name, ward_id, ward_name,
+                       new_city_id, new_city_name, new_ward_id, new_ward_name,
+                       cancel_requested,
                        listing_show_browser, listing_fake_scroll, listing_fake_hover,
                        listing_wait_load_min, listing_wait_load_max,
                        listing_wait_next_min, listing_wait_next_max,
@@ -1527,25 +1644,33 @@ class Database:
                         'max_pages': row[14],
                         'domain': row[15],
                         'loaihinh': row[16],
-                        'cancel_requested': row[17],
-                        'listing_show_browser': row[18],
-                        'listing_fake_scroll': row[19],
-                        'listing_fake_hover': row[20],
-                        'listing_wait_load_min': row[21],
-                        'listing_wait_load_max': row[22],
-                        'listing_wait_next_min': row[23],
-                        'listing_wait_next_max': row[24],
-                        'detail_show_browser': row[25],
-                        'detail_fake_scroll': row[26],
-                        'detail_fake_hover': row[27],
-                        'detail_wait_load_min': row[28],
-                        'detail_wait_load_max': row[29],
-                        'detail_delay_min': row[30],
-                        'detail_delay_max': row[31],
-                        'image_dir': row[32],
-                        'images_per_minute': row[33],
-                        'last_run_at': row[34],
-                        'next_run_at': row[35],
+                        'city_id': row[17],
+                        'city_name': row[18],
+                        'ward_id': row[19],
+                        'ward_name': row[20],
+                        'new_city_id': row[21],
+                        'new_city_name': row[22],
+                        'new_ward_id': row[23],
+                        'new_ward_name': row[24],
+                        'cancel_requested': row[25],
+                        'listing_show_browser': row[26],
+                        'listing_fake_scroll': row[27],
+                        'listing_fake_hover': row[28],
+                        'listing_wait_load_min': row[29],
+                        'listing_wait_load_max': row[30],
+                        'listing_wait_next_min': row[31],
+                        'listing_wait_next_max': row[32],
+                        'detail_show_browser': row[33],
+                        'detail_fake_scroll': row[34],
+                        'detail_fake_hover': row[35],
+                        'detail_wait_load_min': row[36],
+                        'detail_wait_load_max': row[37],
+                        'detail_delay_min': row[38],
+                        'detail_delay_max': row[39],
+                        'image_dir': row[40],
+                        'images_per_minute': row[41],
+                        'last_run_at': row[42],
+                        'next_run_at': row[43],
                     })
                 else:
                     result.append(row)
@@ -1573,26 +1698,73 @@ class Database:
         self.update_scheduler_task(task_id, {'last_run_at': last_run_at, 'next_run_at': next_run_at})
 
     def get_pending_links(self, limit: int = 100, domain: Optional[str] = None, loaihinh: Optional[str] = None):
+        # Reset các link IN_PROGRESS quá 30 phút về PENDING (do task crash/bị tắt)
+        try:
+            self.reset_stale_in_progress_links(timeout_minutes=30)
+        except Exception:
+            pass
+        
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
-            if domain or loaihinh:
-                cursor.execute('''
-                    SELECT id, url, status, domain, loaihinh, created_at
-                    FROM collected_links
-                    WHERE status = 'PENDING' AND (domain = %s OR %s IS NULL) AND (loaihinh = %s OR %s IS NULL)
-                    ORDER BY id ASC
-                    LIMIT %s
-                ''', (domain, domain, loaihinh, loaihinh, limit))
-            else:
-                cursor.execute('''
-                    SELECT id, url, status, domain, loaihinh, created_at
-                    FROM collected_links
-                    WHERE status = 'PENDING'
-                    ORDER BY id ASC
-                    LIMIT %s
-                ''', (limit,))
-            rows = cursor.fetchall()
+            rows = []
+            try:
+                cursor.execute("START TRANSACTION")
+                if domain or loaihinh:
+                    cursor.execute('''
+                        SELECT id, url, status, domain, loaihinh, created_at
+                        FROM collected_links
+                        WHERE status = 'PENDING'
+                          AND (domain = %s OR %s IS NULL)
+                          AND (loaihinh = %s OR %s IS NULL)
+                        ORDER BY id ASC
+                        LIMIT %s
+                        FOR UPDATE SKIP LOCKED
+                    ''', (domain, domain, loaihinh, loaihinh, limit))
+                else:
+                    cursor.execute('''
+                        SELECT id, url, status, domain, loaihinh, created_at
+                        FROM collected_links
+                        WHERE status = 'PENDING'
+                        ORDER BY id ASC
+                        LIMIT %s
+                        FOR UPDATE SKIP LOCKED
+                    ''', (limit,))
+                rows = cursor.fetchall()
+                if rows:
+                    ids = []
+                    for row in rows:
+                        if isinstance(row, tuple):
+                            ids.append(row[0])
+                        else:
+                            ids.append(row.get('id'))
+                    if ids:
+                        placeholders = ','.join(['%s'] * len(ids))
+                        cursor.execute(
+                            f"UPDATE collected_links SET status='IN_PROGRESS' WHERE id IN ({placeholders})",
+                            ids
+                        )
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                # Fallback for older MySQL versions (no SKIP LOCKED)
+                if domain or loaihinh:
+                    cursor.execute('''
+                        SELECT id, url, status, domain, loaihinh, created_at
+                        FROM collected_links
+                        WHERE status = 'PENDING' AND (domain = %s OR %s IS NULL) AND (loaihinh = %s OR %s IS NULL)
+                        ORDER BY id ASC
+                        LIMIT %s
+                    ''', (domain, domain, loaihinh, loaihinh, limit))
+                else:
+                    cursor.execute('''
+                        SELECT id, url, status, domain, loaihinh, created_at
+                        FROM collected_links
+                        WHERE status = 'PENDING'
+                        ORDER BY id ASC
+                        LIMIT %s
+                    ''', (limit,))
+                rows = cursor.fetchall()
             result = []
             for row in rows:
                 if isinstance(row, tuple):

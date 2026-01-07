@@ -16,7 +16,7 @@
       "selector": ".address"
     },
     {
-      "name": "2 tỷ",
+      "name": "khoanggia",
       "valueType": "text",
       "textContent": "2 tỷ",
       "selector": ".price"
@@ -76,16 +76,22 @@
       "selector": "//div[contains(@class,\"map-content\")]//iframe"
     },
     {
-      "name": "moigioi",
+      "name": "tenmoigioi",
       "valueType": "text",
       "textContent": "Trần Kim Tùng",
-      "selector": ".agent-widget > .agent-info > .agent-name > a"
+      "selector": ".agent-widget > .agent-info > .agent-name"
     },
     {
       "name": "sodienthoai",
       "valueType": "text",
       "textContent": "0912 017 115",
       "selector": "a > .ng-binding"
+    },
+    {
+      "name": "img",
+      "valueType": "src",
+      "textContent": "n1/6",
+      "selector": "#gallery"
     }
   ]
 }
