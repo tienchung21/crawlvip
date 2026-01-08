@@ -10,7 +10,8 @@
       "selector": "h1"
     },
     {
-      "name": "diachi",
+      "name": "diacÊU",
+      "name": "diacÊU",
       "valueType": "text",
       "textContent": "Cổ Linh, Phường Thạch Bàn, Quận Long Biên, Hà Nội",
       "selector": ".address"

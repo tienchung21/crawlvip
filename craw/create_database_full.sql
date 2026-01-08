@@ -176,6 +176,8 @@ CREATE TABLE IF NOT EXISTS `scheduler_tasks` (
   `detail_delay_max` FLOAT DEFAULT 3,
   `image_dir` VARCHAR(2000) DEFAULT NULL,
   `images_per_minute` INT DEFAULT 30,
+  `image_domain` VARCHAR(255) DEFAULT NULL,
+  `image_status` VARCHAR(50) DEFAULT NULL,
   `last_run_at` TIMESTAMP NULL,
   `next_run_at` TIMESTAMP NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

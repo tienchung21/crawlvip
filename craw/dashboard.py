@@ -2334,6 +2334,18 @@ with tab3:
 
         )
 
+    loaihinh_cho_thue = {
+        'Nhà phố',
+        'Nhà riêng',
+        'Biệt thự',
+        'Căn hộ chung cư',
+        'Văn phòng',
+        'Mặt bằng',
+        'Nhà hàng - Khách sạn',
+        'Nhà Kho - Xưởng',
+        'Phòng trọ',
+        'Đất khu công nghiệp',
+    }
     loaihinh_options = [
         'Ban nha rieng',
         'Ban nha pho du an',
@@ -2344,9 +2356,27 @@ with tab3:
         'Ban dat tho cu',
         'Ban dat nong, lam nghiep',
         'Ban nha hang - Khach san',
-        'Ban kho, nha xuong'
+        'Ban kho, nha xuong',
+        'Dự án',
+        'Nhà phố',
+        'Nhà riêng',
+        'Biệt thự',
+        'Căn hộ chung cư',
+        'Văn phòng',
+        'Mặt bằng',
+        'Nhà hàng - Khách sạn',
+        'Nhà Kho - Xưởng',
+        'Phòng trọ',
+        'Đất khu công nghiệp',
     ]
-    loaihinh = st.selectbox('Loai hinh', options=loaihinh_options, index=3, help='Chon loai hinh khi luu links', key='crawl_listing_loaihinh')
+    loaihinh = st.selectbox(
+        'Loai hinh',
+        options=loaihinh_options,
+        index=3,
+        help='Chon loai hinh khi luu links',
+        key='crawl_listing_loaihinh',
+        format_func=lambda x: f"{x} (cho thuê)" if x in loaihinh_cho_thue else x,
+    )
 
     # Province/ward selection
     city_options = _fetch_cities(st.session_state.db_crawl_listing)
@@ -2752,11 +2782,13 @@ with tab3:
     # Lay links theo domain da chon (mac dinh: tat ca)
 
     # Loai hinh filter
+    loaihinh_filter_options = ["(Tat ca)"] + loaihinh_options if 'loaihinh_options' in locals() else ["(Tat ca)"]
     loaihinh_filter = st.selectbox(
         "Loc theo loai hinh",
-        ["(Tat ca)"] + loaihinh_options if 'loaihinh_options' in locals() else ["(Tat ca)"],
+        loaihinh_filter_options,
         index=0,
-        help="Chon loai hinh de loc links"
+        help="Chon loai hinh de loc links",
+        format_func=lambda x: x if x == "(Tat ca)" else (f"{x} (cho thuê)" if x in loaihinh_cho_thue else x),
     )
     loaihinh_filter_val = None if loaihinh_filter == "(Tat ca)" else loaihinh_filter
 
@@ -3959,18 +3991,68 @@ with tab4:
     st.subheader("Anh trong scraped_detail_images (20/ trang)")
     if 'tab4_page' not in st.session_state:
         st.session_state.tab4_page = 1
-    total_img = st.session_state.db_images.count_detail_images()
+    if 'tab4_page_input' not in st.session_state:
+        st.session_state.tab4_page_input = st.session_state.tab4_page
+    if 'tab4_domain_filter' not in st.session_state:
+        st.session_state.tab4_domain_filter = "(Tat ca)"
+    if 'tab4_status_filter' not in st.session_state:
+        st.session_state.tab4_status_filter = "(Tat ca)"
+    prev_domain_filter = st.session_state.tab4_domain_filter
+    prev_status_filter = st.session_state.tab4_status_filter
+    filter_cols = st.columns(2)
+    with filter_cols[0]:
+        domain_options_table = ["(Tat ca)"] + st.session_state.db_images.get_detail_image_domains()
+        selected_domain_table = st.selectbox(
+            "Domain (table)",
+            domain_options_table,
+            index=domain_options_table.index(st.session_state.tab4_domain_filter)
+            if st.session_state.tab4_domain_filter in domain_options_table else 0,
+            key="tab4_domain_filter",
+        )
+    with filter_cols[1]:
+        status_options_table = ["(Tat ca)", "PENDING", "DOWNLOADED", "FAILED"]
+        selected_status_table = st.selectbox(
+            "Status (table)",
+            status_options_table,
+            index=status_options_table.index(st.session_state.tab4_status_filter)
+            if st.session_state.tab4_status_filter in status_options_table else 0,
+            key="tab4_status_filter",
+        )
+    domain_filter_table = None if selected_domain_table == "(Tat ca)" else selected_domain_table
+    status_filter_table = None if selected_status_table == "(Tat ca)" else selected_status_table
+
+    if prev_domain_filter != selected_domain_table or prev_status_filter != selected_status_table:
+        st.session_state.tab4_page = 1
+        st.session_state.tab4_page_input = 1
+    if domain_filter_table or status_filter_table:
+        total_img = st.session_state.db_images.count_detail_images_filtered(domain=domain_filter_table, status=status_filter_table)
+    else:
+        total_img = st.session_state.db_images.count_detail_images()
     colp1, colp2, colp3 = st.columns([1,1,1])
     with colp1:
         st.metric("Tong anh", total_img)
     with colp2:
-        page_num = st.number_input("Trang", min_value=1, value=st.session_state.tab4_page, step=1)
+        page_num = st.number_input(
+            "Trang",
+            min_value=1,
+            value=st.session_state.tab4_page,
+            step=1,
+            key="tab4_page_input",
+        )
         st.session_state.tab4_page = page_num
     with colp3:
         st.write("20 anh/trang")
     offset = (st.session_state.tab4_page - 1) * 20
     try:
-        img_rows = st.session_state.db_images.get_detail_images_paginated(limit=20, offset=offset)
+        if domain_filter_table or status_filter_table:
+            img_rows = st.session_state.db_images.get_detail_images_paginated_filtered(
+                limit=20,
+                offset=offset,
+                domain=domain_filter_table,
+                status=status_filter_table,
+            )
+        else:
+            img_rows = st.session_state.db_images.get_detail_images_paginated(limit=20, offset=offset)
         if img_rows:
             df_img = pd.DataFrame(img_rows)
             st.dataframe(df_img, use_container_width=True, hide_index=True)
@@ -3981,46 +4063,52 @@ with tab4:
 
     st.markdown("---")
     st.subheader("Download anh theo ID range")
+    colf1, colf2 = st.columns(2)
+    with colf1:
+        domain_options_range = ["(Tat ca)"] + st.session_state.db_images.get_detail_image_domains()
+        selected_domain_range = st.selectbox("Domain (range)", domain_options_range, index=0, key="range_domain")
+    with colf2:
+        status_options_range = ["(Tat ca)", "PENDING", "DOWNLOADED", "FAILED"]
+        selected_status_range = st.selectbox("Status (range)", status_options_range, index=0, key="range_status")
+    domain_filter_range = None if selected_domain_range == "(Tat ca)" else selected_domain_range
+    status_filter_range = None if selected_status_range == "(Tat ca)" else selected_status_range
+
     colr1, colr2, colr3 = st.columns(3)
     with colr1:
-        range_start = st.number_input("Start ID", min_value=1, value=1, step=1)
+        range_start = st.number_input("Start ID (0 = all)", min_value=0, value=0, step=1)
     with colr2:
-        range_end = st.number_input("End ID", min_value=1, value=100, step=1)
+        range_end = st.number_input("End ID (0 = all)", min_value=0, value=0, step=1)
     with colr3:
         dl_images_per_minute = st.number_input("So anh/phut (range)", min_value=1, max_value=600, value=30)
         download_range_btn = st.button("Download theo ID range", use_container_width=True)
     if download_range_btn:
-        if range_end < range_start:
+        if (range_start == 0 and range_end > 0) or (range_end == 0 and range_start > 0):
+            st.warning("Vui long nhap ca Start ID va End ID (hoac de 0 de lay tat ca).")
+        elif range_start > 0 and range_end > 0 and range_end < range_start:
             st.warning("End ID phai >= Start ID")
         else:
-            rows = st.session_state.db_images.get_detail_images_by_id_range(range_start, range_end)
-            if not rows:
-                st.info("Khong co ban ghi nao trong khoang ID nay.")
-            else:
-                st.success(f"Tim thay {len(rows)} anh. Bat dau tai ...")
-                interval = 60.0 / max(dl_images_per_minute, 1)
-                total = len(rows)
-                ok = 0
-                fail = 0
-                log_lines = []
-                progress = st.progress(0)
-                progress_text = st.empty()
-                os.makedirs(output_dir, exist_ok=True)
-                for idx, row in enumerate(rows, 1):
+            interval = 60.0 / max(dl_images_per_minute, 1)
+            stats = {"ok": 0, "fail": 0}
+            log_lines = []
+            progress = st.progress(0)
+            progress_text = st.empty()
+            os.makedirs(output_dir, exist_ok=True)
+
+            def _download_rows(batch_rows, start_idx, total_count):
+                for idx, row in enumerate(batch_rows, start_idx):
                     url = row['image_url']
                     image_id = row.get('id') if isinstance(row, dict) else None
-                    log_lines.append(f"{idx}/{total} - {url[:80]}...")
+                    log_lines.append(f"{idx}/{total_count} - {url[:80]}...")
                     file_path = None
                     try:
                         resp = requests.get(url, timeout=30)
                         resp.raise_for_status()
                         parsed = os.path.splitext(url.split('?')[0])
                         ext = parsed[1] if parsed[1] else '.jpg'
-                        # Ten file theo hash URL de trung thi ghi de
                         filename = f"{hashlib.md5(url.encode()).hexdigest()}{ext}"
                         file_path = os.path.join(output_dir, filename)
                         _save_image_bytes(resp.content, file_path, max_width=1100)
-                        ok += 1
+                        stats["ok"] += 1
                         log_lines.append(f"OK: {url}")
                         st.session_state.db_images.add_downloaded_image(
                             image_url=url,
@@ -4032,7 +4120,7 @@ with tab4:
                         if image_id:
                             st.session_state.db_images.update_detail_image_status(image_id, "DOWNLOADED")
                     except Exception as e:
-                        fail += 1
+                        stats["fail"] += 1
                         print(f"Download error {url}: {e}")
                         log_lines.append(f"FAIL: {url} - {e}")
                         st.session_state.db_images.add_downloaded_image(
@@ -4044,11 +4132,55 @@ with tab4:
                         )
                         if image_id:
                             st.session_state.db_images.update_detail_image_status(image_id, "FAILED")
-                    progress_value = int((idx / total) * 100)
+                    progress_value = int((idx / total_count) * 100)
                     progress.progress(progress_value)
-                    progress_text.write(f"Da tai: {idx}/{total} | Thanh cong: {ok} | Loi: {fail}")
+                    progress_text.write(f"Da tai: {idx}/{total_count} | Thanh cong: {stats['ok']} | Loi: {stats['fail']}")
                     time.sleep(interval)
-                progress.progress(100)
+
+            if range_start == 0 and range_end == 0:
+                total = (
+                    st.session_state.db_images.count_detail_images_filtered(domain=domain_filter_range, status=status_filter_range)
+                    if domain_filter_range or status_filter_range
+                    else st.session_state.db_images.count_detail_images()
+                )
+                if total == 0:
+                    st.info("Khong co ban ghi nao theo bo loc hien tai.")
+                else:
+                    st.success(f"Tim thay {total} anh. Bat dau tai ...")
+                    batch_size = 200
+                    processed = 0
+                    while processed < total:
+                        if domain_filter_range or status_filter_range:
+                            batch_rows = st.session_state.db_images.get_detail_images_paginated_filtered(
+                                limit=batch_size,
+                                offset=processed,
+                                domain=domain_filter_range,
+                                status=status_filter_range,
+                            )
+                        else:
+                            batch_rows = st.session_state.db_images.get_detail_images_paginated(
+                                limit=batch_size,
+                                offset=processed,
+                            )
+                        if not batch_rows:
+                            break
+                        _download_rows(batch_rows, processed + 1, total)
+                        processed += len(batch_rows)
+                    progress.progress(100)
+            else:
+                rows = st.session_state.db_images.get_detail_images_by_id_range(
+                    range_start,
+                    range_end,
+                    domain=domain_filter_range,
+                    status=status_filter_range,
+                )
+                if not rows:
+                    st.info("Khong co ban ghi nao trong khoang ID nay.")
+                else:
+                    total = len(rows)
+                    st.success(f"Tim thay {total} anh. Bat dau tai ...")
+                    _download_rows(rows, 1, total)
+                    progress.progress(100)
                 progress_text.write(f"Hoan thanh: {total} anh | Thanh cong: {ok} | Loi: {fail}")
                 st.success(f"Xong range. Thanh cong: {ok}, Loi: {fail}")
                 if log_lines:
@@ -4079,6 +4211,18 @@ with tab5:
         template_files = []
     template_choices = [""] + sorted(template_files)
 
+    loaihinh_cho_thue_local = {
+        'Nhà phố',
+        'Nhà riêng',
+        'Biệt thự',
+        'Căn hộ chung cư',
+        'Văn phòng',
+        'Mặt bằng',
+        'Nhà hàng - Khách sạn',
+        'Nhà Kho - Xưởng',
+        'Phòng trọ',
+        'Đất khu công nghiệp',
+    }
     loaihinh_options_local = [
         'Ban nha rieng',
         'Ban nha pho du an',
@@ -4089,7 +4233,18 @@ with tab5:
         'Ban dat tho cu',
         'Ban dat nong, lam nghiep',
         'Ban nha hang - Khach san',
-        'Ban kho, nha xuong'
+        'Ban kho, nha xuong',
+        'Dự án',
+        'Nhà phố',
+        'Nhà riêng',
+        'Biệt thự',
+        'Căn hộ chung cư',
+        'Văn phòng',
+        'Mặt bằng',
+        'Nhà hàng - Khách sạn',
+        'Nhà Kho - Xưởng',
+        'Phòng trọ',
+        'Đất khu công nghiệp',
     ]
 
     st.markdown("Chon cac chuc nang can chay")
@@ -4147,7 +4302,12 @@ with tab5:
             start_url = st.text_input("Start URL", value="https://batdongsan.com.vn/nha-dat-ban")
             max_pages = st.number_input("Max pages", min_value=1, max_value=100, value=2)
             domain = st.text_input("Domain label", value="batdongsan")
-            loaihinh = st.selectbox("Loai hinh", options=loaihinh_options_local, index=3)
+            loaihinh = st.selectbox(
+                "Loai hinh",
+                options=loaihinh_options_local,
+                index=3,
+                format_func=lambda x: f"{x} (cho thuê)" if x in loaihinh_cho_thue_local else x,
+            )
         with col_b:
             if enable_listing:
                 st.markdown("Listing settings")
@@ -4188,9 +4348,17 @@ with tab5:
             if enable_image:
                 image_dir = st.text_input("Image dir", value=os.path.join(os.getcwd(), "output", "images"))
                 images_per_minute = st.number_input("Images per minute", min_value=1, max_value=600, value=30)
+                image_domain_options = ["(Tat ca)"] + st.session_state.db_scheduler.get_detail_image_domains()
+                image_domain_selected = st.selectbox("Image domain", image_domain_options, index=0)
+                image_domain = None if image_domain_selected == "(Tat ca)" else image_domain_selected
+                image_status_options = ["(Tat ca)", "PENDING", "FAILED", "DOWNLOADED"]
+                image_status_selected = st.selectbox("Image status", image_status_options, index=0)
+                image_status = None if image_status_selected == "(Tat ca)" else image_status_selected
             else:
                 image_dir = None
                 images_per_minute = 0
+                image_domain = None
+                image_status = None
 
         submit_task = st.form_submit_button("Add task")
 
@@ -4268,12 +4436,23 @@ with tab5:
             'detail_delay_max': detail_delay_max,
             'image_dir': image_dir,
             'images_per_minute': images_per_minute,
+            'image_domain': image_domain,
+            'image_status': image_status,
             'last_run_at': None,
             'next_run_at': next_run
         })
         st.success(f"Task added: {task_id}")
 
     st.markdown("---")
+    st.subheader("Running tasks")
+    tasks_running = st.session_state.db_scheduler.list_scheduler_tasks(active_only=False)
+    running_only = [t for t in tasks_running if t.get('is_running')]
+    if running_only:
+        df_running = pd.DataFrame(running_only)
+        st.dataframe(df_running, use_container_width=True, hide_index=True)
+    else:
+        st.info("No running tasks.")
+
     st.subheader("Tasks")
     tasks = st.session_state.db_scheduler.list_scheduler_tasks(active_only=False)
     if tasks:

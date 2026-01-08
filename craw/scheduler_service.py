@@ -182,20 +182,34 @@ def send_telegram_message(text: str):
         pass
 
 
-def _fetch_failed_images(db: Database, limit: int = 200):
+def _fetch_failed_images(db: Database, limit: int = 200, domain: str = None):
     conn = db.get_connection()
     cursor = conn.cursor(dictionary=True) if db.use_mysql_connector else conn.cursor()
     try:
-        cursor.execute(
-            '''
-            SELECT id, detail_id, image_url, idx, status, created_at
-            FROM scraped_detail_images
-            WHERE status = 'FAILED'
-            ORDER BY id ASC
-            LIMIT %s
-            ''',
-            (limit,)
-        )
+        if domain:
+            cursor.execute(
+                '''
+                SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at
+                FROM scraped_detail_images di
+                JOIN scraped_details_flat df ON df.id = di.detail_id
+                WHERE di.status = 'FAILED'
+                  AND df.domain = %s
+                ORDER BY di.id ASC
+                LIMIT %s
+                ''',
+                (domain, limit)
+            )
+        else:
+            cursor.execute(
+                '''
+                SELECT id, detail_id, image_url, idx, status, created_at
+                FROM scraped_detail_images
+                WHERE status = 'FAILED'
+                ORDER BY id ASC
+                LIMIT %s
+                ''',
+                (limit,)
+            )
         rows = cursor.fetchall()
         if db.use_mysql_connector:
             return rows
@@ -270,6 +284,8 @@ def download_images(
     image_dir: str,
     images_per_minute: int = 30,
     batch_limit: int = 200,
+    domain: str = None,
+    status: str = None,
     log_callback=None,
 ):
     os.makedirs(image_dir, exist_ok=True)
@@ -278,11 +294,18 @@ def download_images(
         db.sync_detail_image_statuses()
     except Exception:
         pass
-    rows = db.get_undownloaded_detail_images(limit=batch_limit)
+    status_filter = (status or "").strip().upper() or None
+    if status_filter and status_filter not in ("PENDING", "FAILED"):
+        msg = f"[Scheduler Image] Status filter '{status_filter}' not supported for download."
+        print(msg)
+        if log_callback:
+            log_callback(msg)
+        return 0, 0, 0, 0, 0, 0
+    rows = db.get_undownloaded_detail_images(limit=batch_limit, domain=domain) if status_filter != "FAILED" else []
     pending_ok = 0
     pending_fail = 0
     pending_total = 0
-    if rows:
+    if rows and status_filter != "FAILED":
         pending_total = len(rows)
         msg = f"[Scheduler Image] Pending images: {pending_total}"
         print(msg)
@@ -302,31 +325,32 @@ def download_images(
     retry_ok = 0
     retry_fail = 0
     retry_total = 0
-    for attempt in range(1, 4):
-        failed_rows = _fetch_failed_images(db, limit=batch_limit)
-        if not failed_rows:
-            msg = "[Scheduler Image] No FAILED images to retry."
+    if status_filter != "PENDING":
+        for attempt in range(1, 4):
+            failed_rows = _fetch_failed_images(db, limit=batch_limit, domain=domain)
+            if not failed_rows:
+                msg = "[Scheduler Image] No FAILED images to retry."
+                print(msg)
+                if log_callback:
+                    log_callback(msg)
+                break
+            msg = f"[Scheduler Image] Retry FAILED attempt {attempt}: {len(failed_rows)} image(s)"
             print(msg)
             if log_callback:
                 log_callback(msg)
-            break
-        msg = f"[Scheduler Image] Retry FAILED attempt {attempt}: {len(failed_rows)} image(s)"
-        print(msg)
-        if log_callback:
-            log_callback(msg)
-        ok, fail = _download_image_rows(db, failed_rows, image_dir, interval)
-        retry_ok += ok
-        retry_fail += fail
-        retry_total += len(failed_rows)
-        msg = f"[Scheduler Image] Retry FAILED attempt {attempt} done: ok={ok}, failed={fail}"
-        print(msg)
-        if log_callback:
-            log_callback(msg)
-    if retry_total:
-        msg = f"[Scheduler Image] Retry FAILED total: ok={retry_ok}, failed={retry_fail}, total={retry_total}"
-        print(msg)
-        if log_callback:
-            log_callback(msg)
+            ok, fail = _download_image_rows(db, failed_rows, image_dir, interval)
+            retry_ok += ok
+            retry_fail += fail
+            retry_total += len(failed_rows)
+            msg = f"[Scheduler Image] Retry FAILED attempt {attempt} done: ok={ok}, failed={fail}"
+            print(msg)
+            if log_callback:
+                log_callback(msg)
+        if retry_total:
+            msg = f"[Scheduler Image] Retry FAILED total: ok={retry_ok}, failed={retry_fail}, total={retry_total}"
+            print(msg)
+            if log_callback:
+                log_callback(msg)
     return pending_ok, pending_fail, pending_total, retry_ok, retry_fail, retry_total
 
 
@@ -763,6 +787,7 @@ def run_task(db: Database, task: dict):
     name = task.get('name', 'task')
     now = datetime.now()
     print(f"[Scheduler] Run task {task_id} - {name}")
+    finish_reason = "Completed"
 
     # Heartbeat: cập nhật updated_at định kỳ để tránh bị reset bởi reset_stale_running_tasks()
     _last_heartbeat = [time.time()]
@@ -901,6 +926,7 @@ def run_task(db: Database, task: dict):
                     
                     if not all_pending:
                         db.add_scheduler_log(task_id, "detail", "SKIP", "No PENDING links")
+                        finish_reason = "No pending links"
                     else:
                         total_seen = len(all_pending)
                         db.add_scheduler_log(task_id, "detail", "INFO", f"Found {total_seen} pending links (batch {BATCH_SIZE}), starting with 1 browser...")
@@ -940,20 +966,26 @@ def run_task(db: Database, task: dict):
                         
                         if blocked:
                             db.add_scheduler_log(task_id, "detail", "CANCEL", f"Blocked (Cloudflare/anti-bot). ok={ok}, fail={fail}")
+                            finish_reason = "Blocked (Cloudflare/anti-bot)"
                             finish_cancel("Cloudflare/anti-bot block detected")
                             return
                         if is_cancel_requested():
                             db.add_scheduler_log(task_id, "detail", "CANCEL", f"Canceled after ok={ok}, fail={fail}")
+                            finish_reason = "Canceled by user"
                             finish_cancel("Canceled during detail stage")
                             return
                         
                         db.add_scheduler_log(task_id, "detail", "OK", f"Total scraped: ok={total_ok}, fail={total_fail}")
+                        finish_reason = "Detail batch finished"
                 else:
                     db.add_scheduler_log(task_id, "detail", "SKIP", "Template not found")
+                    finish_reason = "Detail template not found"
             else:
                 db.add_scheduler_log(task_id, "detail", "SKIP", "No detail template")
+                finish_reason = "No detail template"
         except Exception as e:
             db.add_scheduler_log(task_id, "detail", "ERROR", str(e))
+            finish_reason = f"Detail error: {e}"
             if is_cancel_requested():
                 finish_cancel("Canceled during detail stage")
                 return
@@ -976,6 +1008,8 @@ def run_task(db: Database, task: dict):
                         db,
                         image_dir,
                         int(task.get('images_per_minute') or 30),
+                        domain=task.get('image_domain'),
+                        status=task.get('image_status'),
                         log_callback=_log_image,
                     )
                     if total == 0 and retry_total == 0:
@@ -987,10 +1021,11 @@ def run_task(db: Database, task: dict):
                     db.add_scheduler_log(task_id, "image", "SKIP", "No image_dir")
         except Exception as e:
             db.add_scheduler_log(task_id, "image", "ERROR", str(e))
+            finish_reason = f"Image error: {e}"
 
         next_run = compute_next_run(task, now)
         db.update_task_run(task_id, now, next_run)
-        db.add_scheduler_log(task_id, "task", "DONE", f"Next run at {next_run}")
+        db.add_scheduler_log(task_id, "task", "DONE", f"{finish_reason}. Next run at {next_run}")
         send_telegram_message(f"Task {name} done. Next: {next_run}")
     finally:
         db.update_scheduler_task(task_id, {'is_running': 0, 'cancel_requested': 0, 'run_now': 0})

@@ -489,6 +489,8 @@ class Database:
                 detail_delay_max FLOAT DEFAULT 3,
                 image_dir VARCHAR(2000) DEFAULT NULL,
                 images_per_minute INT DEFAULT 30,
+                image_domain VARCHAR(255) DEFAULT NULL,
+                image_status VARCHAR(50) DEFAULT NULL,
                 last_run_at TIMESTAMP NULL,
                 next_run_at TIMESTAMP NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -520,6 +522,8 @@ class Database:
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_wait_load_max FLOAT DEFAULT 5",
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_delay_min FLOAT DEFAULT 2",
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_delay_max FLOAT DEFAULT 3",
+            "ALTER TABLE scheduler_tasks ADD COLUMN image_domain VARCHAR(255) DEFAULT NULL",
+            "ALTER TABLE scheduler_tasks ADD COLUMN image_status VARCHAR(50) DEFAULT NULL",
             "ALTER TABLE scheduler_tasks ADD COLUMN city_id INT DEFAULT NULL",
             "ALTER TABLE scheduler_tasks ADD COLUMN city_name VARCHAR(255) DEFAULT NULL",
             "ALTER TABLE scheduler_tasks ADD COLUMN ward_id INT DEFAULT NULL",
@@ -897,6 +901,30 @@ class Database:
             cursor.close()
             conn.close()
 
+    def count_detail_images_filtered(self, domain: Optional[str] = None, status: Optional[str] = None) -> int:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            query = '''
+                SELECT COUNT(*)
+                FROM scraped_detail_images di
+                JOIN scraped_details_flat df ON df.id = di.detail_id
+                WHERE 1=1
+            '''
+            params = []
+            if domain:
+                query += ' AND df.domain = %s'
+                params.append(domain)
+            if status:
+                query += ' AND di.status = %s'
+                params.append(status)
+            cursor.execute(query, params)
+            row = cursor.fetchone()
+            return int(row[0]) if row else 0
+        finally:
+            cursor.close()
+            conn.close()
+
     def get_detail_images_paginated(self, limit: int = 20, offset: int = 0):
         conn = self.get_connection()
         cursor = conn.cursor()
@@ -936,19 +964,50 @@ class Database:
             cursor.close()
             conn.close()
 
-    def get_detail_images_by_id_range(self, start_id: int, end_id: int):
+    def get_detail_image_domains(self) -> List[str]:
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
             cursor.execute(
                 '''
-                SELECT id, detail_id, image_url, idx, status, created_at
-                FROM scraped_detail_images
-                WHERE id BETWEEN %s AND %s
-                ORDER BY id ASC
-                ''',
-                (start_id, end_id)
+                SELECT DISTINCT df.domain
+                FROM scraped_detail_images di
+                JOIN scraped_details_flat df ON df.id = di.detail_id
+                WHERE df.domain IS NOT NULL AND df.domain <> ''
+                ORDER BY df.domain ASC
+                '''
             )
+            rows = cursor.fetchall()
+            domains = []
+            for row in rows:
+                if isinstance(row, tuple):
+                    domains.append(row[0])
+                else:
+                    domains.append(row.get('domain'))
+            return [d for d in domains if d]
+        finally:
+            cursor.close()
+            conn.close()
+
+    def get_detail_images_by_id_range(self, start_id: int, end_id: int, domain: Optional[str] = None, status: Optional[str] = None):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            query = '''
+                SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at, df.domain
+                FROM scraped_detail_images di
+                JOIN scraped_details_flat df ON df.id = di.detail_id
+                WHERE di.id BETWEEN %s AND %s
+            '''
+            params = [start_id, end_id]
+            if domain:
+                query += ' AND df.domain = %s'
+                params.append(domain)
+            if status:
+                query += ' AND di.status = %s'
+                params.append(status)
+            query += ' ORDER BY di.id ASC'
+            cursor.execute(query, params)
             rows = cursor.fetchall()
             result = []
             for row in rows:
@@ -960,6 +1019,7 @@ class Database:
                         'idx': row[3],
                         'status': row[4],
                         'created_at': row[5],
+                        'domain': row[6],
                     })
                 else:
                     result.append({
@@ -969,6 +1029,55 @@ class Database:
                         'idx': row.get('idx'),
                         'status': row.get('status'),
                         'created_at': row.get('created_at'),
+                        'domain': row.get('domain'),
+                    })
+            return result
+        finally:
+            cursor.close()
+            conn.close()
+
+    def get_detail_images_paginated_filtered(self, limit: int = 20, offset: int = 0, domain: Optional[str] = None, status: Optional[str] = None):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            query = '''
+                SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at, df.domain
+                FROM scraped_detail_images di
+                JOIN scraped_details_flat df ON df.id = di.detail_id
+                WHERE 1=1
+            '''
+            params = []
+            if domain:
+                query += ' AND df.domain = %s'
+                params.append(domain)
+            if status:
+                query += ' AND di.status = %s'
+                params.append(status)
+            query += ' ORDER BY di.id DESC LIMIT %s OFFSET %s'
+            params.extend([limit, offset])
+            cursor.execute(query, params)
+            rows = cursor.fetchall()
+            result = []
+            for row in rows:
+                if isinstance(row, tuple):
+                    result.append({
+                        'id': row[0],
+                        'detail_id': row[1],
+                        'image_url': row[2],
+                        'idx': row[3],
+                        'status': row[4],
+                        'created_at': row[5],
+                        'domain': row[6],
+                    })
+                else:
+                    result.append({
+                        'id': row.get('id'),
+                        'detail_id': row.get('detail_id'),
+                        'image_url': row.get('image_url'),
+                        'idx': row.get('idx'),
+                        'status': row.get('status'),
+                        'created_at': row.get('created_at'),
+                        'domain': row.get('domain'),
                     })
             return result
         finally:
@@ -1357,7 +1466,7 @@ class Database:
                            detail_show_browser, detail_fake_scroll, detail_fake_hover,
                            detail_wait_load_min, detail_wait_load_max,
                            detail_delay_min, detail_delay_max,
-                           image_dir, images_per_minute,
+                           image_dir, images_per_minute, image_domain, image_status,
                            last_run_at, next_run_at, created_at, updated_at
                     FROM scheduler_tasks
                     WHERE active = 1
@@ -1377,7 +1486,7 @@ class Database:
                            detail_show_browser, detail_fake_scroll, detail_fake_hover,
                            detail_wait_load_min, detail_wait_load_max,
                            detail_delay_min, detail_delay_max,
-                           image_dir, images_per_minute,
+                           image_dir, images_per_minute, image_domain, image_status,
                            last_run_at, next_run_at, created_at, updated_at
                     FROM scheduler_tasks
                     ORDER BY id DESC
@@ -1429,10 +1538,12 @@ class Database:
                         'detail_delay_max': row[39],
                         'image_dir': row[40],
                         'images_per_minute': row[41],
-                        'last_run_at': row[42],
-                        'next_run_at': row[43],
-                        'created_at': row[44],
-                        'updated_at': row[45],
+                        'image_domain': row[42],
+                        'image_status': row[43],
+                        'last_run_at': row[44],
+                        'next_run_at': row[45],
+                        'created_at': row[46],
+                        'updated_at': row[47],
                     })
                 else:
                     result.append(row)
@@ -1460,8 +1571,8 @@ class Database:
                     detail_show_browser, detail_fake_scroll, detail_fake_hover,
                     detail_wait_load_min, detail_wait_load_max,
                     detail_delay_min, detail_delay_max,
-                    image_dir, images_per_minute, last_run_at, next_run_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    image_dir, images_per_minute, image_domain, image_status, last_run_at, next_run_at
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 task.get('name'),
                 1 if task.get('active', True) else 0,
@@ -1503,6 +1614,8 @@ class Database:
                 task.get('detail_delay_max', 3),
                 task.get('image_dir'),
                 task.get('images_per_minute', 30),
+                task.get('image_domain'),
+                task.get('image_status'),
                 task.get('last_run_at'),
                 task.get('next_run_at')
             ))
@@ -1783,21 +1896,36 @@ class Database:
             cursor.close()
             conn.close()
 
-    def get_undownloaded_detail_images(self, limit: int = 200):
+    def get_undownloaded_detail_images(self, limit: int = 200, domain: Optional[str] = None):
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute('''
-                SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at
-                FROM scraped_detail_images di
-                WHERE di.status = 'PENDING'
-                AND NOT EXISTS (
-                    SELECT 1 FROM downloaded_images dl
-                    WHERE dl.image_url = di.image_url AND dl.status = 'SUCCESS'
-                )
-                ORDER BY di.id ASC
-                LIMIT %s
-            ''', (limit,))
+            if domain:
+                cursor.execute('''
+                    SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at
+                    FROM scraped_detail_images di
+                    JOIN scraped_details_flat df ON df.id = di.detail_id
+                    WHERE di.status = 'PENDING'
+                      AND df.domain = %s
+                      AND NOT EXISTS (
+                        SELECT 1 FROM downloaded_images dl
+                        WHERE dl.image_url = di.image_url AND dl.status = 'SUCCESS'
+                      )
+                    ORDER BY di.id ASC
+                    LIMIT %s
+                ''', (domain, limit))
+            else:
+                cursor.execute('''
+                    SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at
+                    FROM scraped_detail_images di
+                    WHERE di.status = 'PENDING'
+                    AND NOT EXISTS (
+                        SELECT 1 FROM downloaded_images dl
+                        WHERE dl.image_url = di.image_url AND dl.status = 'SUCCESS'
+                    )
+                    ORDER BY di.id ASC
+                    LIMIT %s
+                ''', (limit,))
             rows = cursor.fetchall()
             result = []
             for row in rows:
