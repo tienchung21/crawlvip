@@ -1,0 +1,36 @@
+﻿field,code,meaning,scope,evidence_example
+property_legal_document,1,Đã có sổ,Chung (nhà/đất),list_id 126902749
+property_legal_document,2,Đang chờ sổ,Chung (nhà/đất),list_id 130029901
+property_legal_document,3,Giấy tờ khác,Chung (nhà/đất),list_id 129169631
+property_legal_document,4,Hợp đồng đặt cọc,Chung (nhà/đất),list_id 127731391
+property_legal_document,5,Hợp đồng mua bán,Chung (nhà/đất),list_id 130175568
+property_legal_document,6,Sổ hồng riêng,Chung (nhà/đất),list_id 128922300
+direction,1,Đông,Hướng cửa chính,
+direction,2,Tây,Hướng cửa chính,
+direction,3,Nam,Hướng cửa chính,
+direction,4,Bắc,Hướng cửa chính,
+direction,5,Đông Bắc,Hướng cửa chính,
+direction,6,Đông Nam,Hướng cửa chính,
+direction,7,Tây Bắc,Hướng cửa chính,
+direction,8,Tây Nam,Hướng cửa chính,
+balconydirection,1,Đông,Hướng ban công (cùng enum với direction),
+balconydirection,2,Tây,Hướng ban công (cùng enum với direction),
+balconydirection,3,Nam,Hướng ban công (cùng enum với direction),
+balconydirection,4,Bắc,Hướng ban công (cùng enum với direction),
+balconydirection,5,Đông Bắc,Hướng ban công (cùng enum với direction),
+balconydirection,6,Đông Nam,Hướng ban công (cùng enum với direction),
+balconydirection,7,Tây Bắc,Hướng ban công (cùng enum với direction),
+balconydirection,8,Tây Nam,Hướng ban công (cùng enum với direction),
+property_status,1,Chưa bàn giao,Căn hộ/Chung cư,list_id 129254530
+property_status,2,Đã bàn giao,Căn hộ/Chung cư,list_id 128922300
+apartment_type,1,Chung cư,Căn hộ/Chung cư,list_id 121706887
+apartment_type,2,"Căn hộ dịch vụ, mini",Căn hộ/Chung cư,list_id 129127967
+apartment_type,4,Penthouse,Căn hộ/Chung cư,list_id 124938515
+house_type,1,"Nhà mặt phố, mặt tiền",Nhà ở,list_id 130144489
+house_type,2,"Nhà ngõ, hẻm",Nhà ở,list_id 129963041
+house_type,3,Biệt thự,Nhà ở,list_id 130028281
+house_type,4,Nhà phố liền kề,Nhà ở,list_id 129955641
+furnishing_sell,1,Nội thất cao cấp,Căn hộ/Chung cư,list_id 129127967
+furnishing_sell,2,Nội thất đầy đủ,Căn hộ/Chung cư,list_id 124938515
+furnishing_sell,3,Nhà trống,Căn hộ/Chung cư (thuê),list_id 123709107
+furnishing_sell,3,Hoàn thiện cơ bản,Mặt bằng/Văn phòng (thuê) và Nhà (bán),list_id 130134884 / 130029901

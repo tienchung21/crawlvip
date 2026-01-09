@@ -2377,6 +2377,16 @@ with tab3:
         key='crawl_listing_loaihinh',
         format_func=lambda x: f"{x} (cho thuê)" if x in loaihinh_cho_thue else x,
     )
+    trade_type_options = [("muaban", "Mua ban"), ("thue", "Cho thue")]
+    trade_type = st.selectbox(
+        "Loai giao dich",
+        options=trade_type_options,
+        index=0,
+        format_func=lambda x: x[1] if isinstance(x, (list, tuple)) else x,
+        key="crawl_listing_trade_type",
+        help="Luu vao cot mua/ban: muaban hoac thue",
+    )
+    trade_type_value = trade_type[0] if isinstance(trade_type, (list, tuple)) else trade_type
 
     # Province/ward selection
     city_options = _fetch_cities(st.session_state.db_crawl_listing)
@@ -2598,6 +2608,7 @@ with tab3:
 
                         domain,
                         loaihinh,
+                        trade_type_value,
                         city_id,
                         city_name,
                         ward_id,
@@ -2791,8 +2802,20 @@ with tab3:
         format_func=lambda x: x if x == "(Tat ca)" else (f"{x} (cho thuê)" if x in loaihinh_cho_thue else x),
     )
     loaihinh_filter_val = None if loaihinh_filter == "(Tat ca)" else loaihinh_filter
+    trade_filter = st.selectbox(
+        "Loc theo mua/ban",
+        ["(Tat ca)", "muaban", "thue"],
+        index=0,
+        help="Loc theo mua/ban (muaban/thue)",
+    )
+    trade_filter_val = None if trade_filter == "(Tat ca)" else trade_filter
 
-    all_links = st.session_state.db_crawl_listing.get_recent_links(limit=100000, domain=domain_filter, loaihinh=loaihinh_filter_val)
+    all_links = st.session_state.db_crawl_listing.get_recent_links(
+        limit=100000,
+        domain=domain_filter,
+        loaihinh=loaihinh_filter_val,
+        trade_type=trade_filter_val,
+    )
 
     
 
@@ -2984,6 +3007,8 @@ with tab3:
 
         if 'loaihinh' not in df_links.columns:
             df_links['loaihinh'] = None
+        if 'trade_type' not in df_links.columns:
+            df_links['trade_type'] = None
 
         df_links['created_at'] = pd.to_datetime(df_links['created_at'])
 
@@ -3010,6 +3035,8 @@ with tab3:
             df_links = df_links[df_links['domain'] == domain_filter_all]
         if loaihinh_filter_val:
             df_links = df_links[df_links['loaihinh'] == loaihinh_filter_val]
+        if trade_filter_val:
+            df_links = df_links[df_links['trade_type'] == trade_filter_val]
 
         
 
@@ -3029,6 +3056,7 @@ with tab3:
 
                 'domain': st.column_config.TextColumn('Domain'),
                 'loaihinh': st.column_config.TextColumn('Loai hinh'),
+                'trade_type': st.column_config.TextColumn('Mua/Ban'),
 
                 'created_at': st.column_config.DatetimeColumn('Created At')
 
@@ -4308,6 +4336,14 @@ with tab5:
                 index=3,
                 format_func=lambda x: f"{x} (cho thuê)" if x in loaihinh_cho_thue_local else x,
             )
+            trade_type_options_task = [("muaban", "Mua ban"), ("thue", "Cho thue")]
+            trade_type_task = st.selectbox(
+                "Loai giao dich",
+                options=trade_type_options_task,
+                index=0,
+                format_func=lambda x: x[1] if isinstance(x, (list, tuple)) else x,
+            )
+            trade_type_task_value = trade_type_task[0] if isinstance(trade_type_task, (list, tuple)) else trade_type_task
         with col_b:
             if enable_listing:
                 st.markdown("Listing settings")
@@ -4412,6 +4448,7 @@ with tab5:
             'max_pages': max_pages,
             'domain': domain,
             'loaihinh': loaihinh,
+            'trade_type': trade_type_task_value,
             'city_id': task_city_id,
             'city_name': task_city_name,
             'ward_id': task_ward_id,

@@ -124,6 +124,7 @@ class Database:
                 status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
                 domain VARCHAR(255) DEFAULT NULL,
                 loaihinh VARCHAR(255) DEFAULT NULL,
+                trade_type VARCHAR(50) DEFAULT NULL,
                 city_id INT DEFAULT NULL,
                 city_name VARCHAR(255) DEFAULT NULL,
                 ward_id INT DEFAULT NULL,
@@ -136,7 +137,8 @@ class Database:
                 INDEX idx_collected_links_url (url(100)),
                 INDEX idx_collected_links_domain (domain),
                 INDEX idx_collected_links_loaihinh (loaihinh),
-                INDEX idx_collected_links_status (status)
+                INDEX idx_collected_links_status (status),
+                INDEX idx_collected_links_trade_type (trade_type)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
         # Ensure domain column exists (for older deployments)
@@ -155,6 +157,14 @@ class Database:
             pass
         try:
             cursor.execute("ALTER TABLE collected_links ADD INDEX idx_collected_links_loaihinh (loaihinh)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE collected_links ADD COLUMN trade_type VARCHAR(50) DEFAULT NULL")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE collected_links ADD INDEX idx_collected_links_trade_type (trade_type)")
         except Exception:
             pass
         try:
@@ -464,6 +474,7 @@ class Database:
                 max_pages INT DEFAULT 1,
                 domain VARCHAR(255) DEFAULT NULL,
                 loaihinh VARCHAR(255) DEFAULT NULL,
+                trade_type VARCHAR(50) DEFAULT NULL,
                 city_id INT DEFAULT NULL,
                 city_name VARCHAR(255) DEFAULT NULL,
                 ward_id INT DEFAULT NULL,
@@ -522,6 +533,7 @@ class Database:
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_wait_load_max FLOAT DEFAULT 5",
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_delay_min FLOAT DEFAULT 2",
             "ALTER TABLE scheduler_tasks ADD COLUMN detail_delay_max FLOAT DEFAULT 3",
+            "ALTER TABLE scheduler_tasks ADD COLUMN trade_type VARCHAR(50) DEFAULT NULL",
             "ALTER TABLE scheduler_tasks ADD COLUMN image_domain VARCHAR(255) DEFAULT NULL",
             "ALTER TABLE scheduler_tasks ADD COLUMN image_status VARCHAR(50) DEFAULT NULL",
             "ALTER TABLE scheduler_tasks ADD COLUMN city_id INT DEFAULT NULL",
@@ -600,6 +612,7 @@ class Database:
         links_list: List[str],
         domain: Optional[str] = None,
         loaihinh: Optional[str] = None,
+        trade_type: Optional[str] = None,
         city_id: Optional[int] = None,
         city_name: Optional[str] = None,
         ward_id: Optional[int] = None,
@@ -626,27 +639,30 @@ class Database:
         cursor = conn.cursor()
         
         added_count = 0
+        normalized_links = []
         for url in links_list:
             if not url or not isinstance(url, str):
                 continue
             
             # Normalize URL before inserting
             normalized_url = self.normalize_url(url)
+            normalized_links.append(normalized_url)
             
             try:
                 # Use INSERT IGNORE for MySQL (skips duplicates)
                 cursor.execute('''
                     INSERT IGNORE INTO collected_links (
-                        url, status, domain, loaihinh,
+                        url, status, domain, loaihinh, trade_type,
                         city_id, city_name, ward_id, ward_name,
                         new_city_id, new_city_name, new_ward_id, new_ward_name,
                         created_at
                     )
-                    VALUES (%s, 'PENDING', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES (%s, 'PENDING', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ''', (
                     normalized_url,
                     domain,
                     loaihinh,
+                    trade_type,
                     city_id,
                     city_name,
                     ward_id,
@@ -668,6 +684,20 @@ class Database:
                 print(f"Error adding link {normalized_url[:50]}: {e}")
                 continue
         
+        # If trade_type is provided, backfill NULL trade_type for these URLs.
+        if trade_type:
+            for i in range(0, len(normalized_links), 500):
+                chunk = normalized_links[i:i + 500]
+                placeholders = ",".join(["%s"] * len(chunk))
+                cursor.execute(
+                    f"""
+                    UPDATE collected_links
+                    SET trade_type = %s
+                    WHERE trade_type IS NULL AND url IN ({placeholders})
+                    """,
+                    [trade_type, *chunk]
+                )
+
         conn.commit()
         cursor.close()
         conn.close()
@@ -1163,7 +1193,7 @@ class Database:
             cursor.close()
             conn.close()
     
-    def get_recent_links(self, limit: int = 100, status: Optional[str] = None, domain: Optional[str] = None, loaihinh: Optional[str] = None) -> List[dict]:
+    def get_recent_links(self, limit: int = 100, status: Optional[str] = None, domain: Optional[str] = None, loaihinh: Optional[str] = None, trade_type: Optional[str] = None) -> List[dict]:
         """
         Get recent collected links
         
@@ -1182,37 +1212,38 @@ class Database:
             if status:
                 if domain:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
                         WHERE status = %s AND (domain = %s OR %s IS NULL) AND (loaihinh = %s OR %s IS NULL)
+                          AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (status, domain, domain, loaihinh, loaihinh, limit))
+                    ''', (status, domain, domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
-                        WHERE status = %s AND (loaihinh = %s OR %s IS NULL)
+                        WHERE status = %s AND (loaihinh = %s OR %s IS NULL) AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (status, loaihinh, loaihinh, limit))
+                    ''', (status, loaihinh, loaihinh, trade_type, trade_type, limit))
             else:
                 if domain:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
-                        WHERE domain = %s AND (loaihinh = %s OR %s IS NULL)
+                        WHERE domain = %s AND (loaihinh = %s OR %s IS NULL) AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (domain, loaihinh, loaihinh, limit))
+                    ''', (domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
-                        WHERE (loaihinh = %s OR %s IS NULL)
+                        WHERE (loaihinh = %s OR %s IS NULL) AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (loaihinh, loaihinh, limit))
+                    ''', (loaihinh, loaihinh, trade_type, trade_type, limit))
             
             columns = [desc[0] for desc in cursor.description]
             rows = cursor.fetchall()
@@ -1223,7 +1254,8 @@ class Database:
                     'status': row[2],
                     'domain': row[3],
                     'loaihinh': row[4],
-                    'created_at': row[5]
+                    'trade_type': row[5],
+                    'created_at': row[6]
                 }
                 for row in rows
             ]
@@ -1232,37 +1264,38 @@ class Database:
             if status:
                 if domain:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
                         WHERE status = %s AND domain = %s AND (loaihinh = %s OR %s IS NULL)
+                          AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (status, domain, loaihinh, loaihinh, limit))
+                    ''', (status, domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
-                        WHERE status = %s AND (loaihinh = %s OR %s IS NULL)
+                        WHERE status = %s AND (loaihinh = %s OR %s IS NULL) AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (status, loaihinh, loaihinh, limit))
+                    ''', (status, loaihinh, loaihinh, trade_type, trade_type, limit))
             else:
                 if domain:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
-                        WHERE domain = %s AND (loaihinh = %s OR %s IS NULL)
+                        WHERE domain = %s AND (loaihinh = %s OR %s IS NULL) AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (domain, loaihinh, loaihinh, limit))
+                    ''', (domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
-                        WHERE (loaihinh = %s OR %s IS NULL)
+                        WHERE (loaihinh = %s OR %s IS NULL) AND (trade_type = %s OR %s IS NULL)
                         ORDER BY created_at DESC
                         LIMIT %s
-                    ''', (loaihinh, loaihinh, limit))
+                    ''', (loaihinh, loaihinh, trade_type, trade_type, limit))
             
             rows = cursor.fetchall()
             result = [
@@ -1272,7 +1305,8 @@ class Database:
                     'status': row[2] if isinstance(row, tuple) else row['status'],
                     'domain': row[3] if isinstance(row, tuple) else row['domain'],
                     'loaihinh': row[4] if isinstance(row, tuple) else row.get('loaihinh'),
-                    'created_at': row[5] if isinstance(row, tuple) else row['created_at']
+                    'trade_type': row[5] if isinstance(row, tuple) else row.get('trade_type'),
+                    'created_at': row[6] if isinstance(row, tuple) else row['created_at']
                 }
                 for row in rows
             ]
@@ -1457,7 +1491,7 @@ class Database:
                     SELECT id, name, active, is_running, run_now, enable_listing, enable_detail, enable_image,
                            schedule_type, interval_minutes, run_times,
                            listing_template_path, detail_template_path, start_url, max_pages,
-                           domain, loaihinh,
+                           domain, loaihinh, trade_type,
                            city_id, city_name, ward_id, ward_name,
                            new_city_id, new_city_name, new_ward_id, new_ward_name,
                            cancel_requested, listing_show_browser, listing_fake_scroll, listing_fake_hover,
@@ -1477,7 +1511,7 @@ class Database:
                     SELECT id, name, active, is_running, run_now, enable_listing, enable_detail, enable_image,
                            schedule_type, interval_minutes, run_times,
                            listing_template_path, detail_template_path, start_url, max_pages,
-                           domain, loaihinh,
+                           domain, loaihinh, trade_type,
                            city_id, city_name, ward_id, ward_name,
                            new_city_id, new_city_name, new_ward_id, new_ward_name,
                            cancel_requested, listing_show_browser, listing_fake_scroll, listing_fake_hover,
@@ -1513,37 +1547,38 @@ class Database:
                         'max_pages': row[14],
                         'domain': row[15],
                         'loaihinh': row[16],
-                        'city_id': row[17],
-                        'city_name': row[18],
-                        'ward_id': row[19],
-                        'ward_name': row[20],
-                        'new_city_id': row[21],
-                        'new_city_name': row[22],
-                        'new_ward_id': row[23],
-                        'new_ward_name': row[24],
-                        'cancel_requested': row[25],
-                        'listing_show_browser': row[26],
-                        'listing_fake_scroll': row[27],
-                        'listing_fake_hover': row[28],
-                        'listing_wait_load_min': row[29],
-                        'listing_wait_load_max': row[30],
-                        'listing_wait_next_min': row[31],
-                        'listing_wait_next_max': row[32],
-                        'detail_show_browser': row[33],
-                        'detail_fake_scroll': row[34],
-                        'detail_fake_hover': row[35],
-                        'detail_wait_load_min': row[36],
-                        'detail_wait_load_max': row[37],
-                        'detail_delay_min': row[38],
-                        'detail_delay_max': row[39],
-                        'image_dir': row[40],
-                        'images_per_minute': row[41],
-                        'image_domain': row[42],
-                        'image_status': row[43],
-                        'last_run_at': row[44],
-                        'next_run_at': row[45],
-                        'created_at': row[46],
-                        'updated_at': row[47],
+                        'trade_type': row[17],
+                        'city_id': row[18],
+                        'city_name': row[19],
+                        'ward_id': row[20],
+                        'ward_name': row[21],
+                        'new_city_id': row[22],
+                        'new_city_name': row[23],
+                        'new_ward_id': row[24],
+                        'new_ward_name': row[25],
+                        'cancel_requested': row[26],
+                        'listing_show_browser': row[27],
+                        'listing_fake_scroll': row[28],
+                        'listing_fake_hover': row[29],
+                        'listing_wait_load_min': row[30],
+                        'listing_wait_load_max': row[31],
+                        'listing_wait_next_min': row[32],
+                        'listing_wait_next_max': row[33],
+                        'detail_show_browser': row[34],
+                        'detail_fake_scroll': row[35],
+                        'detail_fake_hover': row[36],
+                        'detail_wait_load_min': row[37],
+                        'detail_wait_load_max': row[38],
+                        'detail_delay_min': row[39],
+                        'detail_delay_max': row[40],
+                        'image_dir': row[41],
+                        'images_per_minute': row[42],
+                        'image_domain': row[43],
+                        'image_status': row[44],
+                        'last_run_at': row[45],
+                        'next_run_at': row[46],
+                        'created_at': row[47],
+                        'updated_at': row[48],
                     })
                 else:
                     result.append(row)
@@ -1561,7 +1596,7 @@ class Database:
                     name, active, is_running, enable_listing, enable_detail, enable_image,
                     schedule_type, interval_minutes, run_times,
                     listing_template_path, detail_template_path, start_url, max_pages,
-                    domain, loaihinh,
+                    domain, loaihinh, trade_type,
                     city_id, city_name, ward_id, ward_name,
                     new_city_id, new_city_name, new_ward_id, new_ward_name,
                     cancel_requested,
@@ -1572,7 +1607,7 @@ class Database:
                     detail_wait_load_min, detail_wait_load_max,
                     detail_delay_min, detail_delay_max,
                     image_dir, images_per_minute, image_domain, image_status, last_run_at, next_run_at
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 task.get('name'),
                 1 if task.get('active', True) else 0,
@@ -1589,6 +1624,7 @@ class Database:
                 task.get('max_pages', 1),
                 task.get('domain'),
                 task.get('loaihinh'),
+                task.get('trade_type'),
                 task.get('city_id'),
                 task.get('city_name'),
                 task.get('ward_id'),
@@ -1718,7 +1754,7 @@ class Database:
                        enable_listing, enable_detail, enable_image,
                        schedule_type, interval_minutes, run_times,
                        listing_template_path, detail_template_path, start_url, max_pages,
-                       domain, loaihinh,
+                       domain, loaihinh, trade_type,
                        city_id, city_name, ward_id, ward_name,
                        new_city_id, new_city_name, new_ward_id, new_ward_name,
                        cancel_requested,
@@ -1757,33 +1793,34 @@ class Database:
                         'max_pages': row[14],
                         'domain': row[15],
                         'loaihinh': row[16],
-                        'city_id': row[17],
-                        'city_name': row[18],
-                        'ward_id': row[19],
-                        'ward_name': row[20],
-                        'new_city_id': row[21],
-                        'new_city_name': row[22],
-                        'new_ward_id': row[23],
-                        'new_ward_name': row[24],
-                        'cancel_requested': row[25],
-                        'listing_show_browser': row[26],
-                        'listing_fake_scroll': row[27],
-                        'listing_fake_hover': row[28],
-                        'listing_wait_load_min': row[29],
-                        'listing_wait_load_max': row[30],
-                        'listing_wait_next_min': row[31],
-                        'listing_wait_next_max': row[32],
-                        'detail_show_browser': row[33],
-                        'detail_fake_scroll': row[34],
-                        'detail_fake_hover': row[35],
-                        'detail_wait_load_min': row[36],
-                        'detail_wait_load_max': row[37],
-                        'detail_delay_min': row[38],
-                        'detail_delay_max': row[39],
-                        'image_dir': row[40],
-                        'images_per_minute': row[41],
-                        'last_run_at': row[42],
-                        'next_run_at': row[43],
+                        'trade_type': row[17],
+                        'city_id': row[18],
+                        'city_name': row[19],
+                        'ward_id': row[20],
+                        'ward_name': row[21],
+                        'new_city_id': row[22],
+                        'new_city_name': row[23],
+                        'new_ward_id': row[24],
+                        'new_ward_name': row[25],
+                        'cancel_requested': row[26],
+                        'listing_show_browser': row[27],
+                        'listing_fake_scroll': row[28],
+                        'listing_fake_hover': row[29],
+                        'listing_wait_load_min': row[30],
+                        'listing_wait_load_max': row[31],
+                        'listing_wait_next_min': row[32],
+                        'listing_wait_next_max': row[33],
+                        'detail_show_browser': row[34],
+                        'detail_fake_scroll': row[35],
+                        'detail_fake_hover': row[36],
+                        'detail_wait_load_min': row[37],
+                        'detail_wait_load_max': row[38],
+                        'detail_delay_min': row[39],
+                        'detail_delay_max': row[40],
+                        'image_dir': row[41],
+                        'images_per_minute': row[42],
+                        'last_run_at': row[43],
+                        'next_run_at': row[44],
                     })
                 else:
                     result.append(row)
@@ -1810,7 +1847,7 @@ class Database:
     def update_task_run(self, task_id: int, last_run_at, next_run_at):
         self.update_scheduler_task(task_id, {'last_run_at': last_run_at, 'next_run_at': next_run_at})
 
-    def get_pending_links(self, limit: int = 100, domain: Optional[str] = None, loaihinh: Optional[str] = None):
+    def get_pending_links(self, limit: int = 100, domain: Optional[str] = None, loaihinh: Optional[str] = None, trade_type: Optional[str] = None):
         # Reset các link IN_PROGRESS quá 30 phút về PENDING (do task crash/bị tắt)
         try:
             self.reset_stale_in_progress_links(timeout_minutes=30)
@@ -1830,19 +1867,21 @@ class Database:
                         WHERE status = 'PENDING'
                           AND (domain = %s OR %s IS NULL)
                           AND (loaihinh = %s OR %s IS NULL)
+                          AND (trade_type = %s OR %s IS NULL)
                         ORDER BY id ASC
                         LIMIT %s
                         FOR UPDATE SKIP LOCKED
-                    ''', (domain, domain, loaihinh, loaihinh, limit))
+                    ''', (domain, domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
                         SELECT id, url, status, domain, loaihinh, created_at
                         FROM collected_links
                         WHERE status = 'PENDING'
+                          AND (trade_type = %s OR %s IS NULL)
                         ORDER BY id ASC
                         LIMIT %s
                         FOR UPDATE SKIP LOCKED
-                    ''', (limit,))
+                    ''', (trade_type, trade_type, limit))
                 rows = cursor.fetchall()
                 if rows:
                     ids = []
@@ -1866,17 +1905,19 @@ class Database:
                         SELECT id, url, status, domain, loaihinh, created_at
                         FROM collected_links
                         WHERE status = 'PENDING' AND (domain = %s OR %s IS NULL) AND (loaihinh = %s OR %s IS NULL)
+                          AND (trade_type = %s OR %s IS NULL)
                         ORDER BY id ASC
                         LIMIT %s
-                    ''', (domain, domain, loaihinh, loaihinh, limit))
+                    ''', (domain, domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
                         SELECT id, url, status, domain, loaihinh, created_at
                         FROM collected_links
                         WHERE status = 'PENDING'
+                          AND (trade_type = %s OR %s IS NULL)
                         ORDER BY id ASC
                         LIMIT %s
-                    ''', (limit,))
+                    ''', (trade_type, trade_type, limit))
                 rows = cursor.fetchall()
             result = []
             for row in rows:

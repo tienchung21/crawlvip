@@ -15,6 +15,7 @@ from typing import Dict, List, Optional
 from urllib.parse import urljoin, urlparse
 
 import nodriver as uc
+from nodriver import cdp  # CDP commands for bring_to_front
 # NOTE: Crawl4AI imports đã bị loại bỏ - không còn sử dụng trong file này
 # Việc import và khởi tạo Crawl4AI gây mở thêm browser không cần thiết
 
@@ -87,6 +88,7 @@ async def crawl_listing(
     log_callback=None,
     domain: Optional[str] = None,
     loaihinh: Optional[str] = None,
+    trade_type: Optional[str] = None,
     city_id: Optional[int] = None,
     city_name: Optional[str] = None,
     ward_id: Optional[int] = None,
@@ -188,6 +190,24 @@ async def crawl_listing(
 
 
         page = await browser.get(start_url)
+        
+        # Bring browser window to front để tránh lazy-loading issues
+        try:
+            await page.send(cdp.page.bring_to_front())
+            print("[Listing] Brought browser to front")
+        except Exception as e:
+            print(f"[Listing] Could not bring to front: {e}")
+        
+        # Override Page Visibility API (không override IntersectionObserver vì gây crash)
+        try:
+            await page.evaluate("""
+                Object.defineProperty(document, 'hidden', { value: false, writable: false });
+                Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: false });
+                document.dispatchEvent(new Event('visibilitychange'));
+            """)
+            print("[Listing] Overridden Page Visibility API")
+        except Exception as e:
+            print(f"[Listing] Could not override visibility: {e}")
         
         # Chờ Cloudflare challenge hoàn thành (nếu có)
         cloudflare_wait_attempts = 0
@@ -472,6 +492,7 @@ async def crawl_listing(
                         new_page_links,  # Chỉ thêm links mới, không thêm links đã có
                         domain=domain,
                         loaihinh=loaihinh,
+                        trade_type=trade_type,
                         city_id=city_id,
                         city_name=city_name,
                         ward_id=ward_id,
@@ -490,17 +511,113 @@ async def crawl_listing(
                         )
 
                 pages_crawled = page_num
+                print(f"[DEBUG] page_num={page_num}, max_pages={max_pages}, will check next: {page_num < max_pages}")
 
                 if page_num < max_pages:
                     WAIT_BEFORE_CLICK = random.uniform(wait_next_min, wait_next_max)
+                    print(f"[DEBUG] Waiting {WAIT_BEFORE_CLICK:.1f}s before finding next button...")
                     if progress_callback:
                         progress_callback(page_num, max_pages, f"Waiting {WAIT_BEFORE_CLICK}s before clicking next...", len(total_links_collected))
                     await asyncio.sleep(WAIT_BEFORE_CLICK)
+                    
+                    # Bring browser to front để trigger lazy-loading/Intersection Observer
+                    try:
+                        await page.send(cdp.page.bring_to_front())
+                        print(f"[DEBUG] Brought page to front")
+                    except Exception as e:
+                        print(f"[DEBUG] Could not bring to front: {e}")
+                    
+                    # Kiểm tra browser còn sống không
+                    try:
+                        test_url = await page.evaluate("window.location.href")
+                        print(f"[DEBUG] Browser still alive, current URL: {test_url[:80] if test_url else 'None'}")
+                    except Exception as e:
+                        print(f"[DEBUG] Browser connection lost: {e}")
+                        break
+                    
+                    # Re-inject visibility override (quan trọng khi tab bị hidden)
+                    try:
+                        await page.evaluate("""
+                            Object.defineProperty(document, 'hidden', { value: false, writable: false, configurable: true });
+                            Object.defineProperty(document, 'visibilityState', { value: 'visible', writable: false, configurable: true });
+                            document.dispatchEvent(new Event('visibilitychange'));
+                            // Force trigger scroll event to activate lazy-loaded elements
+                            window.dispatchEvent(new Event('scroll'));
+                            window.dispatchEvent(new Event('resize'));
+                        """)
+                        print(f"[DEBUG] Visibility override injected")
+                    except Exception as e:
+                        print(f"[DEBUG] Visibility override failed: {e}")
+                    
+                    # Scroll về cuối trang để thấy pagination (thường ở footer)
+                    print(f"[DEBUG] Scrolling to bottom to find pagination...")
+                    try:
+                        # Scroll từ từ xuống cuối trang để trigger lazy-loading
+                        scroll_height = await page.evaluate("document.body.scrollHeight")
+                        for i in range(5):
+                            scroll_pos = int(scroll_height * (i + 1) / 5)
+                            await page.evaluate(f"window.scrollTo(0, {scroll_pos});")
+                            await asyncio.sleep(0.3)
+                        await asyncio.sleep(0.5)
+                    except Exception as e:
+                        print(f"[DEBUG] Scroll failed: {e}")
+                    
+                    print(f"[DEBUG] Done waiting, now finding next button with selector: {next_page_selector}")
                     if progress_callback:
                         progress_callback(page_num, max_pages, "Dang tim nut Next...", len(total_links_collected))
                     try:
+                        # Debug: Kiểm tra visibility state
+                        import json as _json
+                        vis_state = await page.evaluate("document.visibilityState")
+                        is_hidden = await page.evaluate("document.hidden")
+                        print(f"[DEBUG] Visibility: state={vis_state}, hidden={is_hidden}")
+                        
+                        # Debug: Tìm tất cả elements có class chứa "Paging"
+                        paging_elements = await page.evaluate("""
+                            (function() {
+                                var els = document.querySelectorAll('[class*="Paging"], [class*="paging"], [class*="pagination"]');
+                                var result = [];
+                                for (var i = 0; i < els.length && i < 10; i++) {
+                                    var el = els[i];
+                                    result.push({
+                                        tag: el.tagName,
+                                        className: el.className,
+                                        id: el.id || '',
+                                        visible: el.offsetParent !== null,
+                                        rect: el.getBoundingClientRect ? {
+                                            top: el.getBoundingClientRect().top,
+                                            height: el.getBoundingClientRect().height
+                                        } : null
+                                    });
+                                }
+                                return JSON.stringify(result);
+                            })()
+                        """)
+                        print(f"[DEBUG] Paging elements found: {paging_elements}")
+                        
+                        # Debug: Kiểm tra selector cụ thể
+                        _sel_js = _json.dumps(next_page_selector)
+                        js_check = await page.evaluate(f"""
+                            (function() {{
+                                var el = document.querySelector({_sel_js});
+                                if (!el) return null;
+                                return {{
+                                    tagName: el.tagName,
+                                    className: el.className,
+                                    href: el.href || el.getAttribute('href') || '',
+                                    text: (el.textContent || '').substring(0, 50),
+                                    visible: el.offsetParent !== null,
+                                    display: window.getComputedStyle(el).display,
+                                    visibility: window.getComputedStyle(el).visibility
+                                }};
+                            }})()
+                        """)
+                        print(f"[DEBUG] JS querySelector check: {js_check}")
+                        
                         next_btn = await page.select(next_page_selector, timeout=5)
+                        print(f"[DEBUG] page.select returned: {next_btn}")
                         if next_btn:
+                            print(f"[DEBUG] Found next button, will click...")
                             if log_callback:
                                 try:
                                     next_class = await next_btn.get_attribute("class") or ""
@@ -525,21 +642,28 @@ async def crawl_listing(
                             await asyncio.sleep(0.5)
                             try:
                                 await next_btn.click()
-                            except Exception:
+                                print(f"[DEBUG] Clicked next button successfully")
+                            except Exception as click_err:
+                                print(f"[DEBUG] First click failed: {click_err}, trying scroll_into_view...")
                                 try:
                                     await next_btn.scroll_into_view()
                                 except Exception:
                                     pass
                                 await asyncio.sleep(0.3)
                                 await next_btn.click()
+                                print(f"[DEBUG] Second click succeeded")
                             if progress_callback:
                                 progress_callback(page_num, max_pages, "Da click Next, cho load trang moi...", len(total_links_collected))
                             await asyncio.sleep(5)
                         else:
+                            print(f"[DEBUG] next_btn is None/False - no next button found!")
                             if progress_callback:
                                 progress_callback(page_num, max_pages, "Khong thay nut Next. Dung.", len(total_links_collected))
                             break
                     except Exception as e:
+                        print(f"[DEBUG] Exception in next page logic: {e}")
+                        import traceback
+                        traceback.print_exc()
                         if progress_callback:
                             progress_callback(page_num, max_pages, f"Loi khi Next trang: {e}", len(total_links_collected))
                         break

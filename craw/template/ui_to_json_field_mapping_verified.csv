@@ -1,0 +1,16 @@
+﻿ui_title,json_field,notes,example_list_id
+Giấy tờ pháp lý,property_legal_document,"Enum 1..6, xem bảng enum",126902749
+Tình trạng bất động sản,property_status,Enum 1/2 (chưa/đã bàn giao) - thường cho căn hộ,129254530
+Loại hình căn hộ,apartment_type,"Enum theo loại căn hộ (chung cư, căn hộ dịch vụ/mini, penthouse...)",124938515
+Loại hình nhà ở,house_type,"Enum theo loại nhà (mặt tiền, hẻm, biệt thự, liền kề...)",130144489
+Diện tích,size,Số; đơn vị nằm ở size_unit_string,128922300
+Giá/m²,price_million_per_m2,Số (triệu/m²) do hệ thống tính; giá gốc là price (VND),128922300
+Số phòng ngủ,rooms,Số nguyên; đôi khi có thêm params id='rooms' dạng chuỗi,121706887
+Số phòng vệ sinh,toilets,Số nguyên,121706887
+Tình trạng nội thất,furnishing_sell,Enum nhưng phụ thuộc category/transaction,123709107
+Hướng cửa chính,direction,Enum 1..8 (Đông..Tây Nam),129224925
+Hướng ban công,balconydirection,Enum 1..8 (cùng mapping với direction),124938515
+Tầng số,floornumber,Số tầng căn đang ở (căn hộ),128922300
+Block/Tháp,block,Chuỗi; đôi khi rỗng,128922300
+Chiều ngang,width,Số (m),130144489
+Chiều dài,length,Số (m),130144489

@@ -850,16 +850,17 @@ def run_task(db: Database, task: dict):
                         db.add_scheduler_log(task_id, "listing", "INFO", msg)
 
                     res = run_async_safe(
-                        crawl_listing(
-                            task.get('start_url'),
-                            template,
-                            int(task.get('max_pages') or 1),
-                            db,
-                            None,
-                            log_callback=_log_listing,
-                            domain=task.get('domain'),
-                            loaihinh=task.get('loaihinh'),
-                            city_id=task.get('city_id'),
+                            crawl_listing(
+                                task.get('start_url'),
+                                template,
+                                int(task.get('max_pages') or 1),
+                                db,
+                                None,
+                                log_callback=_log_listing,
+                                domain=task.get('domain'),
+                                loaihinh=task.get('loaihinh'),
+                                trade_type=task.get('trade_type'),
+                                city_id=task.get('city_id'),
                             city_name=task.get('city_name'),
                             ward_id=task.get('ward_id'),
                             ward_name=task.get('ward_name'),
@@ -922,7 +923,12 @@ def run_task(db: Database, task: dict):
                     # Lấy batch nhỏ links (10 links/lần) để chia sẻ với các task khác
                     # Task sẽ loop lấy thêm links đến khi hết pending
                     BATCH_SIZE = 10
-                    all_pending = db.get_pending_links(limit=BATCH_SIZE, domain=task.get('domain'), loaihinh=task.get('loaihinh'))
+                    all_pending = db.get_pending_links(
+                        limit=BATCH_SIZE,
+                        domain=task.get('domain'),
+                        loaihinh=task.get('loaihinh'),
+                        trade_type=task.get('trade_type'),
+                    )
                     
                     if not all_pending:
                         db.add_scheduler_log(task_id, "detail", "SKIP", "No PENDING links")
@@ -937,7 +943,12 @@ def run_task(db: Database, task: dict):
                         # Callback để lấy thêm links từ DB (10 links mỗi lần)
                         # Như vậy mỗi lần chỉ "giữ" 10 links IN_PROGRESS, task khác vẫn có thể lấy được
                         def _get_more_links():
-                            return db.get_pending_links(limit=BATCH_SIZE, domain=task.get('domain'), loaihinh=task.get('loaihinh'))
+                            return db.get_pending_links(
+                                limit=BATCH_SIZE,
+                                domain=task.get('domain'),
+                                loaihinh=task.get('loaihinh'),
+                                trade_type=task.get('trade_type'),
+                            )
 
                         # Chạy với callback để lấy thêm links liên tục
                         # Browser mở 1 lần, loop lấy links đến khi hết

@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `collected_links` (
   `status` VARCHAR(50) NOT NULL DEFAULT 'PENDING',
   `domain` VARCHAR(255) DEFAULT NULL,
   `loaihinh` VARCHAR(255) DEFAULT NULL,
+  `trade_type` VARCHAR(50) DEFAULT NULL,
   `city_id` INT DEFAULT NULL,
   `city_name` VARCHAR(255) DEFAULT NULL,
   `ward_id` INT DEFAULT NULL,
@@ -25,7 +26,8 @@ CREATE TABLE IF NOT EXISTS `collected_links` (
   INDEX `idx_collected_links_url` (`url`(100)),
   INDEX `idx_collected_links_domain` (`domain`),
   INDEX `idx_collected_links_loaihinh` (`loaihinh`),
-  INDEX `idx_collected_links_status` (`status`)
+  INDEX `idx_collected_links_status` (`status`),
+  INDEX `idx_collected_links_trade_type` (`trade_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Raw scraped detail JSON
@@ -151,6 +153,8 @@ CREATE TABLE IF NOT EXISTS `scheduler_tasks` (
   `max_pages` INT DEFAULT 1,
   `domain` VARCHAR(255) DEFAULT NULL,
   `loaihinh` VARCHAR(255) DEFAULT NULL,
+  `trade_type` VARCHAR(50) DEFAULT NULL,
+  `trade_type` VARCHAR(50) DEFAULT NULL,
   `city_id` INT DEFAULT NULL,
   `city_name` VARCHAR(255) DEFAULT NULL,
   `ward_id` INT DEFAULT NULL,
