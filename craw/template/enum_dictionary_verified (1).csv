@@ -1,36 +1,36 @@
-﻿field,code,meaning,scope,evidence_example
-property_legal_document,1,Đã có sổ,Chung (nhà/đất),list_id 126902749
-property_legal_document,2,Đang chờ sổ,Chung (nhà/đất),list_id 130029901
-property_legal_document,3,Giấy tờ khác,Chung (nhà/đất),list_id 129169631
-property_legal_document,4,Hợp đồng đặt cọc,Chung (nhà/đất),list_id 127731391
-property_legal_document,5,Hợp đồng mua bán,Chung (nhà/đất),list_id 130175568
-property_legal_document,6,Sổ hồng riêng,Chung (nhà/đất),list_id 128922300
-direction,1,Đông,Hướng cửa chính,
-direction,2,Tây,Hướng cửa chính,
-direction,3,Nam,Hướng cửa chính,
-direction,4,Bắc,Hướng cửa chính,
-direction,5,Đông Bắc,Hướng cửa chính,
-direction,6,Đông Nam,Hướng cửa chính,
-direction,7,Tây Bắc,Hướng cửa chính,
-direction,8,Tây Nam,Hướng cửa chính,
-balconydirection,1,Đông,Hướng ban công (cùng enum với direction),
-balconydirection,2,Tây,Hướng ban công (cùng enum với direction),
-balconydirection,3,Nam,Hướng ban công (cùng enum với direction),
-balconydirection,4,Bắc,Hướng ban công (cùng enum với direction),
-balconydirection,5,Đông Bắc,Hướng ban công (cùng enum với direction),
-balconydirection,6,Đông Nam,Hướng ban công (cùng enum với direction),
-balconydirection,7,Tây Bắc,Hướng ban công (cùng enum với direction),
-balconydirection,8,Tây Nam,Hướng ban công (cùng enum với direction),
-property_status,1,Chưa bàn giao,Căn hộ/Chung cư,list_id 129254530
-property_status,2,Đã bàn giao,Căn hộ/Chung cư,list_id 128922300
-apartment_type,1,Chung cư,Căn hộ/Chung cư,list_id 121706887
-apartment_type,2,"Căn hộ dịch vụ, mini",Căn hộ/Chung cư,list_id 129127967
-apartment_type,4,Penthouse,Căn hộ/Chung cư,list_id 124938515
-house_type,1,"Nhà mặt phố, mặt tiền",Nhà ở,list_id 130144489
-house_type,2,"Nhà ngõ, hẻm",Nhà ở,list_id 129963041
-house_type,3,Biệt thự,Nhà ở,list_id 130028281
-house_type,4,Nhà phố liền kề,Nhà ở,list_id 129955641
-furnishing_sell,1,Nội thất cao cấp,Căn hộ/Chung cư,list_id 129127967
-furnishing_sell,2,Nội thất đầy đủ,Căn hộ/Chung cư,list_id 124938515
-furnishing_sell,3,Nhà trống,Căn hộ/Chung cư (thuê),list_id 123709107
-furnishing_sell,3,Hoàn thiện cơ bản,Mặt bằng/Văn phòng (thuê) và Nhà (bán),list_id 130134884 / 130029901
+field,code,meaning,scope,evidence_example
+property_legal_document,1,?� c� s?,Chung (nh�/??t),list_id 126902749
+property_legal_document,2,?ang ch? s?,Chung (nh�/??t),list_id 130029901
+property_legal_document,3,Gi?y t? kh�c,Chung (nh�/??t),list_id 129169631
+property_legal_document,4,H?p ??ng ??t c?c,Chung (nh�/??t),list_id 127731391
+property_legal_document,5,H?p ??ng mua b�n,Chung (nh�/??t),list_id 130175568
+property_legal_document,6,S? h?ng ri�ng,Chung (nh�/??t),list_id 128922300
+direction,1,?�ng,H??ng c?a ch�nh,
+direction,2,T�y,H??ng c?a ch�nh,
+direction,3,Nam,H??ng c?a ch�nh,
+direction,4,B?c,H??ng c?a ch�nh,
+direction,5,?�ng B?c,H??ng c?a ch�nh,
+direction,6,?�ng Nam,H??ng c?a ch�nh,
+direction,7,T�y B?c,H??ng c?a ch�nh,
+direction,8,T�y Nam,H??ng c?a ch�nh,
+balconydirection,1,?�ng,H??ng ban c�ng (c�ng enum v?i direction),
+balconydirection,2,T�y,H??ng ban c�ng (c�ng enum v?i direction),
+balconydirection,3,Nam,H??ng ban c�ng (c�ng enum v?i direction),
+balconydirection,4,B?c,H??ng ban c�ng (c�ng enum v?i direction),
+balconydirection,5,?�ng B?c,H??ng ban c�ng (c�ng enum v?i direction),
+balconydirection,6,?�ng Nam,H??ng ban c�ng (c�ng enum v?i direction),
+balconydirection,7,T�y B?c,H??ng ban c�ng (c�ng enum v?i direction),
+balconydirection,8,T�y Nam,H??ng ban c�ng (c�ng enum v?i direction),
+property_status,1,Ch?a b�n giao,C?n h?/Chung c?,list_id 129254530
+property_status,2,?� b�n giao,C?n h?/Chung c?,list_id 128922300
+apartment_type,1,Chung c?,C?n h?/Chung c?,list_id 121706887
+"apartment_type,2,""C?n h? d?ch v?, mini"",C?n h?/Chung c?,list_id 129127967"
+apartment_type,4,Penthouse,C?n h?/Chung c?,list_id 124938515
+"house_type,1,""Nh� m?t ph?, m?t ti?n"",Nh� ?,list_id 130144489"
+"house_type,2,""Nh� ng�, h?m"",Nh� ?,list_id 129963041"
+house_type,3,Bi?t th?,Nh� ?,list_id 130028281
+house_type,4,Nh� ph? li?n k?,Nh� ?,list_id 129955641
+furnishing_sell,1,N?i th?t cao c?p,C?n h?/Chung c?,list_id 129127967
+furnishing_sell,2,N?i th?t ??y ??,C?n h?/Chung c?,list_id 124938515
+furnishing_sell,3,Nh� tr?ng,C?n h?/Chung c? (thu�),list_id 123709107
+furnishing_sell,3,Ho�n thi?n c? b?n,M?t b?ng/V?n ph�ng (thu�) v� Nh� (b�n),list_id 130134884 / 130029901

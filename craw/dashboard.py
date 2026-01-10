@@ -18,10 +18,11 @@ import os
 import time
 import uuid
 import hashlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlencode, urlsplit, urlunsplit, parse_qsl
 import io
 from lxml import html as lxml_html
 import re
@@ -44,6 +45,332 @@ def parse_latlng_from_url(url: str) -> Optional[str]:
     except Exception:
         return None
     return None
+
+
+AD_JSON_FIELDS = {
+    "ad_features", "ad_labels", "business_days", "fee_type", "image_thumbnails",
+    "images", "inspection_images", "label_campaigns", "params", "pty_characteristics",
+    "seller_info", "shop", "special_display_images", "specific_service_offered", "videos",
+    "apartment_feature", "projectimages", "special_display", "stickyad_feature",
+}
+
+AD_ALL_COLUMNS = [
+    "account_id", "account_name", "account_oid", "ad_features", "ad_id", "ad_labels",
+    "area", "area_name", "area_v2", "avatar", "average_rating", "average_rating_for_seller",
+    "body", "business_days", "category", "category_name", "contain_videos", "date", "fee_type",
+    "full_name", "furnishing_sell", "house_type", "image", "image_thumbnails", "images",
+    "inspection_images", "is_sticky", "is_zalo_show", "label_campaigns", "latitude", "list_id",
+    "list_time", "location", "longitude", "number_of_images", "orig_list_time", "params", "price",
+    "price_million_per_m2", "price_string", "property_legal_document", "protection_entitlement",
+    "pty_characteristics", "pty_jupiter", "pty_map", "pty_map_modifier", "pty_project_name",
+    "region", "region_name", "region_name_v3", "region_v2", "rooms", "seller_info", "shop", "size",
+    "size_unit_string", "sold_ads", "special_display_images", "specific_service_offered", "state",
+    "status", "street_name", "street_number", "streetnumber_display", "subject", "thumbnail_image",
+    "total_rating", "total_rating_for_seller", "type", "videos", "ward", "ward_name", "ward_name_v3",
+    "webp_image",
+    "address", "apartment_feature", "apartment_type", "balconydirection", "block", "commercial_type",
+    "company_ad", "deposit", "detail_address", "direction", "floornumber", "floors", "furnishing_rent",
+    "has_video", "is_block_similar_ads_other_agent", "is_good_room", "is_main_street", "land_type",
+    "length", "living_size", "location_id", "project_oid", "projectid", "projectimages",
+    "property_status", "shop_alias", "size_unit", "special_display", "sticky_ad_type",
+    "stickyad_feature", "toilets", "unique_street_id", "unitnumber", "unitnumber_display", "width",
+    "raw_json",
+    "__source_file", "__source_o",
+]
+
+AD_SKIP_FIELDS_NO_MEDIA = {
+    "images",
+    "image_thumbnails",
+    "image",
+    "webp_image",
+    "thumbnail_image",
+    "inspection_images",
+    "special_display_images",
+    "videos",
+    "body",
+    "avatar",
+    "seller_info",
+    "subject",
+    "raw_json",
+}
+
+
+def _ad_normalize_value(key: str, val: Any) -> Any:
+    if val is None:
+        return None
+    if isinstance(val, str) and val.strip().lower() == "default":
+        return None
+    if key in AD_JSON_FIELDS:
+        return json.dumps(val, ensure_ascii=False, separators=(",", ":"))
+    if isinstance(val, bool):
+        return 1 if val else 0
+    return val
+
+
+def _ad_ensure_raw_json_column(conn, table: str) -> None:
+    with conn.cursor() as cur:
+        cur.execute(f"SHOW COLUMNS FROM `{table}` LIKE 'raw_json'")
+        if not cur.fetchone():
+            cur.execute(f"ALTER TABLE `{table}` ADD COLUMN `raw_json` JSON NULL")
+            conn.commit()
+
+
+def _ad_ensure_extra_columns(conn, table: str) -> None:
+    columns = {
+        "address": "VARCHAR(255) NULL",
+        "apartment_feature": "JSON NULL",
+        "apartment_type": "INT NULL",
+        "balconydirection": "INT NULL",
+        "block": "VARCHAR(255) NULL",
+        "commercial_type": "INT NULL",
+        "company_ad": "TINYINT(1) NULL",
+        "deposit": "BIGINT NULL",
+        "detail_address": "VARCHAR(255) NULL",
+        "direction": "INT NULL",
+        "floornumber": "INT NULL",
+        "floors": "INT NULL",
+        "furnishing_rent": "INT NULL",
+        "has_video": "TINYINT(1) NULL",
+        "is_block_similar_ads_other_agent": "TINYINT(1) NULL",
+        "is_good_room": "TINYINT(1) NULL",
+        "is_main_street": "TINYINT(1) NULL",
+        "land_type": "INT NULL",
+        "length": "DOUBLE NULL",
+        "living_size": "DOUBLE NULL",
+        "location_id": "VARCHAR(64) NULL",
+        "project_oid": "VARCHAR(64) NULL",
+        "projectid": "BIGINT NULL",
+        "projectimages": "JSON NULL",
+        "property_status": "INT NULL",
+        "shop_alias": "VARCHAR(64) NULL",
+        "size_unit": "VARCHAR(32) NULL",
+        "special_display": "JSON NULL",
+        "sticky_ad_type": "INT NULL",
+        "stickyad_feature": "JSON NULL",
+        "toilets": "INT NULL",
+        "unique_street_id": "VARCHAR(64) NULL",
+        "unitnumber": "VARCHAR(64) NULL",
+        "unitnumber_display": "VARCHAR(64) NULL",
+        "width": "DOUBLE NULL",
+    }
+
+    with conn.cursor() as cur:
+        for col, col_type in columns.items():
+            cur.execute(f"SHOW COLUMNS FROM `{table}` LIKE %s", (col,))
+            if not cur.fetchone():
+                cur.execute(f"ALTER TABLE `{table}` ADD COLUMN `{col}` {col_type}")
+        conn.commit()
+
+
+def _ad_ensure_table(conn, table: str) -> None:
+    base_types = {
+        "ad_id": "BIGINT NOT NULL",
+        "raw_json": "JSON NULL",
+        "__source_file": "VARCHAR(64) NULL",
+        "__source_o": "INT NULL",
+    }
+    columns = []
+    for col in AD_ALL_COLUMNS:
+        col_type = base_types.get(col, "LONGTEXT NULL")
+        columns.append(f"`{col}` {col_type}")
+    columns_sql = ",\n      ".join(columns)
+    sql = f"""
+    CREATE TABLE IF NOT EXISTS `{table}` (
+      {columns_sql},
+      PRIMARY KEY (`ad_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    """
+    with conn.cursor() as cur:
+        cur.execute(sql)
+        conn.commit()
+
+
+def _ad_fetch_ads(url: str):
+    headers = {
+        "accept": "application/json;version=1",
+        "origin": "https://www.nhatot.com",
+        "referer": "https://www.nhatot.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    }
+    resp = requests.get(url, headers=headers, timeout=20)
+    status = resp.status_code
+    text = ""
+    if status != 200:
+        try:
+            text = resp.text or ""
+        except Exception:
+            text = ""
+        lowered = text.lower()
+        challenge = ("challenge" in lowered) or ("captcha" in lowered) or ("cloudflare" in lowered)
+        return [], None, status, challenge, text[:500]
+    try:
+        data = resp.json()
+    except Exception:
+        text = resp.text if hasattr(resp, "text") else ""
+        return [], None, status, False, text[:500]
+    return data.get("ads", []), data.get("total"), status, False, ""
+
+
+def _ad_upsert_ads(
+    conn,
+    table: str,
+    ads: List[Dict[str, Any]],
+    source_file: str,
+    source_o: Any = None,
+    batch_size: int = 300,
+    skip_fields: Optional[set] = None,
+) -> int:
+    if not ads:
+        return 0
+
+    cols_sql = ", ".join(f"`{c}`" for c in AD_ALL_COLUMNS)
+    placeholders = ", ".join(["%s"] * len(AD_ALL_COLUMNS))
+    update_cols = [c for c in AD_ALL_COLUMNS if c != "ad_id"]
+    update_sql = ", ".join([f"`{c}`=VALUES(`{c}`)" for c in update_cols])
+
+    sql = f"""
+        INSERT INTO `{table}` ({cols_sql})
+        VALUES ({placeholders})
+        ON DUPLICATE KEY UPDATE {update_sql}
+    """
+
+    rows = []
+    skip_fields = skip_fields or set()
+    for ad in ads:
+        row = {}
+        for c in AD_ALL_COLUMNS:
+            if c == "__source_file":
+                row[c] = source_file
+            elif c == "__source_o":
+                row[c] = source_o
+            elif c in skip_fields:
+                row[c] = None
+            elif c == "raw_json":
+                row[c] = json.dumps(ad, ensure_ascii=False, separators=(",", ":"))
+            else:
+                row[c] = _ad_normalize_value(c, ad.get(c))
+        rows.append([row[c] for c in AD_ALL_COLUMNS])
+
+    with conn.cursor() as cur:
+        for i in range(0, len(rows), batch_size):
+            cur.executemany(sql, rows[i:i + batch_size])
+        conn.commit()
+    return len(rows)
+
+
+def _ad_fetch_existing_ids(conn, table: str, ad_ids: List[Any], batch_size: int = 1000) -> set:
+    if not ad_ids:
+        return set()
+    existing = set()
+    with conn.cursor() as cur:
+        for i in range(0, len(ad_ids), batch_size):
+            chunk = ad_ids[i:i + batch_size]
+            placeholders = ", ".join(["%s"] * len(chunk))
+            cur.execute(f"SELECT ad_id FROM `{table}` WHERE ad_id IN ({placeholders})", chunk)
+            rows = cur.fetchall()
+            for row in rows:
+                if isinstance(row, tuple):
+                    existing.add(row[0])
+                else:
+                    existing.add(row.get("ad_id"))
+    return existing
+
+
+def _ad_build_url_with_params(url: str, params: Dict[str, Any]) -> str:
+    parts = urlsplit(url)
+    query_pairs = parse_qsl(parts.query, keep_blank_values=True)
+    query = {k: v for k, v in query_pairs}
+    for key, value in params.items():
+        if value is None:
+            query.pop(key, None)
+        else:
+            query[key] = str(value)
+    new_query = urlencode(query, doseq=True)
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, new_query, parts.fragment))
+
+
+def _fetch_wards_for_area(db: "Database", region_id: int, area_id: int) -> List[Dict[str, Any]]:
+    conn = db.get_connection(use_database=True)
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            """
+            SELECT ward_id, name
+            FROM location_detail
+            WHERE level = 3 AND region_id = %s AND area_id = %s AND ward_id IS NOT NULL AND is_active = 1
+            ORDER BY name
+            """,
+            (region_id, area_id),
+        )
+        rows = cur.fetchall()
+        results = []
+        for row in rows:
+            if isinstance(row, tuple):
+                results.append({"ward_id": row[0], "name": row[1]})
+            else:
+                results.append({"ward_id": row.get("ward_id"), "name": row.get("name")})
+        return results
+    finally:
+        try:
+            cur.close()
+        except Exception:
+            pass
+        conn.close()
+
+
+def _fetch_areas_for_region(db: "Database", region_id: int) -> List[Dict[str, Any]]:
+    conn = db.get_connection(use_database=True)
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            """
+            SELECT area_id, name
+            FROM location_detail
+            WHERE level = 2 AND region_id = %s AND area_id IS NOT NULL AND is_active = 1
+            ORDER BY name
+            """,
+            (region_id,),
+        )
+        rows = cur.fetchall()
+        results = []
+        for row in rows:
+            if isinstance(row, tuple):
+                results.append({"area_id": row[0], "name": row[1]})
+            else:
+                results.append({"area_id": row.get("area_id"), "name": row.get("name")})
+        return results
+    finally:
+        try:
+            cur.close()
+        except Exception:
+            pass
+        conn.close()
+
+
+def _fetch_location_map(db: "Database", sql: str, params: tuple, id_key: str) -> Dict[int, str]:
+    conn = db.get_connection(use_database=True)
+    cur = conn.cursor()
+    try:
+        cur.execute(sql, params)
+        rows = cur.fetchall()
+        result: Dict[int, str] = {}
+        for row in rows:
+            if isinstance(row, tuple):
+                loc_id = row[0]
+                name = row[1]
+            else:
+                loc_id = row.get(id_key)
+                name = row.get("name")
+            if loc_id is None:
+                continue
+            result[int(loc_id)] = name or str(loc_id)
+        return result
+    finally:
+        try:
+            cur.close()
+        except Exception:
+            pass
+        conn.close()
 
 
 def _is_target_phone_domain(url: str) -> bool:
@@ -2113,9 +2440,535 @@ st.markdown("---")
 
 
 # Create tabs
-tab3, tab4, tab5, tab6, tab7 = st.tabs(
-    ["?? Crawl Listing", "?? Download Images", "Auto Schedule", "??? Watermark", "Profile Manager"]
+tab1, tab3, tab4, tab5, tab6, tab7 = st.tabs(
+    ["Task 1 - API URL", "?? Crawl Listing", "?? Download Images", "Auto Schedule", "??? Watermark", "Profile Manager"]
 )
+
+
+# ============================================
+
+with tab1:
+
+    st.header("Task 1 - API URL Builder")
+
+    st.markdown("Chon tinh/quan/xa tu bang location_detail va tu dong ghep query.")
+
+    if "db_location" not in st.session_state:
+        st.session_state.db_location = Database(
+            host="localhost",
+            user="root",
+            password="",
+            database="craw_db",
+        )
+
+    base_url = "https://gateway.chotot.com/v1/public/ad-listing?cg=1000"
+
+    try:
+        region_map = _fetch_location_map(
+            st.session_state.db_location,
+            """
+            SELECT region_id, name
+            FROM location_detail
+            WHERE level = 1 AND is_active = 1
+            ORDER BY name
+            """,
+            (),
+            "region_id",
+        )
+    except Exception as exc:
+        st.error(f"Khong load duoc location_detail: {exc}")
+        region_map = {}
+
+    select_all_regions = st.checkbox("Chon tat ca tinh", value=False, key="task1_select_all_regions")
+    excluded_regions = []
+    if select_all_regions:
+        excluded_regions = st.multiselect(
+            "Loai tru tinh",
+            options=list(region_map.keys()),
+            format_func=lambda x: region_map.get(x, str(x)),
+            key="task1_exclude_regions",
+        )
+
+    region_options = [None] + list(region_map.keys())
+    if st.session_state.get("task1_region_id") not in region_options:
+        st.session_state["task1_region_id"] = None
+    region_id = st.selectbox(
+        "Tinh/TP",
+        region_options,
+        format_func=lambda x: region_map.get(x, "(Chon tinh)"),
+        key="task1_region_id",
+    )
+
+    area_map: Dict[int, str] = {}
+    if region_id:
+        area_map = _fetch_location_map(
+            st.session_state.db_location,
+            """
+            SELECT area_id, name
+            FROM location_detail
+            WHERE level = 2 AND region_id = %s AND area_id IS NOT NULL AND is_active = 1
+            ORDER BY name
+            """,
+            (region_id,),
+            "area_id",
+        )
+    area_options = [None] + list(area_map.keys())
+    if st.session_state.get("task1_area_id") not in area_options:
+        st.session_state["task1_area_id"] = None
+    area_id = st.selectbox(
+        "Quan/Huyen",
+        area_options,
+        format_func=lambda x: area_map.get(x, "(Chon huyen)"),
+        key="task1_area_id",
+    )
+
+    ward_map: Dict[int, str] = {}
+    if region_id and area_id:
+        ward_map = _fetch_location_map(
+            st.session_state.db_location,
+            """
+            SELECT ward_id, name
+            FROM location_detail
+            WHERE level = 3 AND region_id = %s AND area_id = %s AND ward_id IS NOT NULL AND is_active = 1
+            ORDER BY name
+            """,
+            (region_id, area_id),
+            "ward_id",
+        )
+    ward_options = [None] + list(ward_map.keys())
+    if st.session_state.get("task1_ward_id") not in ward_options:
+        st.session_state["task1_ward_id"] = None
+    ward_id = st.selectbox(
+        "Xa/Phuong",
+        ward_options,
+        format_func=lambda x: ward_map.get(x, "(Chon xa)"),
+        key="task1_ward_id",
+    )
+
+    col_limit, col_offset, col_flags = st.columns([1, 1, 2])
+    with col_limit:
+        limit_value = st.number_input(
+            "Limit",
+            min_value=1,
+            step=1,
+            value=50,
+            key="task1_limit",
+        )
+    with col_offset:
+        offset_value = st.number_input(
+            "Offset (o)",
+            min_value=0,
+            step=1,
+            value=0,
+            key="task1_offset",
+        )
+    with col_flags:
+        key_param_included = st.checkbox(
+            "key_param_included=true",
+            value=False,
+            key="task1_key_param_included",
+        )
+        include_expired_ads = st.checkbox(
+            "include_expired_ads=true",
+            value=False,
+            key="task1_include_expired_ads",
+        )
+
+    params = []
+    if region_id and not select_all_regions:
+        params.append(f"region_v2={region_id}")
+    if area_id and not select_all_regions:
+        params.append(f"area_v2={area_id}")
+    if ward_id and not select_all_regions:
+        params.append(f"ward={ward_id}")
+    if limit_value:
+        params.append(f"limit={int(limit_value)}")
+    if offset_value is not None:
+        params.append(f"o={int(offset_value)}")
+    if key_param_included:
+        params.append("key_param_included=true")
+    if include_expired_ads:
+        params.append("include_expired_ads=true")
+    query_suffix = f"&{'&'.join(params)}" if params else ""
+    final_url = f"{base_url}{query_suffix}"
+
+    st.text_input("API URL", value=final_url, disabled=True)
+
+    if "task1_tasks" not in st.session_state:
+        st.session_state.task1_tasks = []
+    if "task1_next_id" not in st.session_state:
+        st.session_state.task1_next_id = 1
+
+    with st.form("task1_add_task_form"):
+        task_name_default = f"API Task {st.session_state.task1_next_id}"
+        task_name = st.text_input("Task name", value=task_name_default)
+        task_url = st.text_input("Task URL", value=final_url)
+        split_by_ward = st.checkbox("Tu dong chia task theo xa/phuong khi chi chon quan/huyen", value=True)
+        no_media_fields = st.checkbox("Khong luu anh + body + avatar + seller + subject + raw_json", value=False)
+        submit_task1 = st.form_submit_button("Add task")
+
+    if submit_task1:
+        base_name = task_name.strip() or f"API Task {st.session_state.task1_next_id}"
+        base_url = _ad_build_url_with_params(task_url.strip() or final_url, {"cg": 1000})
+        if select_all_regions:
+            region_ids = [rid for rid in region_map.keys() if rid not in set(excluded_regions or [])]
+            if not region_ids:
+                st.warning("Khong con tinh nao de chay.")
+            parent_id = st.session_state.task1_next_id
+            st.session_state.task1_next_id += 1
+            child_ids = []
+            for rid in region_ids:
+                region_name = region_map.get(rid, str(rid))
+                areas = _fetch_areas_for_region(st.session_state.db_location, rid)
+                for area in areas:
+                    area_id_val = area.get("area_id")
+                    area_name_val = area.get("name") or str(area_id_val)
+                    wards = _fetch_wards_for_area(st.session_state.db_location, rid, area_id_val)
+                    for ward in wards:
+                        task_id = st.session_state.task1_next_id
+                        st.session_state.task1_next_id += 1
+                        ward_id_val = ward.get("ward_id")
+                        ward_name_val = ward.get("name") or str(ward_id_val)
+                        url_with_all = _ad_build_url_with_params(
+                            base_url,
+                            {"region_v2": rid, "area_v2": area_id_val, "ward": ward_id_val},
+                        )
+                        child_ids.append(task_id)
+                        st.session_state.task1_tasks.append({
+                            "id": task_id,
+                            "name": f"{base_name} - {region_name} - {area_name_val} - {ward_name_val}",
+                            "url": url_with_all,
+                            "region_id": rid,
+                            "area_id": area_id_val,
+                            "ward_id": ward_id_val,
+                            "limit": int(limit_value) if limit_value else None,
+                            "offset": int(offset_value) if offset_value is not None else None,
+                            "key_param_included": bool(key_param_included),
+                            "include_expired_ads": bool(include_expired_ads),
+                            "parent_id": parent_id,
+                            "no_media_fields": bool(no_media_fields),
+                        })
+            st.session_state.task1_tasks.append({
+                "id": parent_id,
+                "name": f"{base_name} (Tat ca tinh - {len(child_ids)} task con)",
+                "url": base_url,
+                "region_id": None,
+                "area_id": None,
+                "ward_id": None,
+                "limit": int(limit_value) if limit_value else None,
+                "offset": int(offset_value) if offset_value is not None else None,
+                "key_param_included": bool(key_param_included),
+                "include_expired_ads": bool(include_expired_ads),
+                "child_ids": child_ids,
+                "no_media_fields": bool(no_media_fields),
+            })
+            st.success(f"Da tao {len(child_ids)} task con + 1 task tong (tat ca tinh).")
+        elif split_by_ward and region_id and not area_id and not ward_id:
+            areas = _fetch_areas_for_region(st.session_state.db_location, region_id)
+            if not areas:
+                st.warning("Khong tim thay quan/huyen trong khu vuc da chon.")
+            parent_id = st.session_state.task1_next_id
+            st.session_state.task1_next_id += 1
+            child_ids = []
+            for area in areas:
+                area_id_val = area.get("area_id")
+                area_name_val = area.get("name") or str(area_id_val)
+                wards = _fetch_wards_for_area(st.session_state.db_location, region_id, area_id_val)
+                for ward in wards:
+                    task_id = st.session_state.task1_next_id
+                    st.session_state.task1_next_id += 1
+                    ward_id_val = ward.get("ward_id")
+                    ward_name_val = ward.get("name") or str(ward_id_val)
+                    url_with_area_ward = _ad_build_url_with_params(
+                        base_url, {"area_v2": area_id_val, "ward": ward_id_val}
+                    )
+                    child_ids.append(task_id)
+                    st.session_state.task1_tasks.append({
+                        "id": task_id,
+                        "name": f"{base_name} - {area_name_val} - {ward_name_val}",
+                        "url": url_with_area_ward,
+                        "region_id": region_id,
+                        "area_id": area_id_val,
+                        "ward_id": ward_id_val,
+                        "limit": int(limit_value) if limit_value else None,
+                        "offset": int(offset_value) if offset_value is not None else None,
+                        "key_param_included": bool(key_param_included),
+                        "include_expired_ads": bool(include_expired_ads),
+                        "parent_id": parent_id,
+                        "no_media_fields": bool(no_media_fields),
+                    })
+            st.session_state.task1_tasks.append({
+                "id": parent_id,
+                "name": f"{base_name} (Tong {len(child_ids)} xa/phuong)",
+                "url": base_url,
+                "region_id": region_id,
+                "area_id": None,
+                "ward_id": None,
+                "limit": int(limit_value) if limit_value else None,
+                "offset": int(offset_value) if offset_value is not None else None,
+                "key_param_included": bool(key_param_included),
+                "include_expired_ads": bool(include_expired_ads),
+                "child_ids": child_ids,
+                "no_media_fields": bool(no_media_fields),
+            })
+            st.success(f"Da tao {len(child_ids)} task con + 1 task tong.")
+        elif split_by_ward and region_id and area_id and not ward_id:
+            wards = _fetch_wards_for_area(st.session_state.db_location, region_id, area_id)
+            if not wards:
+                st.warning("Khong tim thay xa/phuong trong khu vuc da chon.")
+            parent_id = st.session_state.task1_next_id
+            st.session_state.task1_next_id += 1
+            child_ids = []
+            for ward in wards:
+                task_id = st.session_state.task1_next_id
+                st.session_state.task1_next_id += 1
+                ward_id_val = ward.get("ward_id")
+                ward_name_val = ward.get("name") or str(ward_id_val)
+                url_with_ward = _ad_build_url_with_params(base_url, {"ward": ward_id_val})
+                child_ids.append(task_id)
+                st.session_state.task1_tasks.append({
+                    "id": task_id,
+                    "name": f"{base_name} - {ward_name_val}",
+                    "url": url_with_ward,
+                    "region_id": region_id,
+                    "area_id": area_id,
+                    "ward_id": ward_id_val,
+                    "limit": int(limit_value) if limit_value else None,
+                    "offset": int(offset_value) if offset_value is not None else None,
+                    "key_param_included": bool(key_param_included),
+                    "include_expired_ads": bool(include_expired_ads),
+                    "parent_id": parent_id,
+                    "no_media_fields": bool(no_media_fields),
+                })
+                st.session_state.task1_tasks.append({
+                    "id": parent_id,
+                    "name": f"{base_name} (Tong {len(child_ids)} xa/phuong)",
+                    "url": base_url,
+                "region_id": region_id,
+                "area_id": area_id,
+                "ward_id": None,
+                "limit": int(limit_value) if limit_value else None,
+                "offset": int(offset_value) if offset_value is not None else None,
+                    "key_param_included": bool(key_param_included),
+                    "include_expired_ads": bool(include_expired_ads),
+                    "child_ids": child_ids,
+                    "no_media_fields": bool(no_media_fields),
+                })
+            st.success(f"Da tao {len(child_ids)} task con + 1 task tong.")
+        else:
+            task_id = st.session_state.task1_next_id
+            st.session_state.task1_next_id += 1
+            st.session_state.task1_tasks.append({
+                "id": task_id,
+                "name": base_name,
+                "url": base_url,
+                "region_id": region_id,
+                "area_id": area_id,
+                "ward_id": ward_id,
+                "limit": int(limit_value) if limit_value else None,
+                "offset": int(offset_value) if offset_value is not None else None,
+                "key_param_included": bool(key_param_included),
+                "include_expired_ads": bool(include_expired_ads),
+                "no_media_fields": bool(no_media_fields),
+            })
+            st.success(f"Task added: {base_name}")
+
+    tasks = st.session_state.task1_tasks
+    if tasks:
+        st.subheader("Tasks")
+        df_tasks = pd.DataFrame(tasks)
+        st.dataframe(df_tasks, use_container_width=True, hide_index=True)
+
+        task_labels = [f"{t['id']} - {t['name']}" for t in tasks]
+        selected_labels = st.multiselect("Chon task", options=task_labels)
+
+        col_run_a, col_run_b, col_run_c = st.columns([1, 1, 2])
+        with col_run_a:
+            workers = st.number_input("So luong chay song song", min_value=1, max_value=10, value=3, step=1)
+        with col_run_b:
+            auto_fetch_all = st.checkbox("Tu dong lay het theo total", value=False)
+            show_progress_detail = st.checkbox("Hien tien trinh chi tiet", value=True)
+            delay_seconds = st.number_input("Delay moi lan (giay)", min_value=0.0, max_value=10.0, value=1.0, step=0.5)
+            run_clicked = st.button("Run selected")
+        with col_run_c:
+            if st.button("Clear tasks"):
+                st.session_state.task1_tasks = []
+                st.session_state.task1_next_id = 1
+                st.rerun()
+
+        if run_clicked and selected_labels:
+            if "db_adlisting" not in st.session_state:
+                st.session_state.db_adlisting = Database(
+                    host="localhost",
+                    user="root",
+                    password="",
+                    database="craw_db",
+                )
+
+            conn = st.session_state.db_adlisting.get_connection()
+            try:
+                _ad_ensure_table(conn, "ad_listing_detail")
+                _ad_ensure_raw_json_column(conn, "ad_listing_detail")
+                _ad_ensure_extra_columns(conn, "ad_listing_detail")
+            finally:
+                conn.close()
+
+            label_to_task = {f"{t['id']} - {t['name']}": t for t in tasks}
+            task_map = {t["id"]: t for t in tasks}
+            run_ids = set()
+            for lbl in selected_labels:
+                task = label_to_task.get(lbl)
+                if not task:
+                    continue
+                child_ids = task.get("child_ids") or []
+                if child_ids:
+                    for cid in child_ids:
+                        if cid in task_map:
+                            run_ids.add(cid)
+                else:
+                    run_ids.add(task.get("id"))
+            tasks_to_run = [task_map[tid] for tid in sorted(run_ids) if tid in task_map]
+            total = len(tasks_to_run)
+            progress = st.progress(0)
+            status = st.empty()
+
+            db_adlisting = st.session_state.db_adlisting
+
+            def _run_one(task: Dict[str, Any]) -> Dict[str, Any]:
+                try:
+                    total_fetched = 0
+                    total_upserted = 0
+                    total_new = 0
+                    total_dup = 0
+                    duplicate_samples = []
+                    first_total = None
+                    limit_val = task.get("limit") or 50
+                    offset_val = task.get("offset") or 0
+                    current_url = _ad_build_url_with_params(task["url"], {"cg": 1000})
+                    log_lines = []
+                    last_status = None
+
+                    while True:
+                        if auto_fetch_all:
+                            current_url = _ad_build_url_with_params(
+                                task["url"],
+                                {"cg": 1000, "limit": int(limit_val), "o": int(offset_val)},
+                            )
+                        retry_count = 0
+                        while True:
+                            ads, total, status_code, challenge, err_text = _ad_fetch_ads(current_url)
+                            last_status = status_code
+                            if status_code in (403, 429) or challenge:
+                                retry_count += 1
+                                msg = f"HTTP {status_code} - challenge" if challenge else f"HTTP {status_code}"
+                                log_lines.append(
+                                    f"{task.get('name')}: {msg} (offset {offset_val}) retry {retry_count}/3"
+                                )
+                                if retry_count >= 3:
+                                    break
+                                wait_sec = float(delay_seconds or 1.0)
+                                time.sleep(max(wait_sec, 1.0))
+                                continue
+                            break
+                        if status_code in (403, 429) or challenge:
+                            break
+                        if first_total is None and total is not None:
+                            first_total = total
+                        if not ads:
+                            break
+                        ad_ids = [ad.get("ad_id") for ad in ads if ad.get("ad_id") is not None]
+                        conn_check = db_adlisting.get_connection()
+                        try:
+                            existing_ids = _ad_fetch_existing_ids(conn_check, "ad_listing_detail", ad_ids)
+                        finally:
+                            conn_check.close()
+                        dup_count = len([aid for aid in ad_ids if aid in existing_ids])
+                        new_count = len(ad_ids) - dup_count
+                        total_dup += dup_count
+                        total_new += new_count
+                        # raw json mau da bi tat theo yeu cau UI
+                        conn_local = db_adlisting.get_connection()
+                        try:
+                            skip_fields = AD_SKIP_FIELDS_NO_MEDIA if task.get("no_media_fields") else None
+                            upserted = _ad_upsert_ads(
+                                conn_local,
+                                "ad_listing_detail",
+                                ads,
+                                source_file="api",
+                                source_o=offset_val,
+                                skip_fields=skip_fields,
+                            )
+                        finally:
+                            conn_local.close()
+                        total_fetched += len(ads)
+                        total_upserted += upserted
+                        log_lines.append(
+                            f"{task.get('name')}: da lay {total_fetched}"
+                            f"{'/' + str(first_total) if first_total else ''}"
+                            f" | offset {offset_val}"
+                        )
+
+                        if not auto_fetch_all:
+                            break
+
+                        offset_val += int(limit_val)
+                        if first_total is not None and offset_val >= int(first_total):
+                            break
+                        if delay_seconds and delay_seconds > 0:
+                            time.sleep(float(delay_seconds))
+
+                    return {
+                        "id": task.get("id"),
+                        "name": task.get("name"),
+                        "fetched": total_fetched,
+                        "upserted": total_upserted,
+                        "new_rows": total_new,
+                        "duplicate_rows": total_dup,
+                        "total": first_total,
+                        "error": "",
+                        "duplicate_samples": duplicate_samples,
+                        "log_lines": log_lines,
+                        "last_status": last_status,
+                    }
+                except Exception as exc:
+                    return {
+                        "id": task.get("id"),
+                        "name": task.get("name"),
+                        "fetched": 0,
+                        "upserted": 0,
+                        "new_rows": 0,
+                        "duplicate_rows": 0,
+                        "total": None,
+                        "error": str(exc),
+                        "duplicate_samples": [],
+                        "log_lines": [f"{task.get('name')}: ERROR {exc}"],
+                        "last_status": None,
+                    }
+
+            results = []
+            log_lines = []
+            log_box = st.empty()
+            with ThreadPoolExecutor(max_workers=int(workers)) as executor:
+                future_map = {executor.submit(_run_one, t): t for t in tasks_to_run}
+                done = 0
+                for future in as_completed(future_map):
+                    result = future.result()
+                    results.append(result)
+                    done += 1
+                    pct = int((done / total) * 100) if total else 100
+                    progress.progress(pct)
+                    status.write(f"Hoan thanh {done}/{total}")
+                    if show_progress_detail:
+                        for line in result.get("log_lines", []):
+                            log_lines.append(line)
+                        log_box.text("\n".join(log_lines[-200:]))
+
+            df_results = pd.DataFrame(results)
+            st.subheader("Run results")
+            st.dataframe(df_results, use_container_width=True, hide_index=True)
+            # Da loai bo hien raw json mau theo yeu cau UI
+
+    st.markdown("---")
 
 
 # ============================================
