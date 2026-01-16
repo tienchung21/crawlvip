@@ -74,6 +74,7 @@ AD_ALL_COLUMNS = [
     "length", "living_size", "location_id", "project_oid", "projectid", "projectimages",
     "property_status", "shop_alias", "size_unit", "special_display", "sticky_ad_type",
     "stickyad_feature", "toilets", "unique_street_id", "unitnumber", "unitnumber_display", "width",
+    "time_crawl",
     "raw_json",
     "__source_file", "__source_o",
 ]
@@ -91,6 +92,7 @@ AD_SKIP_FIELDS_NO_MEDIA = {
     "avatar",
     "seller_info",
     "subject",
+    "time_crawl",
     "raw_json",
 }
 
@@ -152,6 +154,7 @@ def _ad_ensure_extra_columns(conn, table: str) -> None:
         "unitnumber": "VARCHAR(64) NULL",
         "unitnumber_display": "VARCHAR(64) NULL",
         "width": "DOUBLE NULL",
+        "time_crawl": "DATETIME NULL",
     }
 
     with conn.cursor() as cur:
@@ -166,6 +169,7 @@ def _ad_ensure_table(conn, table: str) -> None:
     base_types = {
         "ad_id": "BIGINT NOT NULL",
         "raw_json": "JSON NULL",
+        "time_crawl": "DATETIME NULL",
         "__source_file": "VARCHAR(64) NULL",
         "__source_o": "INT NULL",
     }
@@ -243,6 +247,8 @@ def _ad_upsert_ads(
                 row[c] = source_file
             elif c == "__source_o":
                 row[c] = source_o
+            elif c == "time_crawl":
+                row[c] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             elif c in skip_fields:
                 row[c] = None
             elif c == "raw_json":

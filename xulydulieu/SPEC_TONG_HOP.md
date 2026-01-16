@@ -14,7 +14,7 @@ Tao mat bang gia chuan theo:
 - Hinh thuc giao dich (ban / thue)
 
 Xac dinh:
-egion_v2 = 13000
+egion_v2 = 13000    
 
 2. Thanh khoan
 Danh gia muc do thanh khoan theo khu vuc

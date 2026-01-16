@@ -348,7 +348,7 @@ async def run(slugs: List[Tuple[int, str, str]], rps: float, concurrency: int, m
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--rps", type=float, default=6.0)
-    parser.add_argument("--concurrency", type=int, default=4)
+    parser.add_argument("--concurrency", type=int, default=6)
     parser.add_argument("--max-retry", type=int, default=6)
     parser.add_argument("--only-new", action="store_true")
     args = parser.parse_args()
