@@ -154,14 +154,20 @@ def _ad_ensure_extra_columns(conn, table: str) -> None:
         "unitnumber": "VARCHAR(64) NULL",
         "unitnumber_display": "VARCHAR(64) NULL",
         "width": "DOUBLE NULL",
-        "time_crawl": "DATETIME NULL",
+        "time_crawl": "BIGINT NULL",
     }
 
     with conn.cursor() as cur:
         for col, col_type in columns.items():
             cur.execute(f"SHOW COLUMNS FROM `{table}` LIKE %s", (col,))
-            if not cur.fetchone():
+            row = cur.fetchone()
+            if not row:
                 cur.execute(f"ALTER TABLE `{table}` ADD COLUMN `{col}` {col_type}")
+                continue
+            if col == "time_crawl":
+                db_type = row[1] if isinstance(row, tuple) else row.get("Type")
+                if not db_type or "bigint" not in str(db_type).lower():
+                    cur.execute(f"ALTER TABLE `{table}` MODIFY COLUMN `{col}` {col_type}")
         conn.commit()
 
 
@@ -169,7 +175,7 @@ def _ad_ensure_table(conn, table: str) -> None:
     base_types = {
         "ad_id": "BIGINT NOT NULL",
         "raw_json": "JSON NULL",
-        "time_crawl": "DATETIME NULL",
+        "time_crawl": "BIGINT NULL",
         "__source_file": "VARCHAR(64) NULL",
         "__source_o": "INT NULL",
     }
@@ -248,7 +254,7 @@ def _ad_upsert_ads(
             elif c == "__source_o":
                 row[c] = source_o
             elif c == "time_crawl":
-                row[c] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                row[c] = int(time.time() * 1000)
             elif c in skip_fields:
                 row[c] = None
             elif c == "raw_json":

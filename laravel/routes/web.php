@@ -11,3 +11,4 @@ Route::get('/data-clean', [DataCleanController::class, 'index']);
 Route::post('/data-clean/convert', [DataCleanController::class, 'convert'])->name('data-clean.convert');
 Route::post('/data-clean/convert-batch', [DataCleanController::class, 'convertBatch'])->name('data-clean.convert-batch');
 Route::get('/demo', [DataCleanController::class, 'demo'])->name('demo');
+Route::get('/histogram', [DataCleanController::class, 'histogram'])->name('histogram');

@@ -29,6 +29,11 @@
         th, td { padding: 8px; border-bottom: 1px solid #2c3240; font-size: 12px; }
         th { text-align: left; color: var(--muted); }
         .note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+        .tabs { display:flex; gap:8px; margin: 4px 0 12px; }
+        .tab-btn { padding:6px 10px; background:#1b1f27; color:var(--text); border:1px solid #2c3240; border-radius:6px; cursor:pointer; font-size:12px; }
+        .tab-btn.active { background:#2563eb; border-color:#2563eb; }
+        .tab-panel { display:none; }
+        .tab-panel.active { display:block; }
     </style>
 </head>
 <body>
@@ -88,7 +93,13 @@
         </div>
     </form>
 
-    <div class="card chart-wrap">
+    <div class="tabs">
+        <button class="tab-btn active" type="button" data-tab="tab-main">Du lieu >= 10</button>
+        <button class="tab-btn" type="button" data-tab="tab-small">Du lieu < 10</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-main">
+        <div class="card chart-wrap">
         <div class="note" id="chart-note"></div>
         <div id="trend-chart" style="height:320px; width:100%;"></div>
     </div>
@@ -133,6 +144,36 @@
         @endforelse
         </tbody>
     </table>
+    </div>
+
+    <div class="tab-panel" id="tab-small">
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Khu vuc</th>
+                        <th>Phuong/xa</th>
+                        <th>Thang</th>
+                        <th>Median group</th>
+                        <th>Tong so tin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse ($smallRows as $row)
+                    <tr>
+                        <td>{{ $row->new_region_name ?? $row->new_region_id }}</td>
+                        <td>{{ $row->new_ward_name ?? $row->new_ward_id }}</td>
+                        <td>{{ $row->month }}</td>
+                        <td>{{ $row->median_group }} - {{ $medianGroupLabels[$row->median_group] ?? '' }}</td>
+                        <td>{{ number_format($row->total_rows) }}</td>
+                    </tr>
+                @empty
+                    <tr><td colspan="5">empty</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script>
@@ -229,6 +270,21 @@
 
     window.addEventListener('resize', function () {
         chart.resize();
+    });
+})();
+</script>
+<script>
+(function () {
+    var buttons = document.querySelectorAll('.tab-btn');
+    var panels = document.querySelectorAll('.tab-panel');
+    buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            buttons.forEach(function (b) { b.classList.remove('active'); });
+            panels.forEach(function (p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var target = document.getElementById(btn.dataset.tab);
+            if (target) target.classList.add('active');
+        });
     });
 })();
 </script>

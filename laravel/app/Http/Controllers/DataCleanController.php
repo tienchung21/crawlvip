@@ -135,6 +135,20 @@ class DataCleanController extends Controller
                 DB::statement("ALTER TABLE data_clean ADD INDEX {$name} ({$columns})");
             }
         }
+
+        // Thêm cột median_flag nếu chưa có
+        $medianFlagColumn = DB::selectOne("
+            SELECT 1
+            FROM information_schema.columns
+            WHERE table_schema = DATABASE()
+              AND table_name = 'data_clean'
+              AND column_name = 'median_flag'
+            LIMIT 1
+        ");
+        if (!$medianFlagColumn) {
+            DB::statement("ALTER TABLE data_clean ADD COLUMN median_flag TINYINT(1) NULL DEFAULT NULL");
+            DB::statement("ALTER TABLE data_clean ADD INDEX idx_median_flag (median_flag)");
+        }
     }
 
 
@@ -438,6 +452,32 @@ ON DUPLICATE KEY UPDATE
     converted_at = VALUES(converted_at)
 SQL;
                 DB::statement($insertSql);
+
+                // Update median_flag = 1 cho các tin được sử dụng tính trung vị (nằm trong 80% giữa)
+                $updateFlagSql = <<<SQL
+UPDATE data_clean d
+JOIN (
+    SELECT ranked.ad_id
+    FROM (
+        SELECT
+            d2.ad_id,
+            ROW_NUMBER() OVER (PARTITION BY g2.region_id, g2.ward_id, g2.median_group, g2.month ORDER BY d2.price_m2_vnd) AS rn,
+            COUNT(*) OVER (PARTITION BY g2.region_id, g2.ward_id, g2.median_group, g2.month) AS cnt
+        FROM data_clean d2
+        JOIN ({$groupSql}) AS g2
+          ON g2.region_id = d2.cf_region_id_new
+         AND g2.ward_id = d2.cf_ward_id_new
+         AND g2.median_group = d2.median_group
+         AND g2.month = d2.list_ym
+        WHERE d2.price_m2_vnd IS NOT NULL
+          AND d2.price_m2_vnd > 0
+    ) ranked
+    WHERE ranked.rn > FLOOR(ranked.cnt * 0.1) 
+      AND ranked.rn <= ranked.cnt - FLOOR(ranked.cnt * 0.1)
+) flag_data ON flag_data.ad_id = d.ad_id
+SET d.median_flag = 1
+SQL;
+                DB::statement($updateFlagSql);
             }
         } elseif ($scope === 'region') {
             // Region scope: group by region + median_group + month (bỏ type)
@@ -707,26 +747,45 @@ SQL;
             ->values();
 
         $base = DB::table('data_clean_stats')
-            ->select('month', 'median_group', 'median_price_m2', 'avg_price_m2', 'min_price_m2', 'max_price_m2', 'trimmed_rows')
+            ->select('month', 'median_group', 'median_price_m2', 'avg_price_m2', 'min_price_m2', 'max_price_m2', 'trimmed_rows', 'total_rows')
             ->where('scope', $scope)
             ->whereNotNull('month')
-            ->whereNotNull('median_group');
+            ->whereNotNull('median_group')
+            ->where('total_rows', '>=', 10);
+
+        $smallBase = DB::table('data_clean_stats')
+            ->select('month', 'median_group', 'total_rows', 'new_region_name', 'new_ward_name', 'new_region_id', 'new_ward_id')
+            ->where('scope', $scope)
+            ->whereNotNull('month')
+            ->whereNotNull('median_group')
+            ->where('total_rows', '<', 10);
 
         if (!empty($regionId)) {
             $base->where('new_region_id', (int) $regionId);
+            $smallBase->where('new_region_id', (int) $regionId);
         }
         if (!empty($wardId) && $scope === 'ward') {
             $base->where('new_ward_id', (int) $wardId);
+            $smallBase->where('new_ward_id', (int) $wardId);
         }
         if (!empty($month)) {
             $base->where('month', $month);
+            $smallBase->where('month', $month);
         }
         if (!empty($medianGroup)) {
             $base->where('median_group', (int) $medianGroup);
+            $smallBase->where('median_group', (int) $medianGroup);
         }
 
         $rows = (clone $base)
             ->orderBy('month')
+            ->get();
+
+        $smallRows = (clone $smallBase)
+            ->orderBy('total_rows')
+            ->orderBy('month')
+            ->orderBy('new_region_name')
+            ->orderBy('new_ward_name')
             ->get();
 
         $monthList = $rows->pluck('month')->unique()->values()->all();
@@ -772,6 +831,102 @@ SQL;
             'month_list' => $monthList,
             'medianGroupLabels' => $medianGroupLabels,
             'series' => $series,
+            'smallRows' => $smallRows,
+        ]);
+    }
+
+
+
+    public function histogram(Request $request)
+    {
+        $medianGroup = $request->query('median_group');
+        $category = $request->query('category');
+        $type = $request->query('type');
+
+        $medianGroupLabels = [
+            1 => 'Nha gan lien dat',
+            2 => 'Can ho',
+            3 => 'Dat',
+            4 => 'Cho thue',
+        ];
+
+        $categories = DB::table('data_clean')
+            ->whereNotNull('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
+
+        $types = DB::table('data_clean')
+            ->whereNotNull('type')
+            ->distinct()
+            ->orderBy('type')
+            ->pluck('type');
+
+        $base = DB::table('data_clean as d')
+            ->whereNotNull('d.price_m2_vnd')
+            ->where('d.price_m2_vnd', '>', 0);
+
+        if (!empty($medianGroup)) {
+            $base->where('d.median_group', (int) $medianGroup);
+        }
+        if (!empty($category)) {
+            $base->where('d.category', (int) $category);
+        }
+        if (!empty($type)) {
+            $base->where('d.type', $type);
+        }
+
+        $totalCount = (clone $base)->count();
+        $minPrice = (clone $base)->min('d.price_m2_vnd');
+        $maxPrice = (clone $base)->max('d.price_m2_vnd');
+
+        $labels = [];
+        $counts = [];
+        $avgPrices = [];
+
+        $binCount = 10;
+        $binSize = null;
+
+        if ($minPrice !== null && $maxPrice !== null) {
+            $range = $maxPrice - $minPrice;
+            $binSize = $range > 0 ? (int) ceil($range / $binCount) : 1;
+            if ($binSize < 1) {
+                $binSize = 1;
+            }
+
+            $rows = (clone $base)
+                ->selectRaw(
+                    'LEAST(?, FLOOR((d.price_m2_vnd - ?) / ?)) AS bucket, COUNT(*) AS cnt, AVG(d.price_m2_vnd) AS avg_price',
+                    [$binCount - 1, $minPrice, $binSize]
+                )
+                ->groupBy('bucket')
+                ->orderBy('bucket')
+                ->get();
+
+            foreach ($rows as $row) {
+                $bucket = (int) $row->bucket;
+                $start = $minPrice + ($bucket * $binSize);
+                $end = $bucket === $binCount - 1 ? $maxPrice : ($start + $binSize);
+                $labels[] = (string) $start . ' - ' . (string) $end;
+                $counts[] = (int) $row->cnt;
+                $avgPrices[] = $row->avg_price !== null ? (float) $row->avg_price : null;
+            }
+        }
+
+        return view('histogram', [
+            'filters' => [
+                'median_group' => $medianGroup,
+                'category' => $category,
+            'type' => $type,
+            ],
+            'medianGroupLabels' => $medianGroupLabels,
+            'categories' => $categories,
+            'types' => $types,
+            'labels' => $labels,
+            'counts' => $counts,
+            'avgPrices' => $avgPrices,
+            'binSize' => $binSize,
+            'totalCount' => $totalCount,
         ]);
     }
 
@@ -929,11 +1084,13 @@ SQL;
             'categoryLabels' => $categoryLabels,
             'types' => $types,
             'categories' => $categories,
+            'types' => $types,
             'filters' => [
                 'region_id' => $regionId,
                 'ward_id' => $wardId,
                 'type' => $type,
                 'category' => $category,
+            'type' => $type,
                 'month' => $month,
                 'limit' => $limit,
             ],
