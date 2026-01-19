@@ -81,6 +81,24 @@ def ensure_crawl_columns(db: Database):
         conn.close()
 
 
+
+
+def ensure_detail_columns(db: Database, table: str):
+    conn = db.get_connection()
+    cur = conn.cursor()
+    try:
+        columns = {
+            "trade_type": "VARCHAR(50) NULL",
+        }
+        for col, col_type in columns.items():
+            cur.execute(f"SHOW COLUMNS FROM {table} LIKE %s", (col,))
+            if not cur.fetchone():
+                cur.execute(f"ALTER TABLE {table} ADD COLUMN {col} {col_type}")
+        conn.commit()
+    finally:
+        cur.close()
+        conn.close()
+
 def fetch_table_columns(db: Database, table: str) -> Tuple[List[str], Dict[str, str]]:
     conn = db.get_connection()
     cur = conn.cursor()
@@ -137,7 +155,14 @@ def coerce_value(col: str, val, col_type: str):
     return val
 
 
-def save_detail(db: Database, table: str, data: Dict, columns: List[str], col_types: Dict[str, str]):
+def save_detail(
+    db: Database,
+    table: str,
+    data: Dict,
+    columns: List[str],
+    col_types: Dict[str, str],
+    extra_fields: Optional[Dict[str, object]] = None,
+):
     data_snake = {to_snake(k): v for k, v in data.items()}
     row = {}
     for col in columns:
@@ -147,6 +172,11 @@ def save_detail(db: Database, table: str, data: Dict, columns: List[str], col_ty
             row[col] = coerce_value(col, data_snake.get(col), col_types.get(col, ""))
         else:
             row[col] = None
+
+    if extra_fields:
+        for key, value in extra_fields.items():
+            if key in columns:
+                row[key] = coerce_value(key, value, col_types.get(key, ""))
 
     if "id" in columns and row.get("id") is None:
         raise ValueError("Missing id in response data.")
@@ -260,7 +290,7 @@ async def fetch_one(
                     if not isinstance(data, dict):
                         update_status(db, row_id, 0, status, "missing_data")
                         return "missing_data", status
-                    save_detail(db, detail_table, data, detail_columns, detail_col_types)
+                    save_detail(db, detail_table, data, detail_columns, detail_col_types, {"trade_type": trade_type})
                     update_status(db, row_id, 1, status, None)
                     return "ok", status
                 if "application/json" not in ct:
@@ -300,6 +330,7 @@ async def run(slugs: List[Tuple[int, str, str]], rps: float, concurrency: int, m
     db = Database(host="localhost", user="root", password="", database="craw_db", port=3306)
     ensure_crawl_columns(db)
     detail_table = "cenhomedetail"
+    ensure_detail_columns(db, detail_table)
     detail_columns, detail_col_types = fetch_table_columns(db, detail_table)
 
     total = len(slugs)

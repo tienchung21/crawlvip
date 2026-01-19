@@ -1,0 +1,19 @@
+=== SO SANH QUAN/HUYEN CHUA MATCH (14 vs 15) ===
+------------------------------------------------------------------------------------------
+CAFELAND (Unmatched)                          | CENHOMES (Unmatched)                         
+------------------------------------------------------------------------------------------
+Long Đất (Bà Rịa - Vũng Tàu) [ID:108]         | Phục Hoà (Cao Bằng) [ID:1464]                
+Lái Thiêu (Bình Dương) [ID:1251]              | Quảng Uyên (Cao Bằng) [ID:1463]              
+Quảng Hòa (Cao Bằng) [ID:2998]                | Cao Lãnh (Đồng Tháp) [ID:2052]               
+Đắk Nông (Đắk Lắk) [ID:10661]                 | Hồng Ngự (Đồng Tháp) [ID:2049]               
+Vân Điền (Hà Nội) [ID:79]                     | Kỳ Anh (Hà Tĩnh) [ID:1745]                   
+Mường Lay (Lai Châu) [ID:5600]                | Long Mỹ (Hậu Giang) [ID:2099]                
+Cao Lăng (Lạng Sơn) [ID:5918]                 | Nậm Nhùn (Lai Châu) [ID:1509]                
+Cam Đường (Lào Cai) [ID:5610]                 | Tam Đường (Lai Châu) [ID:1503]               
+Liên Hưng (Long An) [ID:6137]                 | Tân Uyên (Lai Châu) [ID:1508]                
+Sông Thao (Phú Thọ) [ID:7274]                 | Chi Lăng (Lạng Sơn) [ID:1559]                
+Hiên (Quảng Nam) [ID:7890]                    | Kiến Tường (Long An) [ID:1994]               
+Quảng Hà (Quảng Ninh) [ID:8267]               | Nam Trà My (Quảng Nam) [ID:1795]             
+Yên Hưng (Quảng Ninh) [ID:8271]               | Tây Trà (Quảng Ngãi) [ID:1802]               
+An Hải (TP. Hải Phòng) [ID:4654]              | Cai Lậy (Tiền Giang) [ID:2013]               
+                                              | Duyên Hải (Trà Vinh) [ID:2036]               

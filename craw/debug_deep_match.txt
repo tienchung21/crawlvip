@@ -1,0 +1,5 @@
+=== DEEP DEBUG MATCHING ===
+TARGET: Ward='Phường Tân Định', Dist='Quận 1'
+  -> Norm Ward: 'tan dinh'
+  -> Norm Dist: '1'
+

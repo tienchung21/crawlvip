@@ -7,10 +7,16 @@ use Illuminate\Support\Facades\DB;
 
 class DataCleanController extends Controller
 {
+    // CONFIGURATION: Target Table
+    // Change this back to 'data_clean_stats' for production
+    const STATS_TABLE = 'data_clean_stats_test';
+
     private function ensureStatsTable(): void
     {
+        $table = self::STATS_TABLE;
+        
         DB::statement("
-            CREATE TABLE IF NOT EXISTS data_clean_stats (
+            CREATE TABLE IF NOT EXISTS {$table} (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 scope VARCHAR(16) NOT NULL,
                 new_region_id INT NULL,
@@ -34,297 +40,64 @@ class DataCleanController extends Controller
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         " );
 
-        $medianGroupColumn = DB::selectOne("
-            SELECT 1
-            FROM information_schema.columns
-            WHERE table_schema = DATABASE()
-              AND table_name = 'data_clean_stats'
-              AND column_name = 'median_group'
-            LIMIT 1
-        ");
-        if (!$medianGroupColumn) {
-            DB::statement("
-                ALTER TABLE data_clean_stats
-                ADD COLUMN median_group TINYINT NULL
-            ");
-        }
+        $this->ensureColumn($table, 'median_group', 'TINYINT NULL');
+        $this->ensureColumn($table, 'min_price_m2', 'DECIMAL(20,2) NULL');
+        $this->ensureColumn($table, 'max_price_m2', 'DECIMAL(20,2) NULL');
 
-        $minColumn = DB::selectOne("
-            SELECT 1
-            FROM information_schema.columns
-            WHERE table_schema = DATABASE()
-              AND table_name = 'data_clean_stats'
-              AND column_name = 'min_price_m2'
-            LIMIT 1
-        ");
-        if (!$minColumn) {
-            DB::statement("
-                ALTER TABLE data_clean_stats
-                ADD COLUMN min_price_m2 DECIMAL(20,2) NULL
-            ");
-        }
-
-        $maxColumn = DB::selectOne("
-            SELECT 1
-            FROM information_schema.columns
-            WHERE table_schema = DATABASE()
-              AND table_name = 'data_clean_stats'
-              AND column_name = 'max_price_m2'
-            LIMIT 1
-        ");
-        if (!$maxColumn) {
-            DB::statement("
-                ALTER TABLE data_clean_stats
-                ADD COLUMN max_price_m2 DECIMAL(20,2) NULL
-            ");
-        }
-
-        // Drop old problematic unique keys if they exist
+        // Drop old indexes (if upgrading structure)
         $oldKeys = ['uq_ward', 'uq_region', 'uq_ward_mg', 'uq_region_mg'];
         foreach ($oldKeys as $keyName) {
-            $exists = DB::selectOne("
-                SELECT 1
-                FROM information_schema.statistics
-                WHERE table_schema = DATABASE()
-                  AND table_name = 'data_clean_stats'
-                  AND index_name = ?
-                LIMIT 1
-            ", [$keyName]);
-            if ($exists) {
-                DB::statement("ALTER TABLE data_clean_stats DROP INDEX {$keyName}");
-            }
+            $this->dropIndexIfExists($table, $keyName);
         }
 
-        // Create single unified unique key for both ward and region scopes
-        // For ward scope: new_ward_id is NOT NULL
-        // For region scope: new_ward_id is NULL (which is always unique in MySQL unique key)
-        $wardScopeIndex = DB::selectOne("
-            SELECT 1
-            FROM information_schema.statistics
-            WHERE table_schema = DATABASE()
-              AND table_name = 'data_clean_stats'
-              AND index_name = 'uq_ward_scope'
-            LIMIT 1
-        ");
-        if (!$wardScopeIndex) {
-            DB::statement("
-                ALTER TABLE data_clean_stats
-                ADD UNIQUE KEY uq_ward_scope (scope, new_region_id, new_ward_id, type, median_group, month)
-            ");
-        }
+        // Unified Unique Key
+        $this->addIndexIfNotExists($table, 'uq_ward_scope', [], true, 'scope, new_region_id, new_ward_id, type, median_group, month');
     }
 
 
     private function ensureDataCleanIndexes(): void
     {
-        $indexes = [
-            'idx_dc_ward_stats' => 'cf_region_id_new, cf_ward_id_new, type, median_group, list_ym, price_m2_vnd',
-            'idx_dc_region_stats' => 'cf_region_id_new, type, median_group, list_ym, price_m2_vnd',
-        ];
+        // Add index for cafeland_id if not exists
+        $this->addIndexIfNotExists('data_clean', 'idx_cafeland_id', ['cafeland_id']);
+        
+        // Index for performance
+        $this->addIndexIfNotExists('data_clean', 'idx_dc_cafeland_stats', ['cafeland_id', 'type', 'median_group', 'list_ym', 'price_m2_vnd']);
+        
+        // Median Flag
+        $this->ensureColumn('data_clean', 'median_flag', 'TINYINT(1) NULL DEFAULT NULL');
+        $this->addIndexIfNotExists('data_clean', 'idx_median_flag', ['median_flag']);
+    }
 
-        foreach ($indexes as $name => $columns) {
-            $exists = DB::selectOne("
-                SELECT 1
-                FROM information_schema.statistics
-                WHERE table_schema = DATABASE()
-                  AND table_name = 'data_clean'
-                  AND index_name = ?
-                LIMIT 1
-            ", [$name]);
-            if (!$exists) {
-                DB::statement("ALTER TABLE data_clean ADD INDEX {$name} ({$columns})");
-            }
-        }
-
-        // Thêm cột median_flag nếu chưa có
-        $medianFlagColumn = DB::selectOne("
-            SELECT 1
-            FROM information_schema.columns
-            WHERE table_schema = DATABASE()
-              AND table_name = 'data_clean'
-              AND column_name = 'median_flag'
-            LIMIT 1
-        ");
-        if (!$medianFlagColumn) {
-            DB::statement("ALTER TABLE data_clean ADD COLUMN median_flag TINYINT(1) NULL DEFAULT NULL");
-            DB::statement("ALTER TABLE data_clean ADD INDEX idx_median_flag (median_flag)");
+    private function ensureColumn($table, $column, $definition)
+    {
+        $exists = DB::selectOne("SELECT 1 FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ? LIMIT 1", [$table, $column]);
+        if (!$exists) {
+            DB::statement("ALTER TABLE {$table} ADD COLUMN {$column} {$definition}");
         }
     }
 
-
-    private function computeTrimmedStats($baseQuery): array
+    private function dropIndexIfExists($table, $index)
     {
-        $totalPrice = (clone $baseQuery)
-            ->whereNotNull('d.price_m2_vnd')
-            ->where('d.price_m2_vnd', '>', 0)
-            ->count();
-
-        $medianTrim = null;
-        $trimmed = 0;
-        $minTrim = null;
-        $maxTrim = null;
-        if ($totalPrice > 0) {
-            $cut = (int) floor($totalPrice * 0.1);
-            $trimmed = $totalPrice - ($cut * 2);
-
-            if ($trimmed > 0) {
-                $order = (clone $baseQuery)
-                    ->whereNotNull('d.price_m2_vnd')
-                    ->where('d.price_m2_vnd', '>', 0)
-                    ->orderBy('d.price_m2_vnd');
-
-                $minTrim = (clone $order)
-                    ->offset($cut)
-                    ->limit(1)
-                    ->value('d.price_m2_vnd');
-                $maxOffset = $cut + $trimmed - 1;
-                $maxTrim = (clone $order)
-                    ->offset($maxOffset)
-                    ->limit(1)
-                    ->value('d.price_m2_vnd');
-
-                if ($trimmed % 2 === 1) {
-                    $offset = $cut + intdiv($trimmed, 2);
-                    $medianTrim = $order->offset($offset)->value('d.price_m2_vnd');
-                } else {
-                    $offset = $cut + (int) ($trimmed / 2 - 1);
-                    $vals = $order->offset($offset)->limit(2)->pluck('d.price_m2_vnd')->values();
-
-                    if ($vals->count() === 2) {
-                        $medianTrim = ((float) $vals[0] + (float) $vals[1]) / 2;
-                    } elseif ($vals->count() === 1) {
-                        $medianTrim = (float) $vals[0];
-                    }
-                }
-            }
+        $exists = DB::selectOne("SELECT 1 FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ? LIMIT 1", [$table, $index]);
+        if ($exists) {
+            DB::statement("ALTER TABLE {$table} DROP INDEX {$index}");
         }
+    }
 
-        return [$medianTrim, $totalPrice, $trimmed, $minTrim, $maxTrim];
+    private function addIndexIfNotExists($table, $indexName, $columns, $unique = false, $rawColumns = null)
+    {
+        $exists = DB::selectOne("SELECT 1 FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ? LIMIT 1", [$table, $indexName]);
+        if (!$exists) {
+            $colStr = $rawColumns ?: implode(', ', $columns);
+            $type = $unique ? "UNIQUE KEY" : "INDEX";
+            DB::statement("ALTER TABLE {$table} ADD {$type} {$indexName} ({$colStr})");
+        }
     }
 
     public function convert(Request $request)
     {
-        $this->ensureStatsTable();
-        $this->ensureDataCleanIndexes();
-        set_time_limit(0);
-
-        $now = now();
-
-        $base = DB::table('data_clean as d');
-
-        $groups = (clone $base)
-            ->selectRaw("d.cf_region_id_new AS region_id, d.cf_region_name_new AS region_name, d.cf_ward_id_new AS ward_id, d.cf_ward_name_new AS ward_name, d.type AS type, d.median_group AS median_group, d.list_ym AS month")
-            ->whereNotNull('d.list_ym')
-            ->whereNotNull('d.cf_region_id_new')
-            ->whereNotNull('d.cf_ward_id_new')
-            ->whereNotNull('d.type')
-            ->whereNotNull('d.median_group')
-            ->groupByRaw("d.cf_region_id_new, d.cf_region_name_new, d.cf_ward_id_new, d.cf_ward_name_new, d.type, d.median_group, d.list_ym")
-            ->get();
-
-        $rows = [];
-        foreach ($groups as $g) {
-            $groupBase = (clone $base)
-                ->where('d.cf_region_id_new', $g->region_id)
-                ->where('d.cf_ward_id_new', $g->ward_id)
-                ->where('d.type', $g->type)
-                ->where('d.median_group', $g->median_group)
-                ->whereRaw("d.list_ym = ?", [$g->month]);
-
-            $avg = (clone $groupBase)
-                ->whereNotNull('d.price_m2_vnd')
-                ->where('d.price_m2_vnd', '>', 0)
-                ->avg('d.price_m2_vnd');
-
-            [$medianTrim, $totalPrice, $trimmed, $minTrim, $maxTrim] = $this->computeTrimmedStats($groupBase);
-
-            $rows[] = [
-                'scope' => 'ward',
-                'new_region_id' => $g->region_id,
-                'new_region_name' => $g->region_name,
-                'new_ward_id' => $g->ward_id,
-                'new_ward_name' => $g->ward_name,
-                'type' => $g->type,
-                'median_group' => $g->median_group,
-                'category' => null,
-                'month' => $g->month,
-                'avg_price_m2' => $avg,
-                'median_price_m2' => $medianTrim,
-                'min_price_m2' => $minTrim,
-                'max_price_m2' => $maxTrim,
-                'total_rows' => $totalPrice,
-                'trimmed_rows' => $trimmed,
-                'converted_at' => $now,
-            ];
-        }
-
-        $regionGroups = (clone $base)
-            ->selectRaw("d.cf_region_id_new AS region_id, d.cf_region_name_new AS region_name, d.type AS type, d.median_group AS median_group, d.list_ym AS month")
-            ->whereNotNull('d.list_ym')
-            ->whereNotNull('d.cf_region_id_new')
-            ->whereNotNull('d.type')
-            ->whereNotNull('d.median_group')
-            ->groupByRaw("d.cf_region_id_new, d.cf_region_name_new, d.type, d.median_group, d.list_ym")
-            ->get();
-
-        foreach ($regionGroups as $g) {
-            $groupBase = (clone $base)
-                ->where('d.cf_region_id_new', $g->region_id)
-                ->where('d.type', $g->type)
-                ->where('d.median_group', $g->median_group)
-                ->whereRaw("d.list_ym = ?", [$g->month]);
-
-            $avg = (clone $groupBase)
-                ->whereNotNull('d.price_m2_vnd')
-                ->where('d.price_m2_vnd', '>', 0)
-                ->avg('d.price_m2_vnd');
-
-            [$medianTrim, $totalPrice, $trimmed, $minTrim, $maxTrim] = $this->computeTrimmedStats($groupBase);
-
-            $rows[] = [
-                'scope' => 'region',
-                'new_region_id' => $g->region_id,
-                'new_region_name' => $g->region_name,
-                'new_ward_id' => null,
-                'new_ward_name' => null,
-                'type' => $g->type,
-                'median_group' => $g->median_group,
-                'category' => null,
-                'month' => $g->month,
-                'avg_price_m2' => $avg,
-                'median_price_m2' => $medianTrim,
-                'min_price_m2' => $minTrim,
-                'max_price_m2' => $maxTrim,
-                'total_rows' => $totalPrice,
-                'trimmed_rows' => $trimmed,
-                'converted_at' => $now,
-            ];
-        }
-
-        if (!empty($rows)) {
-            $wardRows = array_values(array_filter($rows, fn ($row) => $row['scope'] === 'ward'));
-            $regionRows = array_values(array_filter($rows, fn ($row) => $row['scope'] === 'region'));
-
-            if (!empty($wardRows)) {
-                DB::table('data_clean_stats')->upsert(
-                    $wardRows,
-                    ['scope', 'new_region_id', 'new_ward_id', 'type', 'median_group', 'month'],
-                    ['new_region_name', 'new_ward_name', 'avg_price_m2', 'median_price_m2', 'min_price_m2', 'max_price_m2', 'total_rows', 'trimmed_rows', 'converted_at']
-                );
-            }
-
-            if (!empty($regionRows)) {
-                DB::table('data_clean_stats')->upsert(
-                    $regionRows,
-                    ['scope', 'new_region_id', 'type', 'median_group', 'month'],
-                    ['new_region_name', 'avg_price_m2', 'median_price_m2', 'min_price_m2', 'max_price_m2', 'total_rows', 'trimmed_rows', 'converted_at']
-                );
-            }
-        }
-
-        return redirect()->back()->with('status', 'Converted: ' . count($rows) . ' rows');
+        return $this->convertBatch($request);
     }
-
     
     public function convertBatch(Request $request)
     {
@@ -335,33 +108,30 @@ class DataCleanController extends Controller
         $scope = $request->input('scope', 'ward');
         $offset = (int) $request->input('offset', 0);
         $limit = (int) $request->input('limit', 500);
-        if ($limit < 50) {
-            $limit = 50;
-        } elseif ($limit > 2000) {
-            $limit = 2000;
-        }
-        if ($offset < 0) {
-            $offset = 0;
-        }
+        if ($limit < 50) $limit = 50;
+        if ($limit > 2000) $limit = 2000;
+        if ($offset < 0) $offset = 0;
+
+        $targetTable = self::STATS_TABLE;
 
         $processed = 0;
         if ($scope === 'ward') {
-            // Ward scope: group by region + ward + median_group + month (bỏ type)
             $groupSql = <<<SQL
 SELECT
-    d.cf_region_id_new AS region_id,
-    d.cf_region_name_new AS region_name,
-    d.cf_ward_id_new AS ward_id,
-    d.cf_ward_name_new AS ward_name,
+    prov.city_id AS region_id,
+    prov.city_title AS region_name,
+    w.city_id AS ward_id,
+    w.city_title AS ward_name,
     d.median_group AS median_group,
     d.list_ym AS month
 FROM data_clean d
+JOIN transaction_city w ON d.cafeland_id = w.city_id
+JOIN transaction_city dist ON w.city_parent_id = dist.city_id
+JOIN transaction_city prov ON dist.city_parent_id = prov.city_id
 WHERE d.list_ym IS NOT NULL
-  AND d.cf_region_id_new IS NOT NULL
-  AND d.cf_ward_id_new IS NOT NULL
   AND d.median_group IS NOT NULL
-GROUP BY d.cf_region_id_new, d.cf_region_name_new, d.cf_ward_id_new, d.cf_ward_name_new, d.median_group, d.list_ym
-ORDER BY d.cf_region_id_new, d.cf_ward_id_new, d.median_group, d.list_ym
+GROUP BY prov.city_id, prov.city_title, w.city_id, w.city_title, d.median_group, d.list_ym
+ORDER BY prov.city_id, w.city_id, d.median_group, d.list_ym
 LIMIT {$limit} OFFSET {$offset}
 SQL;
             $countSql = "SELECT COUNT(*) AS cnt FROM ({$groupSql}) AS grp";
@@ -370,7 +140,7 @@ SQL;
 
             if ($processed > 0) {
                 $insertSql = <<<SQL
-INSERT INTO data_clean_stats (
+INSERT INTO {$targetTable} (
     scope, new_region_id, new_region_name, new_ward_id, new_ward_name, type,
     median_group, category, month, avg_price_m2, median_price_m2,
     min_price_m2, max_price_m2, total_rows, trimmed_rows, converted_at
@@ -424,9 +194,12 @@ LEFT JOIN (
                 COUNT(*) OVER (PARTITION BY g2.region_id, g2.ward_id, g2.median_group, g2.month) AS cnt,
                 AVG(d.price_m2_vnd) OVER (PARTITION BY g2.region_id, g2.ward_id, g2.median_group, g2.month) AS avg_price
             FROM data_clean d
+            JOIN transaction_city w ON d.cafeland_id = w.city_id
+            JOIN transaction_city dist ON w.city_parent_id = dist.city_id
+            JOIN transaction_city prov ON dist.city_parent_id = prov.city_id
             JOIN ({$groupSql}) AS g2
-              ON g2.region_id = d.cf_region_id_new
-             AND g2.ward_id = d.cf_ward_id_new
+              ON g2.region_id = prov.city_id
+             AND g2.ward_id = w.city_id
              AND g2.median_group = d.median_group
              AND g2.month = d.list_ym
             WHERE d.price_m2_vnd IS NOT NULL
@@ -452,10 +225,13 @@ ON DUPLICATE KEY UPDATE
     converted_at = VALUES(converted_at)
 SQL;
                 DB::statement($insertSql);
-
-                // Update median_flag = 1 cho các tin được sử dụng tính trung vị (nằm trong 80% giữa)
+                
+                // Update Median Flag (Still on data_clean, but guided by what was inserted/calculated)
                 $updateFlagSql = <<<SQL
 UPDATE data_clean d
+JOIN transaction_city w ON d.cafeland_id = w.city_id
+JOIN transaction_city dist ON w.city_parent_id = dist.city_id
+JOIN transaction_city prov ON dist.city_parent_id = prov.city_id
 JOIN (
     SELECT ranked.ad_id
     FROM (
@@ -464,9 +240,12 @@ JOIN (
             ROW_NUMBER() OVER (PARTITION BY g2.region_id, g2.ward_id, g2.median_group, g2.month ORDER BY d2.price_m2_vnd) AS rn,
             COUNT(*) OVER (PARTITION BY g2.region_id, g2.ward_id, g2.median_group, g2.month) AS cnt
         FROM data_clean d2
+        JOIN transaction_city w2 ON d2.cafeland_id = w2.city_id
+        JOIN transaction_city dist2 ON w2.city_parent_id = dist2.city_id
+        JOIN transaction_city prov2 ON dist2.city_parent_id = prov2.city_id
         JOIN ({$groupSql}) AS g2
-          ON g2.region_id = d2.cf_region_id_new
-         AND g2.ward_id = d2.cf_ward_id_new
+          ON g2.region_id = prov2.city_id
+         AND g2.ward_id = w2.city_id
          AND g2.median_group = d2.median_group
          AND g2.month = d2.list_ym
         WHERE d2.price_m2_vnd IS NOT NULL
@@ -480,19 +259,20 @@ SQL;
                 DB::statement($updateFlagSql);
             }
         } elseif ($scope === 'region') {
-            // Region scope: group by region + median_group + month (bỏ type)
-            $groupSql = <<<SQL
+             $groupSql = <<<SQL
 SELECT
-    d.cf_region_id_new AS region_id,
-    d.cf_region_name_new AS region_name,
+    prov.city_id AS region_id,
+    prov.city_title AS region_name,
     d.median_group AS median_group,
     d.list_ym AS month
 FROM data_clean d
+JOIN transaction_city w ON d.cafeland_id = w.city_id
+JOIN transaction_city dist ON w.city_parent_id = dist.city_id
+JOIN transaction_city prov ON dist.city_parent_id = prov.city_id
 WHERE d.list_ym IS NOT NULL
-  AND d.cf_region_id_new IS NOT NULL
   AND d.median_group IS NOT NULL
-GROUP BY d.cf_region_id_new, d.cf_region_name_new, d.median_group, d.list_ym
-ORDER BY d.cf_region_id_new, d.median_group, d.list_ym
+GROUP BY prov.city_id, prov.city_title, d.median_group, d.list_ym
+ORDER BY prov.city_id, d.median_group, d.list_ym
 LIMIT {$limit} OFFSET {$offset}
 SQL;
             $countSql = "SELECT COUNT(*) AS cnt FROM ({$groupSql}) AS grp";
@@ -500,8 +280,8 @@ SQL;
             $processed = (int) ($countRow->cnt ?? 0);
 
             if ($processed > 0) {
-                $insertSql = <<<SQL
-INSERT INTO data_clean_stats (
+                 $insertSql = <<<SQL
+INSERT INTO {$targetTable} (
     scope, new_region_id, new_region_name, new_ward_id, new_ward_name, type,
     median_group, category, month, avg_price_m2, median_price_m2,
     min_price_m2, max_price_m2, total_rows, trimmed_rows, converted_at
@@ -553,8 +333,11 @@ LEFT JOIN (
                 COUNT(*) OVER (PARTITION BY g2.region_id, g2.median_group, g2.month) AS cnt,
                 AVG(d.price_m2_vnd) OVER (PARTITION BY g2.region_id, g2.median_group, g2.month) AS avg_price
             FROM data_clean d
+            JOIN transaction_city w ON d.cafeland_id = w.city_id
+            JOIN transaction_city dist ON w.city_parent_id = dist.city_id
+            JOIN transaction_city prov ON dist.city_parent_id = prov.city_id
             JOIN ({$groupSql}) AS g2
-              ON g2.region_id = d.cf_region_id_new
+              ON g2.region_id = prov.city_id
              AND g2.median_group = d.median_group
              AND g2.month = d.list_ym
             WHERE d.price_m2_vnd IS NOT NULL
@@ -579,27 +362,29 @@ ON DUPLICATE KEY UPDATE
 SQL;
                 DB::statement($insertSql);
             }
-        } else {
-            // region_total scope: group by region + month only (toàn tỉnh, không phân theo median_group)
+        
+        } elseif ($scope === 'region_total') {
             $groupSql = <<<SQL
 SELECT
-    d.cf_region_id_new AS region_id,
-    d.cf_region_name_new AS region_name,
+    prov.city_id AS region_id,
+    prov.city_title AS region_name,
     d.list_ym AS month
 FROM data_clean d
+JOIN transaction_city w ON d.cafeland_id = w.city_id
+JOIN transaction_city dist ON w.city_parent_id = dist.city_id
+JOIN transaction_city prov ON dist.city_parent_id = prov.city_id
 WHERE d.list_ym IS NOT NULL
-  AND d.cf_region_id_new IS NOT NULL
-GROUP BY d.cf_region_id_new, d.cf_region_name_new, d.list_ym
-ORDER BY d.cf_region_id_new, d.list_ym
+GROUP BY prov.city_id, prov.city_title, d.list_ym
+ORDER BY prov.city_id, d.list_ym
 LIMIT {$limit} OFFSET {$offset}
 SQL;
-            $countSql = "SELECT COUNT(*) AS cnt FROM ({$groupSql}) AS grp";
+             $countSql = "SELECT COUNT(*) AS cnt FROM ({$groupSql}) AS grp";
             $countRow = DB::selectOne($countSql);
             $processed = (int) ($countRow->cnt ?? 0);
 
             if ($processed > 0) {
-                $insertSql = <<<SQL
-INSERT INTO data_clean_stats (
+                 $insertSql = <<<SQL
+INSERT INTO {$targetTable} (
     scope, new_region_id, new_region_name, new_ward_id, new_ward_name, type,
     median_group, category, month, avg_price_m2, median_price_m2,
     min_price_m2, max_price_m2, total_rows, trimmed_rows, converted_at
@@ -649,8 +434,11 @@ LEFT JOIN (
                 COUNT(*) OVER (PARTITION BY g2.region_id, g2.month) AS cnt,
                 AVG(d.price_m2_vnd) OVER (PARTITION BY g2.region_id, g2.month) AS avg_price
             FROM data_clean d
+            JOIN transaction_city w ON d.cafeland_id = w.city_id
+            JOIN transaction_city dist ON w.city_parent_id = dist.city_id
+            JOIN transaction_city prov ON dist.city_parent_id = prov.city_id
             JOIN ({$groupSql}) AS g2
-              ON g2.region_id = d.cf_region_id_new
+              ON g2.region_id = prov.city_id
              AND g2.month = d.list_ym
             WHERE d.price_m2_vnd IS NOT NULL
               AND d.price_m2_vnd > 0
@@ -674,7 +462,8 @@ SQL;
                 DB::statement($insertSql);
             }
         }
-
+        
+        // Scope Management
         $doneScope = $processed < $limit;
         $nextScope = $scope;
         $nextOffset = $offset + $processed;
@@ -691,7 +480,7 @@ SQL;
         }
 
         return response()->json([
-                        'offset' => $offset,
+            'offset' => $offset,
             'processed' => $processed,
             'inserted' => $processed,
             'done_scope' => $doneScope,
@@ -701,236 +490,10 @@ SQL;
         ]);
     }
 
-
-
-    public function demo(Request $request)
-    {
-        $regionId = $request->query('region_id');
-        $wardId = $request->query('ward_id');
-        $month = $request->query('month');
-        $medianGroup = $request->query('median_group');
-        $scope = 'ward';
-
-        $medianGroupLabels = [
-            1 => 'Nha gan lien dat',
-            2 => 'Can ho',
-            3 => 'Dat',
-            4 => 'Cho thue',
-        ];
-
-        $regions = DB::table('data_clean_stats')
-            ->selectRaw('new_region_id AS region_id, COALESCE(new_region_name, CAST(new_region_id AS CHAR)) AS region_name')
-            ->where('scope', $scope)
-            ->whereNotNull('new_region_id')
-            ->distinct()
-            ->orderBy('region_name')
-            ->get();
-
-        $wards = collect();
-        if (!empty($regionId)) {
-            $wards = DB::table('data_clean_stats')
-                ->selectRaw('new_ward_id AS ward_id, COALESCE(new_ward_name, CAST(new_ward_id AS CHAR)) AS ward_name')
-                ->where('scope', 'ward')
-                ->where('new_region_id', (int) $regionId)
-                ->whereNotNull('new_ward_id')
-                ->distinct()
-                ->orderBy('ward_name')
-                ->get();
-        }
-
-        $months = DB::table('data_clean_stats')
-            ->where('scope', $scope)
-            ->whereNotNull('month')
-            ->distinct()
-            ->orderBy('month')
-            ->pluck('month')
-            ->values();
-
-        $base = DB::table('data_clean_stats')
-            ->select('month', 'median_group', 'median_price_m2', 'avg_price_m2', 'min_price_m2', 'max_price_m2', 'trimmed_rows', 'total_rows')
-            ->where('scope', $scope)
-            ->whereNotNull('month')
-            ->whereNotNull('median_group')
-            ->where('total_rows', '>=', 10);
-
-        $smallBase = DB::table('data_clean_stats')
-            ->select('month', 'median_group', 'total_rows', 'new_region_name', 'new_ward_name', 'new_region_id', 'new_ward_id')
-            ->where('scope', $scope)
-            ->whereNotNull('month')
-            ->whereNotNull('median_group')
-            ->where('total_rows', '<', 10);
-
-        if (!empty($regionId)) {
-            $base->where('new_region_id', (int) $regionId);
-            $smallBase->where('new_region_id', (int) $regionId);
-        }
-        if (!empty($wardId) && $scope === 'ward') {
-            $base->where('new_ward_id', (int) $wardId);
-            $smallBase->where('new_ward_id', (int) $wardId);
-        }
-        if (!empty($month)) {
-            $base->where('month', $month);
-            $smallBase->where('month', $month);
-        }
-        if (!empty($medianGroup)) {
-            $base->where('median_group', (int) $medianGroup);
-            $smallBase->where('median_group', (int) $medianGroup);
-        }
-
-        $rows = (clone $base)
-            ->orderBy('month')
-            ->get();
-
-        $smallRows = (clone $smallBase)
-            ->orderBy('total_rows')
-            ->orderBy('month')
-            ->orderBy('new_region_name')
-            ->orderBy('new_ward_name')
-            ->get();
-
-        $monthList = $rows->pluck('month')->unique()->values()->all();
-        $series = [];
-        foreach ($medianGroupLabels as $group => $label) {
-            $series[$group] = [
-                'label' => $label,
-                'values' => array_fill(0, count($monthList), null),
-                'avg' => array_fill(0, count($monthList), null),
-                'min' => array_fill(0, count($monthList), null),
-                'max' => array_fill(0, count($monthList), null),
-                'trimmed' => array_fill(0, count($monthList), null),
-            ];
-        }
-
-        $monthIndex = array_flip($monthList);
-        foreach ($rows as $row) {
-            $group = (int) $row->median_group;
-            if (!isset($series[$group])) {
-                continue;
-            }
-            $idx = $monthIndex[$row->month] ?? null;
-            if ($idx === null) {
-                continue;
-            }
-            $series[$group]['values'][$idx] = $row->median_price_m2 !== null ? (float) $row->median_price_m2 : null;
-            $series[$group]['avg'][$idx] = $row->avg_price_m2 !== null ? (float) $row->avg_price_m2 : null;
-            $series[$group]['min'][$idx] = $row->min_price_m2 !== null ? (float) $row->min_price_m2 : null;
-            $series[$group]['max'][$idx] = $row->max_price_m2 !== null ? (float) $row->max_price_m2 : null;
-            $series[$group]['trimmed'][$idx] = $row->trimmed_rows !== null ? (int) $row->trimmed_rows : null;
-        }
-
-        return view('demo', [
-            'regions' => $regions,
-            'wards' => $wards,
-            'filters' => [
-                'region_id' => $regionId,
-                'ward_id' => $wardId,
-                'month' => $month,
-                'median_group' => $medianGroup,
-                            ],
-            'months' => $months,
-            'month_list' => $monthList,
-            'medianGroupLabels' => $medianGroupLabels,
-            'series' => $series,
-            'smallRows' => $smallRows,
-        ]);
+    public function demo(Request $request) {
+        return $this->index($request); // Placeholder
     }
-
-
-
-    public function histogram(Request $request)
-    {
-        $medianGroup = $request->query('median_group');
-        $category = $request->query('category');
-        $type = $request->query('type');
-
-        $medianGroupLabels = [
-            1 => 'Nha gan lien dat',
-            2 => 'Can ho',
-            3 => 'Dat',
-            4 => 'Cho thue',
-        ];
-
-        $categories = DB::table('data_clean')
-            ->whereNotNull('category')
-            ->distinct()
-            ->orderBy('category')
-            ->pluck('category');
-
-        $types = DB::table('data_clean')
-            ->whereNotNull('type')
-            ->distinct()
-            ->orderBy('type')
-            ->pluck('type');
-
-        $base = DB::table('data_clean as d')
-            ->whereNotNull('d.price_m2_vnd')
-            ->where('d.price_m2_vnd', '>', 0);
-
-        if (!empty($medianGroup)) {
-            $base->where('d.median_group', (int) $medianGroup);
-        }
-        if (!empty($category)) {
-            $base->where('d.category', (int) $category);
-        }
-        if (!empty($type)) {
-            $base->where('d.type', $type);
-        }
-
-        $totalCount = (clone $base)->count();
-        $minPrice = (clone $base)->min('d.price_m2_vnd');
-        $maxPrice = (clone $base)->max('d.price_m2_vnd');
-
-        $labels = [];
-        $counts = [];
-        $avgPrices = [];
-
-        $binCount = 10;
-        $binSize = null;
-
-        if ($minPrice !== null && $maxPrice !== null) {
-            $range = $maxPrice - $minPrice;
-            $binSize = $range > 0 ? (int) ceil($range / $binCount) : 1;
-            if ($binSize < 1) {
-                $binSize = 1;
-            }
-
-            $rows = (clone $base)
-                ->selectRaw(
-                    'LEAST(?, FLOOR((d.price_m2_vnd - ?) / ?)) AS bucket, COUNT(*) AS cnt, AVG(d.price_m2_vnd) AS avg_price',
-                    [$binCount - 1, $minPrice, $binSize]
-                )
-                ->groupBy('bucket')
-                ->orderBy('bucket')
-                ->get();
-
-            foreach ($rows as $row) {
-                $bucket = (int) $row->bucket;
-                $start = $minPrice + ($bucket * $binSize);
-                $end = $bucket === $binCount - 1 ? $maxPrice : ($start + $binSize);
-                $labels[] = (string) $start . ' - ' . (string) $end;
-                $counts[] = (int) $row->cnt;
-                $avgPrices[] = $row->avg_price !== null ? (float) $row->avg_price : null;
-            }
-        }
-
-        return view('histogram', [
-            'filters' => [
-                'median_group' => $medianGroup,
-                'category' => $category,
-            'type' => $type,
-            ],
-            'medianGroupLabels' => $medianGroupLabels,
-            'categories' => $categories,
-            'types' => $types,
-            'labels' => $labels,
-            'counts' => $counts,
-            'avgPrices' => $avgPrices,
-            'binSize' => $binSize,
-            'totalCount' => $totalCount,
-        ]);
-    }
-
-
+    
     public function index(Request $request)
     {
         $regionId = $request->query('region_id');
@@ -938,65 +501,53 @@ SQL;
         $type = $request->query('type');
         $category = $request->query('category');
         $month = $request->query('month');
-        $typeLabels = [
-            's' => 'ban',
-            'u' => 'thue',
-        ];
-        $categoryLabels = [
-            1000 => 'Bat dong san (Chung)',
-            1010 => 'Can ho/Chung cu',
-            1020 => 'Nha o/Nha pho, biet thu, nha hem',
-            1030 => 'Dat/Dat nen, dat tho cu',
-            1040 => 'Van phong/Mat bang/Cho thue kinh doanh',
-            1050 => 'Phong tro/Cho thue phong tro, o ghep',
-        ];
         $limit = (int) $request->query('limit', 200);
-        if ($limit < 10) {
-            $limit = 10;
-        } elseif ($limit > 10000) {
-            $limit = 10000;
-        }
+        if ($limit < 10) $limit = 10;
+        if ($limit > 10000) $limit = 10000;
 
-                $regions = DB::table('data_clean')
-            ->selectRaw('cf_region_id_new AS city_id, COALESCE(cf_region_name_new, CAST(cf_region_id_new AS CHAR)) AS city_title_news')
-            ->whereNotNull('cf_region_id_new')
-            ->distinct()
-            ->orderBy('city_title_news')
+        $regions = DB::table('transaction_city')
+            ->select('city_id', 'city_title as city_title_news')
+            ->where('city_parent_id', 0)
+            ->orderBy('city_title')
             ->get();
 
-                $wards = collect();
+        $wards = collect();
         if ($regionId) {
-            $wards = DB::table('data_clean')
-                ->selectRaw('cf_ward_id_new AS city_id, COALESCE(cf_ward_name_new, CAST(cf_ward_id_new AS CHAR)) AS new_name')
-                ->where('cf_region_id_new', $regionId)
-                ->whereNotNull('cf_ward_id_new')
-                ->distinct()
-                ->orderBy('new_name')
+             $wards = DB::table('transaction_city as w')
+                ->join('transaction_city as dist', 'w.city_parent_id', '=', 'dist.city_id')
+                ->where('dist.city_parent_id', $regionId)
+                ->select('w.city_id', 'w.city_title as new_name')
+                ->orderBy('w.city_title')
                 ->get();
         }
-
+        
         $months = DB::table('data_clean')
             ->select(DB::raw("list_ym as ym"))
             ->whereNotNull('list_ym')
             ->distinct()
             ->orderBy('ym', 'desc')
-            ->pluck('ym');        $base = DB::table('data_clean as d');
+            ->pluck('ym');
+
+        $base = DB::table('data_clean as d');
+        
         if ($wardId) {
-            $base->where('d.cf_ward_id_new', (int) $wardId);
+            $base->where('d.cafeland_id', (int) $wardId);
         } elseif ($regionId) {
-            $base->where('d.cf_region_id_new', (int) $regionId);
+            $base->join('transaction_city as w', 'd.cafeland_id', '=', 'w.city_id')
+                 ->join('transaction_city as dist', 'w.city_parent_id', '=', 'dist.city_id')
+                 ->where('dist.city_parent_id', (int) $regionId);
         }
 
-        $optionBase = clone $base;
         if (!empty($month)) {
-            $optionBase->whereRaw("d.list_ym = ?", [$month]);
+            $base->whereRaw("d.list_ym = ?", [$month]);
         }
-        $types = (clone $optionBase)
+        
+         $types = (clone $base)
             ->whereNotNull('d.type')
             ->distinct()
             ->orderBy('d.type')
             ->pluck('d.type');
-        $categories = (clone $optionBase)
+        $categories = (clone $base)
             ->whereNotNull('d.category')
             ->distinct()
             ->orderBy('d.category')
@@ -1008,69 +559,68 @@ SQL;
         if (!empty($category)) {
             $base->where('d.category', $category);
         }
-        if (!empty($month)) {
-            $base->whereRaw("d.list_ym = ?", [$month]);
-        }
-
-        $rows = (clone $base)
-            ->select(
-                'd.ad_id',
-                'd.list_id',
-                'd.list_time',
-                'd.orig_list_time',
-                DB::raw("d.list_ym AS list_month"),
-                'd.region_v2',
-                'd.area_v2',
-                'd.ward',
-                'd.street_name',
-                'd.street_number',
-                'd.unique_street_id',
-                'd.category',
-                'd.size',
-                'd.price',
-                'd.type',
-                'd.time_crawl',
-                'd.price_m2_vnd'
-            )
-            ->orderBy('d.list_time', 'desc')
-            ->limit($limit)
-            ->get();
 
         $total = (clone $base)->count();
         $avg = (clone $base)->whereNotNull('d.price_m2_vnd')->avg('d.price_m2_vnd');
+        
+        $selects = [
+            'd.ad_id', 'd.list_id', 'd.list_time', 'd.orig_list_time',
+            DB::raw("d.list_ym AS list_month"),
+            'd.region_v2', 'd.area_v2', 'd.ward',
+            'd.street_name', 'd.street_number', 'd.unique_street_id',
+            'd.category', 'd.size', 'd.price', 'd.type', 'd.time_crawl', 'd.price_m2_vnd',
+            'd.cafeland_id'
+        ];
+        
+        $rowsBase = (clone $base)
+            ->leftJoin('transaction_city as w_disp', 'd.cafeland_id', '=', 'w_disp.city_id')
+            ->addSelect($selects)
+            ->addSelect('w_disp.city_title as cf_ward_name_new');
 
+        $rows = $rowsBase
+            ->orderBy('d.list_time', 'desc')
+            ->limit($limit)
+            ->get();
+            
         $medianTrim = null;
-
         $totalPrice = (clone $base)
             ->whereNotNull('d.price_m2_vnd')
             ->where('d.price_m2_vnd', '>', 0)
             ->count();
-
+            
         if ($totalPrice > 0) {
-            $cut = (int) floor($totalPrice * 0.1);
-            $trimmed = $totalPrice - ($cut * 2);
-
-            if ($trimmed > 0) {
-                $order = (clone $base)
+             $cut = (int) floor($totalPrice * 0.1);
+             $trimmed = $totalPrice - ($cut * 2);
+             if ($trimmed > 0) {
+                 $order = (clone $base)
                     ->whereNotNull('d.price_m2_vnd')
                     ->where('d.price_m2_vnd', '>', 0)
                     ->orderBy('d.price_m2_vnd');
-
-                if ($trimmed % 2 === 1) {
+                 
+                  if ($trimmed % 2 === 1) {
                     $offset = $cut + intdiv($trimmed, 2);
                     $medianTrim = $order->offset($offset)->value('d.price_m2_vnd');
                 } else {
                     $offset = $cut + (int) ($trimmed / 2 - 1);
                     $vals = $order->offset($offset)->limit(2)->pluck('d.price_m2_vnd')->values();
-
                     if ($vals->count() === 2) {
                         $medianTrim = ((float) $vals[0] + (float) $vals[1]) / 2;
                     } elseif ($vals->count() === 1) {
                         $medianTrim = (float) $vals[0];
                     }
                 }
-            }
+             }
         }
+        
+        $typeLabels = ['s' => 'ban', 'u' => 'thue'];
+        $categoryLabels = [
+            1000 => 'Bat dong san (Chung)',
+            1010 => 'Can ho/Chung cu',
+            1020 => 'Nha o/Nha pho, biet thu, nha hem',
+            1030 => 'Dat/Dat nen, dat tho cu',
+            1040 => 'Van phong/Mat bang/Cho thue kinh doanh',
+            1050 => 'Phong tro/Cho thue phong tro, o ghep',
+        ];
 
         return view('data_clean', [
             'regions' => $regions,
@@ -1084,17 +634,71 @@ SQL;
             'categoryLabels' => $categoryLabels,
             'types' => $types,
             'categories' => $categories,
-            'types' => $types,
             'filters' => [
                 'region_id' => $regionId,
                 'ward_id' => $wardId,
                 'type' => $type,
                 'category' => $category,
-            'type' => $type,
                 'month' => $month,
                 'limit' => $limit,
             ],
         ]);
     }
+    
+    public function histogram(Request $request) {
+        $medianGroup = $request->query('median_group');
+        $category = $request->query('category');
+        $type = $request->query('type');
+        
+        $base = DB::table('data_clean as d')
+            ->whereNotNull('d.price_m2_vnd')
+            ->where('d.price_m2_vnd', '>', 0);
+
+        if (!empty($medianGroup)) $base->where('d.median_group', (int) $medianGroup);
+        if (!empty($category)) $base->where('d.category', (int) $category);
+        if (!empty($type)) $base->where('d.type', $type);
+        
+        $totalCount = (clone $base)->count();
+        $minPrice = (clone $base)->min('d.price_m2_vnd');
+        $maxPrice = (clone $base)->max('d.price_m2_vnd');
+        
+        $labels = []; $counts = []; $avgPrices = []; $binSize = null;
+        $binCount = 10;
+        
+         if ($minPrice !== null && $maxPrice !== null) {
+            $range = $maxPrice - $minPrice;
+            $binSize = $range > 0 ? (int) ceil($range / $binCount) : 1;
+            if ($binSize < 1) $binSize = 1;
+
+            $rows = (clone $base)
+                ->selectRaw(
+                    'LEAST(?, FLOOR((d.price_m2_vnd - ?) / ?)) AS bucket, COUNT(*) AS cnt, AVG(d.price_m2_vnd) AS avg_price',
+                    [$binCount - 1, $minPrice, $binSize]
+                )
+                ->groupBy('bucket')
+                ->orderBy('bucket')
+                ->get();
+                
+            foreach ($rows as $row) {
+                $bucket = (int) $row->bucket;
+                $start = $minPrice + ($bucket * $binSize);
+                $end = $bucket === $binCount - 1 ? $maxPrice : ($start + $binSize);
+                $labels[] = (string) $start . ' - ' . (string) $end;
+                $counts[] = (int) $row->cnt;
+                $avgPrices[] = $row->avg_price !== null ? (float) $row->avg_price : null;
+            }
+        }
+        
+        return view('histogram', [
+            'filters' => ['median_group'=>$medianGroup, 'category'=>$category, 'type'=>$type],
+            'medianGroupLabels' => [1=>'Nha gan lien',2=>'Can ho',3=>'Dat',4=>'Cho thue'],
+            'categories' => DB::table('data_clean')->whereNotNull('category')->distinct()->orderBy('category')->pluck('category'),
+            'types' => DB::table('data_clean')->whereNotNull('type')->distinct()->orderBy('type')->pluck('type'),
+            'labels' => $labels,
+            'counts' => $counts,
+            'avgPrices' => $avgPrices,
+            'binSize' => $binSize,
+            'totalCount' => $totalCount,
+        ]);
+    }
 }
- 

@@ -1,0 +1,45 @@
+=== DANH SACH SAI LECH (WARNINGS) ===
+1. Huyện lệch: 'Huyện Mèo Vạc' vs 'Mèo Vạt'
+   - Nhatot:   Xã Pải Lủng (Xã Đồng Văn mới) (Huyện Mèo Vạc, Hà Giang (Tuyên Quang mới))
+   - Cafeland: Pải Lủng (Mèo Vạt, Hà Giang)
+--------------------------------------------------
+2. Huyện lệch: 'Huyện Kông Chro' vs 'Krông Chro'
+   - Nhatot:   Xã Đăk Song (Huyện Kông Chro, Gia Lai)
+   - Cafeland: Đắk Song (Krông Chro, Gia Lai)
+--------------------------------------------------
+3. Huyện lệch: 'Huyện Ia Pa' vs 'La Pa'
+   - Nhatot:   Xã Ia KDăm (Xã Ia Tul mới) (Huyện Ia Pa, Gia Lai)
+   - Cafeland: Ia Kdăm (La Pa, Gia Lai)
+--------------------------------------------------
+4. Huyện lệch: 'Huyện Tam Đường' vs 'TP. Lai Châu'
+   - Nhatot:   Xã Sùng Phài (Xã Bình Lư mới) (Huyện Tam Đường, Lai Châu)
+   - Cafeland: Sùng Phài (TP. Lai Châu, Lai Châu)
+--------------------------------------------------
+5. Huyện lệch: 'Huyện Ea Kar' vs 'Ea Kra'
+   - Nhatot:   Xã Ea Păl (Huyện Ea Kar, Đắk Lắk)
+   - Cafeland: Ea Păl (Ea Kra, Đắk Lắk)
+--------------------------------------------------
+6. Huyện lệch: 'Huyện Than Uyên' vs 'Mường Lay'
+   - Nhatot:   Xã Tà Hừa (Xã Mường Kim mới) (Huyện Than Uyên, Lai Châu)
+   - Cafeland: Tà Hừa (Mường Lay, Lai Châu)
+--------------------------------------------------
+7. Huyện lệch: 'Thành phố Qui Nhơn' vs 'Quy Nhơn'
+   - Nhatot:   Phường Lê Lợi (P. Quy Nhơn mới) (Thành phố Qui Nhơn, Bình Định (Gia Lai mới))
+   - Cafeland: Lê Lợi (Quy Nhơn, Bình Định)
+--------------------------------------------------
+8. Huyện lệch: 'Huyện Bù Đăng' vs 'Bù Ðăng'
+   - Nhatot:   Xã Phú Sơn (Xã Thọ Sơn mới) (Huyện Bù Đăng, Bình Phước (Đồng Nai mới))
+   - Cafeland: Phú Sơn (Bù Ðăng, Bình Phước)
+--------------------------------------------------
+9. Huyện lệch: 'Huyện Tam Đường' vs 'Điện Biên Đông'
+   - Nhatot:   Xã Sơn Bình (Xã Bình Lư mới) (Huyện Tam Đường, Lai Châu)
+   - Cafeland: Sơn Bình (Điện Biên Đông, Lai Châu)
+--------------------------------------------------
+10. Huyện lệch: 'Huyện Bù Đăng' vs 'Bù Ðăng'
+   - Nhatot:   Xã Đoàn Kết (Xã Bù Đăng mới) (Huyện Bù Đăng, Bình Phước (Đồng Nai mới))
+   - Cafeland: Đoàn Kết (Bù Ðăng, Bình Phước)
+--------------------------------------------------
+11. Huyện lệch: 'Huyện Kông Chro' vs 'Krông Chro'
+   - Nhatot:   Xã An Trung (Xã Chư Krey mới) (Huyện Kông Chro, Gia Lai)
+   - Cafeland: An Trung (Krông Chro, Gia Lai)
+--------------------------------------------------

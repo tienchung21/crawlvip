@@ -1,0 +1,458 @@
+=== DANH SACH 455 XA CHUA MATCH (FINAL) ===
+TINH/THANH           | QUAN/HUYEN           | XA (Cafeland)                            | ID
+----------------------------------------------------------------------------------------------------
+Bà Rịa - Vũng Tàu    | Long Điền            | Cát Bà                                   | 1917
+Bà Rịa - Vũng Tàu    | Long Điền            | Đồng Bài                                 | 1918
+Bà Rịa - Vũng Tàu    | Long Điền            | Gia Luận                                 | 1919
+Bà Rịa - Vũng Tàu    | Long Điền            | Hiền Hào                                 | 1920
+Bà Rịa - Vũng Tàu    | Long Điền            | Hoàng Châu                               | 1921
+Bà Rịa - Vũng Tàu    | Long Điền            | Nghĩa Lộ                                 | 1922
+Bà Rịa - Vũng Tàu    | Long Điền            | Phù Long                                 | 1923
+Bà Rịa - Vũng Tàu    | Long Điền            | Trân Châu                                | 1925
+Bà Rịa - Vũng Tàu    | Long Điền            | Văn Phong                                | 1926
+Bà Rịa - Vũng Tàu    | Long Điền            | Việt Hải                                 | 1927
+Bà Rịa - Vũng Tàu    | Long Điền            | Xuân Đám                                 | 1928
+Bà Rịa - Vũng Tàu    | Vũng Tàu             | Phường 6                                 | 1897
+Bắc Giang            | Lục Ngạn             | Sa Lý                                    | 2486
+Bắc Giang            | Việt Yên             | Trung Hà                                 | 2556
+Bắc Kạn              | Chợ Mới              | TT. Đồng Tâm                             | 21089
+Bạc Liêu             | Đông Hải             | Một Ngàn                                 | 2348
+Bạc Liêu             | Đông Hải             | Nhơn Nghĩa A                             | 2349
+Bạc Liêu             | Đông Hải             | Tân Hòa                                  | 2350
+Bạc Liêu             | Đông Hải             | Tân Phú Thạnh                            | 2351
+Bạc Liêu             | Đông Hải             | Tân Thuận                                | 2352
+Bạc Liêu             | Đông Hải             | Thạnh Xuân                               | 2353
+Bạc Liêu             | Đông Hải             | Trường Long A                            | 2354
+Bạc Liêu             | Đông Hải             | Trường Long Tây                          | 2355
+Bạc Liêu             | Giá Rai              | Khóm 2                                   | 21509
+Bạc Liêu             | Hoà Bình             | Long Bình                                | 2356
+Bạc Liêu             | Hoà Bình             | Long Phú                                 | 2357
+Bạc Liêu             | Hoà Bình             | Long Trị                                 | 2358
+Bạc Liêu             | Hoà Bình             | Thuận Hưng                               | 2361
+Bạc Liêu             | Phước Long           | Đông Phú                                 | 2334
+Bạc Liêu             | Phước Long           | Đông Phước                               | 2335
+Bạc Liêu             | Phước Long           | Đông Phước A                             | 2336
+Bạc Liêu             | Phước Long           | Đông Thạnh                               | 2337
+Bạc Liêu             | Phước Long           | Ngã Sáu                                  | 2339
+Bạc Liêu             | Phước Long           | Phú An                                   | 2342
+Bạc Liêu             | Phước Long           | Phú Hữu                                  | 2343
+Bạc Liêu             | Phước Long           | Phú Hữu A                                | 2344
+Bắc Ninh             | Gia Bình             | Đông Bình                                | 2752
+Bắc Ninh             | Từ Sơn               | Đồng Quang                               | 2835
+Bến Tre              | Ba Tri               | TT. Tiệm Tôm                             | 20674
+Bến Tre              | Bến Tre              | An Hội                                   | 20672
+Bến Tre              | Giồng Trôm           | Tân Thạch Lợi                            | 2971
+Bến Tre              | Mỏ Cày Bắc           | Đường Quốc Lộ 60 (Mới)                   | 21543
+Bình Dương           | Bàu Bàng             | phường bầu bàng                          | 21548
+Bình Dương           | Bến Cát              | Bến Thành                                | 1255
+Bình Dương           | Bến Cát              | Cầu Kho                                  | 1256
+Bình Dương           | Bến Cát              | Cầu Ông Lãnh                             | 1257
+Bình Dương           | Bến Cát              | Cô Giang                                 | 1260
+Bình Dương           | Bến Cát              | Đa Kao                                   | 1261
+Bình Dương           | Bến Cát              | Nguyễn Cư Trinh                          | 1268
+Bình Dương           | Bến Cát              | Nguyễn Thái Bình                         | 1269
+Bình Dương           | Bến Cát              | Phạm Ngũ Lão                             | 1270
+Bình Dương           | Phú Giáo             | Cát Bi                                   | 1340
+Bình Dương           | Phú Giáo             | Đằng Hải                                 | 1341
+Bình Dương           | Phú Giáo             | Đằng Lâm                                 | 1342
+Bình Dương           | Phú Giáo             | Đông Hải 1                               | 1343
+Bình Dương           | Phú Giáo             | Đông Hải 2                               | 1344
+Bình Dương           | Phú Giáo             | Nam Hải                                  | 1345
+Bình Dương           | Phú Giáo             | Thành Tô                                 | 1352
+Bình Dương           | Phú Giáo             | Tràng Cát                                | 1353
+Bình Dương           | Thuận An             | Số 8 Hữu Nghị                            | 21522
+Bình Định            | Hoài Ân              | ĐakMang                                  | 2178
+Bình Định            | Tây Sơn              | Bình Hiệp                                | 2254
+Bình Phước           | Chơn Thành           | Hưng Long                                | 2959
+Cà Mau               | Cà Mau               | Đường số 7 đối diện vincom cà mau        | 21535
+Cà Mau               | Năm Căn              | Bình Thành                               | 3219
+Cà Mau               | Năm Căn              | Cây Dương                                | 3220
+Cà Mau               | Năm Căn              | Hòa An                                   | 3226
+Cà Mau               | Năm Căn              | Kim Cùng                                 | 3228
+Cà Mau               | Năm Căn              | Phụng Hiệp                               | 3231
+Cà Mau               | Năm Căn              | Phương Bình                              | 3232
+Cà Mau               | Năm Căn              | Tân Bình                                 | 3236
+Cà Mau               | Năm Căn              | Thạnh Hòa                                | 3239
+Cà Mau               | Phú Tân              | Vị Bình                                  | 3247
+Cà Mau               | Phú Tân              | Vị Đông                                  | 3248
+Cà Mau               | Phú Tân              | Vị Thanh                                 | 3250
+Cà Mau               | Phú Tân              | Vị Thủy                                  | 3251
+Cà Mau               | Phú Tân              | Vị Trung                                 | 3252
+Cà Mau               | Phú Tân              | Vĩnh Thuận Tây                           | 3254
+Cà Mau               | Phú Tân              | Vĩnh Trung                               | 3255
+Cần Thơ              | Cái Răng             | vũ đình liệu                             | 21546
+Cần Thơ              | Cờ Đỏ                | TT. Thạnh An                             | 20455
+Cần Thơ              | Cờ Đỏ                | TT. Vĩnh Thạnh                           | 20454
+Cần Thơ              | Phong Điền           | TT. Thới Lai                             | 20456
+Cần Thơ              | Thới Lai             | Cam Hải Đông                             | 3330
+Cần Thơ              | Thới Lai             | TT. Cờ Đỏ                                | 20465
+Cần Thơ              | Vĩnh Thạnh           | Anh Dũng                                 | 3339
+Cần Thơ              | Vĩnh Thạnh           | Đa Phúc                                  | 3340
+Cần Thơ              | Vĩnh Thạnh           | Hải Thành                                | 3341
+Cần Thơ              | Vĩnh Thạnh           | Hòa Nghĩa                                | 3342
+Cần Thơ              | Vĩnh Thạnh           | Hưng Đạo                                 | 3343
+Cao Bằng             | Hà Quảng             | TT. Thông Nông                           | 21114
+Cao Bằng             | Trùng Khánh          | TT. Trà Lĩnh                             | 21172
+Đà Nẵng              | Ngũ Hành Sơn         | bắc mỹ phú                               | 21514
+Đà Nẵng              | Ngũ Hành Sơn         | Bắc Phú Mỹ                               | 21494
+Đà Nẵng              | Thanh Khê            | Thanh Lộc Đán                            | 3565
+Đắk Lắk              | Buôn Ma Thuột        | Cưebua                                   | 10680
+Đắk Lắk              | Ea H'leo             | Ea lon                                   | 10723
+Đắk Lắk              | Ea Súp               | Ea Rốc                                   | 10748
+Đắk Lắk              | Krông Năng           | Dliêya                                   | 10782
+Đắk Lắk              | M'Đrắk               | Ea M'doan                                | 10824
+Đắk Lắk              | M'Đrắk               | TT. M'Drắk                               | 20843
+Đắk Nông             | Cư Jút               | Bến Bạ                                   | 10859
+Đắk Nông             | Đăk Glong            | Long Tân                                 | 10874
+Đắk Nông             | Đăk Glong            | Vĩnh Biên                                | 10881
+Đắk Nông             | Đắk Mil              | Thành Đông                               | 10899
+Đắk Nông             | Krông Nô             | Bình Khánh Tây                           | 10946
+Đắk Nông             | Tuy Đức              | Tân Bình                                 | 10974
+Đắk Nông             | Tuy Đức              | Tân Đồng                                 | 10975
+Đắk Nông             | Tuy Đức              | Tân Phú                                  | 10976
+Đắk Nông             | Tuy Đức              | Tân Thiện                                | 10978
+Đắk Nông             | Tuy Đức              | Tân Xuân                                 | 10979
+Đắk Nông             | Tuy Đức              | Tiến Hưng                                | 10980
+Đắk Nông             | Tuy Đức              | Tiến Thành                               | 10981
+Điện Biên            | Điện Biên            | Hua Bum                                  | 21321
+Điện Biên            | Điện Biên            | Lê Lợi                                   | 21322
+Điện Biên            | Điện Biên            | Mường Mô                                 | 21323
+Điện Biên            | Điện Biên            | Nậm Ban                                  | 21324
+Điện Biên            | Điện Biên            | Nậm Chà                                  | 21326
+Điện Biên            | Điện Biên            | Nậm Hàng                                 | 21327
+Điện Biên            | Điện Biên            | Nậm Manh                                 | 21329
+Điện Biên            | Điện Biên            | Nậm Pì                                   | 21330
+Điện Biên            | Điện Biên            | Pú Đao                                   | 21332
+Điện Biên            | Điện Biên            | Trung Chải                               | 21333
+Điện Biên            | Điện Biên            | TT. Nậm Nhùn                             | 21320
+Điện Biên            | Điện Biên Đông       | Bản Bo                                   | 21384
+Điện Biên            | Điện Biên Đông       | Bản Giang                                | 21385
+Điện Biên            | Điện Biên Đông       | Bản Hon                                  | 21386
+Điện Biên            | Điện Biên Đông       | Bình Lư                                  | 21387
+Điện Biên            | Điện Biên Đông       | Giang Ma                                 | 21388
+Điện Biên            | Điện Biên Đông       | Hồ Thầu                                  | 21389
+Điện Biên            | Điện Biên Đông       | Khun Há                                  | 21390
+Điện Biên            | Điện Biên Đông       | Nà Tăm                                   | 21391
+Điện Biên            | Điện Biên Đông       | Nùng Nàng                                | 21392
+Điện Biên            | Điện Biên Đông       | Sơn Bình                                 | 21393
+Điện Biên            | Điện Biên Đông       | Thèn Sin                                 | 21395
+Điện Biên            | Điện Biên Đông       | TT. Tam Đường                            | 21383
+Điện Biên            | Điện Biên Phủ        | Hố Mít                                   | 21398
+Điện Biên            | Điện Biên Phủ        | Mường Khoa                               | 21399
+Điện Biên            | Điện Biên Phủ        | Nậm Cần                                  | 21400
+Điện Biên            | Điện Biên Phủ        | Nậm Sỏ                                   | 21401
+Điện Biên            | Điện Biên Phủ        | Pắc Ta                                   | 21402
+Điện Biên            | Điện Biên Phủ        | Phúc Khoa                                | 21403
+Điện Biên            | Điện Biên Phủ        | Tà Mít                                   | 21404
+Điện Biên            | Điện Biên Phủ        | Thân Thuộc                               | 21405
+Điện Biên            | Điện Biên Phủ        | Trung Đồng                               | 21407
+Điện Biên            | Điện Biên Phủ        | TT. Tân Uyên                             | 21397
+Điện Biên            | Mường Chà            | Xã Xá Tổng                               | 20180
+Đồng Nai             | Long Thành           | Ấp Đồi Rùi, xã Hàng Gòn                  | 21495
+Đồng Nai             | Long Thành           | Suối Trầu                                | 1172
+Đồng Nai             | Tân Phú              | Đắc Lua                                  | 1187
+Đồng Nai             | Thống Nhất           | Bàu Hàm II                               | 1199
+Đồng Nai             | Thống Nhất           | Gia Tân II                               | 1202
+Đồng Nai             | Thống Nhất           | Gia Tân III                              | 1203
+Đồng Tháp            | Cao Lãnh             | TT. Mỹ Thọ                               | 20631
+Gia Lai              | Chư Sê               | A Lbá                                    | 3402
+Gia Lai              | Đăk Đoa              | Hneng                                    | 20921
+Gia Lai              | Đăk Đoa              | Kdang                                    | 20929
+Gia Lai              | KBang                | Kông B'La                                | 3430
+Gia Lai              | Mang Yang            | Ðak Drjang                               | 3479
+Gia Lai              | Mang Yang            | Ðak Ya                                   | 3483
+Gia Lai              | Mang Yang            | Ðê Ar                                    | 3484
+Hà Giang             | Bắc Quang            | Kim Ngẩu                                 | 3731
+Hà Nam               | Duy Tiên             | Tiên Sơn                                 | 21005
+Hà Nam               | Lý Nhân              | Nhân Hậu                                 | 3656
+Hà Nam               | Lý Nhân              | Nhân Tiến                                | 3663
+Hà Nam               | Thanh Liêm           | TT. Tân Thanh                            | 21016
+Hà Nội               | Ba Đình              | Đội Nhân                                 | 21486
+Hà Nội               | Bắc Từ Liêm          | Bến Nghé                                 | 21491
+Hà Nội               | Chương Mỹ            | Ngọc Sơn                                 | 853
+Hà Nội               | Gia Lâm              | Chiến Thắng                              | 589
+Hà Nội               | Gia Lâm              | Gia Lâm                                  | 596
+Hà Nội               | Gia Lâm              | Hồng Tiến                                | 598
+Hà Nội               | Gia Lâm              | Quang Trung I                            | 606
+Hà Nội               | Gia Lâm              | Quang Trung II                           | 607
+Hà Nội               | Gia Lâm              | Quyết Chiến                              | 608
+Hà Nội               | Gia Lâm              | Quyết Thắng                              | 609
+Hà Nội               | Gia Lâm              | Quyết Tiến                               | 610
+Hà Nội               | Gia Lâm              | Thừa Thiên                               | 613
+Hà Nội               | Gia Lâm              | Tiến Bộ                                  | 615
+Hà Nội               | Gia Lâm              | Toàn Thắng                               | 617
+Hà Nội               | Gia Lâm              | Trung Thành                              | 619
+Hà Nội               | Hà Đông              | 3 tòa cũ KDT Thanh Hà, phường Kiến Hưnh  | 21539
+Hà Nội               | Hà Đông              | KDT Thanh Hà                             | 21537
+Hà Nội               | Hà Đông              | phan kế toại                             | 21534
+Hà Nội               | Hà Đông              | Văn Mỗ                                   | 20030
+Hà Nội               | Long Biên            | Hồng Tiến                                | 652
+Hà Nội               | Long Biên            | Lê Đức Thọ                               | 21541
+Hà Nội               | Long Biên            | Tà Pơơ                                   | 21490
+Hà Nội               | Mê Linh              | Cao Minh                                 | 782
+Hà Nội               | Mê Linh              | Nam Viêm                                 | 789
+Hà Nội               | Mê Linh              | Ngọc Thanh                               | 790
+Hà Nội               | Mê Linh              | Phúc Thắng                               | 791
+Hà Nội               | Mê Linh              | Phúc Yên                                 | 792
+Hà Nội               | Mê Linh              | Tiền Châu                                | 797
+Hà Nội               | Mê Linh              | Xuân Hòa                                 | 805
+Hà Nội               | Phú Xuyên            | Nam Tiến                                 | 20382
+Hà Nội               | Phúc Thọ             | Sen Phương                               | 20397
+Hà Nội               | Phúc Thọ             | Thị trấn Gạch                            | 958
+Hà Nội               | Thanh Trì            | Đường 32                                 | 21540
+Hà Nội               | Thanh Xuân           | 19 nguyễn trãi                           | 21547
+Hà Tĩnh              | Cẩm Xuyên            | Cẩm Long                                 | 3907
+Hà Tĩnh              | Cẩm Xuyên            | Nam Phúc Thăng                           | 21197
+Hà Tĩnh              | Cẩm Xuyên            | Yên Hòa                                  | 21198
+Hà Tĩnh              | Can Lộc              | Khánh Vĩnh Yên                           | 21194
+Hà Tĩnh              | Can Lộc              | Kim Song Trường                          | 21195
+Hà Tĩnh              | Đức Thọ              | An Dũng                                  | 21210
+Hà Tĩnh              | Đức Thọ              | Bùi La Nhân                              | 21205
+Hà Tĩnh              | Đức Thọ              | Hòa Lạc                                  | 21211
+Hà Tĩnh              | Đức Thọ              | Lâm Trung Thủy                           | 21206
+Hà Tĩnh              | Đức Thọ              | Quang Vĩnh                               | 21209
+Hà Tĩnh              | Đức Thọ              | Tân Dân                                  | 21212
+Hà Tĩnh              | Đức Thọ              | Thanh Bình Thịnh                         | 21207
+Hà Tĩnh              | Đức Thọ              | Tùng Châu                                | 21208
+Hà Tĩnh              | Đức Thọ              | Yên Đồng                                 | 3972
+Hà Tĩnh              | Hà Tĩnh              | Đồng Môn                                 | 21191
+Hà Tĩnh              | Hương Khê            | Điền Mỹ                                  | 21215
+Hà Tĩnh              | Hương Sơn            | An Hòa Thịnh                             | 21218
+Hà Tĩnh              | Hương Sơn            | Kim Hoa                                  | 21219
+Hà Tĩnh              | Hương Sơn            | Quang Diệm                               | 21220
+Hà Tĩnh              | Hương Sơn            | Tân Mỹ Hà                                | 21217
+Hà Tĩnh              | Kỳ Anh               | Hưng Trí                                 | 21192
+Hà Tĩnh              | Kỳ Anh               | Lâm Hợp                                  | 21224
+Hà Tĩnh              | Lộc Hà               | An Ngãi                                  | 4149
+Hà Tĩnh              | Lộc Hà               | An Nhất                                  | 4150
+Hà Tĩnh              | Lộc Hà               | Bình An                                  | 21246
+Hà Tĩnh              | Lộc Hà               | Long Hải                                 | 4155
+Hà Tĩnh              | Lộc Hà               | Phước Hưng                               | 4158
+Hà Tĩnh              | Lộc Hà               | Phước Tỉnh                               | 4159
+Hà Tĩnh              | Lộc Hà               | TT. Lộc Hà                               | 21244
+Hà Tĩnh              | Thạch Hà             | Đỉnh Bàn                                 | 21256
+Hà Tĩnh              | Thạch Hà             | Lưu Vĩnh Sơn                             | 21254
+Hà Tĩnh              | Thạch Hà             | Nam Điền                                 | 21255
+Hà Tĩnh              | Thạch Hà             | Tân Lâm Hương                            | 21252
+Hà Tĩnh              | Thạch Hà             | Việt Tiến                                | 21253
+Hà Tĩnh              | Vũ Quang             | Hương Đại                                | 4135
+Hà Tĩnh              | Vũ Quang             | Láng Dài                                 | 4140
+Hà Tĩnh              | Vũ Quang             | Long Mỹ                                  | 4142
+Hà Tĩnh              | Vũ Quang             | Long Tân                                 | 4143
+Hà Tĩnh              | Vũ Quang             | Phước Hải                                | 4144
+Hà Tĩnh              | Vũ Quang             | Phước Hội                                | 4145
+Hà Tĩnh              | Vũ Quang             | Phước Long Thọ                           | 4146
+Hà Tĩnh              | Vũ Quang             | Quang Thọ                                | 21260
+Hà Tĩnh              | Vũ Quang             | Thọ Điền                                 | 21261
+Hải Dương            | Cẩm Giàng            | Định Sơn                                 | 21030
+Hải Dương            | Chí Linh             | Kênh Giang                               | 4446
+Hải Dương            | Hải Dương            | An Thượng                                | 21010
+Hải Dương            | Kinh Môn             | Quang Thành                              | 21022
+Hải Phòng            | Đồ Sơn               | Hải Sơn                                  | 20410
+Hậu Giang            | Châu Thành A         | Giai Xuân                                | 4898
+Hậu Giang            | Châu Thành A         | Mỹ Khánh                                 | 4900
+Hậu Giang            | Châu Thành A         | Nhơn Ái                                  | 4901
+Hậu Giang            | Châu Thành A         | Phong Điền                               | 4904
+Hậu Giang            | Châu Thành A         | Tân Thới                                 | 4907
+Hậu Giang            | Châu Thành A         | Tân Thuận                                | 4908
+Hậu Giang            | Vị Thanh             | 1                                        | 4883
+Hậu Giang            | Vị Thanh             | 3                                        | 4884
+Hậu Giang            | Vị Thanh             | 4                                        | 4885
+Hậu Giang            | Vị Thanh             | 5                                        | 4886
+Hậu Giang            | Vị Thanh             | 7                                        | 4887
+Hồ Chí Minh          | 2                    | 26 đường số 40                           | 21512
+Hồ Chí Minh          | 3                    | Đại Áng                                  | 21489
+Hồ Chí Minh          | 3                    | Phường Võ Thị Sáu                        | 20266
+Hồ Chí Minh          | 7                    | 15 nguyễn lương bằng                     | 21508
+Hồ Chí Minh          | Bình Thạnh           | Phường 20                                | 410
+Hồ Chí Minh          | Bình Thạnh           | Phường 23                                | 413
+Hồ Chí Minh          | Tân Phú              | Bình Thới                                | 364
+Hoà Bình             | Cao Phong            | Cầu Thia                                 | 4369
+Hoà Bình             | Cao Phong            | Nghĩa An                                 | 4373
+Hoà Bình             | Cao Phong            | Nghĩa Lợi                                | 4374
+Hoà Bình             | Cao Phong            | Nghĩa Phúc                               | 4375
+Hoà Bình             | Cao Phong            | Pú Trạng                                 | 4376
+Hoà Bình             | Cao Phong            | Tân An                                   | 4377
+Hoà Bình             | Cao Phong            | Trung Tâm                                | 4382
+Hoà Bình             | Đà Bắc               | Nánh Nghê                                | 21234
+Hoà Bình             | Hòa Bình             | Quang Tiến                               | 21410
+Hoà Bình             | Hòa Bình             | Thịnh Minh                               | 21412
+Hoà Bình             | Kim Bôi              | Hợp Tiến                                 | 21267
+Hoà Bình             | Kim Bôi              | Hùng Sơn                                 | 21268
+Hoà Bình             | Kim Bôi              | Kim Lập                                  | 21270
+Hưng Yên             | Tiên Lữ              | Thủ Sĩ                                   | 5161
+Hưng Yên             | Yên Mỹ               | Trai Trang                               | 5197
+Khánh Hòa            | Diên Khánh           | Bình Lộc                                 | 21465
+Khánh Hòa            | Khánh Vĩnh           | đường liên xã                            | 21506
+Khánh Hòa            | Nha Trang            | Vĩnh Điềm Trung                          | 21532
+Kiên Giang           | An Minh              | Thứ 11                                   | 5402
+Kon Tum              | Đắk Hà               | Đăk Uy                                   | 5537
+Kon Tum              | Kon Plông            | TT. Măng Đen                             | 20860
+Kon Tum              | Kon Tum              | Đăkrơva                                  | 5562
+Kon Tum              | Sa Thầy              | Mo-ray                                   | 5588
+Lâm Đồng             | Bảo Lâm              | BLá                                      | 5784
+Lâm Đồng             | Bảo Lộc              | B´Lao                                    | 5797
+Lâm Đồng             | Cát Tiên             | Phù Mỹ                                   | 5813
+Lâm Đồng             | Đạ Huoai             | Madaguoil                                | 5850
+Lâm Đồng             | Đà Lạt               | Phường 13                                | 5833
+Lâm Đồng             | Đơn Dương            | D´ran                                    | 5871
+Lâm Đồng             | Đơn Dương            | K´Đơn                                    | 5873
+Lâm Đồng             | Đơn Dương            | P´Róh                                    | 5876
+Lâm Đồng             | Đức Trọng            | N´ Thôn Hạ                               | 5887
+Lâm Đồng             | Lâm Hà               | Đường DT725                              | 21530
+Lào Cai              | Sa Pa                | thị xã sapa                              | 21523
+Lào Cai              | Sa Pa                | xã Mường Hoa                             | 21520
+Long An              | Đức Hòa              | 1 Nhánh ĐT 825                           | 21528
+Long An              | Tân Thạnh            | Mỹ Xuân                                  | 1879
+Nam Định             | Trực Ninh            | Trực Phú                                 | 6474
+Nghệ An              | Diễn Châu            | Minh Châu                                | 21107
+Nghệ An              | Hưng Nguyên          | Châu Nhân                                | 21119
+Nghệ An              | Hưng Nguyên          | Hưng Nghĩa                               | 21120
+Nghệ An              | Hưng Nguyên          | Long Xá                                  | 21115
+Nghệ An              | Nam Đàn              | Thượng Tân Lộc                           | 21131
+Nghệ An              | Nam Đàn              | Trung Phúc Cường                         | 21130
+Nghệ An              | Nghi Lộc             | Khánh Hợp                                | 21133
+Nghệ An              | Quỳnh Lưu            | Hoàng Mai                                | 6846
+Nghệ An              | Thái Hoà             | Hiệp Lợi                                 | 7035
+Nghệ An              | Thái Hoà             | Hiệp Thành                               | 7036
+Nghệ An              | Thái Hoà             | Lái Hiếu                                 | 7038
+Nghệ An              | Thái Hoà             | Ngã Bảy                                  | 7040
+Nghệ An              | Thanh Chương         | Dùng                                     | 6910
+Nghệ An              | Thanh Chương         | Đại Đồng                                 | 21175
+Nghệ An              | Tương Dương          | Hữu Dương                                | 6949
+Nghệ An              | Tương Dương          | Kim Đa                                   | 6951
+Nghệ An              | Tương Dương          | Kim Tiến                                 | 6952
+Nghệ An              | Tương Dương          | Luân Mai                                 | 6953
+Ninh Bình            | Gia Viễn             | Chi Đông                                 | 7182
+Ninh Bình            | Gia Viễn             | Chu Phan                                 | 7183
+Ninh Bình            | Gia Viễn             | Đại Thịnh                                | 7184
+Ninh Bình            | Gia Viễn             | Hoàng Kim                                | 7204
+Ninh Bình            | Gia Viễn             | Kim Hoa                                  | 7205
+Ninh Bình            | Gia Viễn             | Liên Mạc                                 | 7206
+Ninh Bình            | Gia Viễn             | Mê Linh                                  | 7209
+Ninh Bình            | Gia Viễn             | Quang Minh                               | 7210
+Ninh Bình            | Gia Viễn             | Tam Đồng                                 | 7211
+Ninh Bình            | Gia Viễn             | Thạch Đà                                 | 7212
+Ninh Bình            | Gia Viễn             | Thanh Lâm                                | 7213
+Ninh Bình            | Gia Viễn             | Tiền Phong                               | 7214
+Ninh Bình            | Gia Viễn             | Tiến Thắng                               | 7215
+Ninh Bình            | Gia Viễn             | Tiến Thịnh                               | 7216
+Ninh Bình            | Gia Viễn             | Tráng Việt                               | 7217
+Ninh Bình            | Gia Viễn             | Tự Lập                                   | 7218
+Ninh Bình            | Gia Viễn             | Văn Khê                                  | 7219
+Ninh Bình            | Gia Viễn             | Vạn Yên                                  | 7220
+Ninh Bình            | Yên Khánh            | Khánh Ninh                               | 7155
+Ninh Bình            | Yên Mô               | Yên Phú                                  | 7176
+Phú Thọ              | Cẩm Khê              | Tân Việt                                 | 7531
+Phú Thọ              | Cẩm Khê              | TT. Cẩm Khê                              | 21186
+Phú Thọ              | Tân Sơn              | Hòa Thuận                                | 7549
+Phú Thọ              | Tân Sơn              | Hồng Đại                                 | 7550
+Phú Thọ              | Tân Sơn              | Lương Thiện                              | 7555
+Phú Thọ              | Tân Sơn              | Tà Lùng                                  | 7559
+Phú Thọ              | Tân Sơn              | Triệu Ẩu                                 | 7567
+Phú Thọ              | Thanh Thuỷ           | La Phù                                   | 7457
+Phú Yên              | Đông Hòa             | Bình Lăng                                | 7657
+Phú Yên              | Đông Hòa             | Cai Bộ                                   | 7658
+Phú Yên              | Đông Hòa             | Đoài Khôn                                | 7660
+Phú Yên              | Đông Hòa             | Hoàng Hải                                | 7673
+Phú Yên              | Đông Hòa             | Hồng Định                                | 7674
+Phú Yên              | Đông Hòa             | Quốc Dân                                 | 7680
+Phú Yên              | Đông Hòa             | Quốc Phong                               | 7681
+Phú Yên              | Phú Hoà              | An Long                                  | 7706
+Phú Yên              | Phú Hoà              | An Thái                                  | 7707
+Phú Yên              | Phú Hoà              | Phước Sang                               | 7717
+Phú Yên              | Phú Hoà              | Phước Vĩnh                               | 7718
+Phú Yên              | Phú Hoà              | Tân Hiệp                                 | 7719
+Phú Yên              | Phú Hoà              | Tân Long                                 | 7720
+Phú Yên              | Sông Hinh            | Ea Trôi                                  | 7624
+Phú Yên              | Tây Hoà              | An Thắng                                 | 7683
+Phú Yên              | Tây Hoà              | Bằng Thành                               | 7684
+Phú Yên              | Tây Hoà              | Xuân La                                  | 7703
+Quảng Bình           | Bố Trạch             | Hải Phú                                  | 20864
+Quảng Bình           | Bố Trạch             | Phong Nha                                | 20853
+Quảng Bình           | Bố Trạch             | TT. Nông trường Việt Trung               | 20858
+Quảng Bình           | Lệ Thủy              | Nông Trường Lệ Ninh                      | 7784
+Quảng Bình           | Quảng Trạch          | Liên Trường                              | 20922
+Quảng Bình           | Thành Phố Đồng Hới   | Đồng Hải                                 | 20844
+Quảng Nam            | Đông Giang           | TT. Prao                                 | 20769
+Quảng Nam            | Hiệp Đức             | TT. Tân Bình                             | 20780
+Quảng Nam            | Nông Sơn             | Ninh Phước                               | 20786
+Quảng Nam            | Nông Sơn             | TT. Trung Phước                          | 20785
+Quảng Nam            | Quế Sơn              | Quế Mỹ                                   | 20813
+Quảng Ngãi           | Lý Sơn               | Lý Hải                                   | 8147
+Quảng Ngãi           | Lý Sơn               | Lý Vĩnh                                  | 8148
+Quảng Ngãi           | Trà Bồng             | Hương Trà                                | 21473
+Quảng Ngãi           | Trà Bồng             | Sơn Trà                                  | 21474
+Quảng Ninh           | Bình Liêu            | Hoành Sơn                                | 8282
+Quảng Ninh           | Hạ Long              | Hoành Bồ                                 | 21204
+Quảng Trị            | Cam Lộ               | Thanh An                                 | 21413
+Quảng Trị            | Gio Linh             | Phong Bình                               | 21431
+Quảng Trị            | Hải Lăng             | Hải Phong                                | 21434
+Quảng Trị            | Hải Lăng             | TT. Diên Sanh                            | 21433
+Quảng Trị            | Hướng Hóa            | Lìa                                      | 21444
+Quảng Trị            | Vĩnh Linh            | Hiền Thành                               | 21453
+Quảng Trị            | Vĩnh Linh            | Kim Thạch                                | 21452
+Quảng Trị            | Vĩnh Linh            | Trung Nam                                | 21451
+Quảng Trị            | Vĩnh Linh            | Vĩnh Quang                               | 8560
+Sóc Trăng            | Mỹ Xuyên             | Nhu Gia                                  | 8618
+Sóc Trăng            | Vĩnh Châu            | Vĩnh Châu                                | 8648
+Sơn La               | Mai Sơn              | Mường Tranh                              | 8694
+Sơn La               | Mai Sơn              | Nà Bó                                    | 8695
+Sơn La               | Phù Yên              | Sập Sa                                   | 8760
+Sơn La               | Quỳnh Nhai           | Liệp Muội                                | 8774
+Sơn La               | Quỳnh Nhai           | Pắc Ma                                   | 8779
+Sơn La               | Sông Mã              | Nà Nghịu                                 | 8806
+Sơn La               | Sốp Cộp              | Duyệt Chung                              | 8855
+Sơn La               | Sốp Cộp              | Đề Thám                                  | 8853
+Tây Ninh             | Hòa Thành            | Long Hoa                                 | 20731
+Tây Ninh             | Trảng Bàng           | Phước Bình                               | 20733
+Thái Bình            | Hưng Hà              | Kim Trung                                | 9679
+Thái Bình            | Kiến Xương           | TT. Kiến Xương                           | 21051
+Thái Bình            | Kiến Xương           | Vũ Quý                                   | 9727
+Thái Bình            | Quỳnh Phụ            | An Quý                                   | 9742
+Thái Nguyên          | Đồng Hỷ              | Làng Đông                                | 9971
+Thanh Hóa            | Cẩm Thủy             | TT. Phong Sơn                            | 21007
+Thanh Hóa            | Đông Sơn             | Đông Xuân                                | 9054
+Thanh Hóa            | Hà Trung             | Lĩnh Toại                                | 21026
+Thanh Hóa            | Hà Trung             | Yên Dương                                | 21028
+Thanh Hóa            | Hà Trung             | Yến Sơn                                  | 21024
+Thanh Hóa            | Như Xuân             | Bãi Chành                                | 9237
+Thanh Hóa            | Nông Cống            | Minh Thọ                                 | 9262
+Thanh Hóa            | Quảng Xương          | Tiên Trang                               | 21042
+Thanh Hóa            | Quảng Xương          | Tiên Trang                               | 21043
+Thanh Hóa            | Quảng Xương          | TT. Tân Phong                            | 21041
+Thanh Hóa            | Thanh Hóa            | An Hưng                                  | 20977
+Thanh Hóa            | Thanh Hóa            | Long Anh                                 | 20979
+Thanh Hóa            | Thiệu Hóa            | Minh Tâm                                 | 21050
+Thanh Hóa            | Thiệu Hóa            | Tân Châu                                 | 21049
+Thanh Hóa            | Thọ Xuân             | Thuận Minh                               | 21057
+Thanh Hóa            | Thọ Xuân             | Thuận Minh                               | 21058
+Thanh Hóa            | Thọ Xuân             | Trường Xuân                              | 21055
+Thanh Hóa            | Thường Xuân          | Xuân Khao                                | 9459
+Thanh Hóa            | Thường Xuân          | Xuân Mỹ                                  | 9463
+Thanh Hóa            | Triệu Sơn            | Giắt                                     | 9538
+Thanh Hóa            | Triệu Sơn            | TT. Nưa                                  | 21063
+Thừa Thiên Huế       | A Lưới               | Hồng Nam                                 | 10106
+Thừa Thiên Huế       | A Lưới               | Lâm Đớt                                  | 21294
+Thừa Thiên Huế       | A Lưới               | Quảng Nhâm                               | 21295
+Thừa Thiên Huế       | A Lưới               | Trung Sơn                                | 21296
+Thừa Thiên Huế       | Huế                  | Đông Ba                                  | 21288
+Thừa Thiên Huế       | Huế                  | Gia Hội                                  | 21289
+Thừa Thiên Huế       | Huế                  | P. Hải Dương                             | 10159
+Thừa Thiên Huế       | Huế                  | Vỹ Dạ                                    | 10143
+Thừa Thiên Huế       | Phú Lộc              | Giang Hải                                | 21325
+Thừa Thiên Huế       | Phú Vang             | Phú Gia                                  | 21347
+Trà Vinh             | Càng Long            | Ðức Mỹ                                   | 10423
+Tuyên Quang          | Na Hang              | Thúy Loa                                 | 10566
+Tuyên Quang          | Na Hang              | Trùng Khánh                              | 10567
+Tuyên Quang          | Na Hang              | Vĩnh Yên                                 | 10568
+Tuyên Quang          | Na Hang              | Xuân Tân                                 | 10570
+Tuyên Quang          | Na Hang              | Xuân Tiến                                | 10571
+Tuyên Quang          | Sơn Dương            | Trường Sinh                              | 20848
+Tuyên Quang          | Tuyên Quang          | Mỹ Lâm                                   | 20825
+Tuyên Quang          | Yên Sơn              | Tháng Mười                               | 10640
+Tuyên Quang          | Yên Sơn              | TT. Yên Sơn                              | 20857
+Yên Bái              | Lục Yên              | Xuân Minh                                | 1501
+Yên Bái              | Nghĩa Lộ             | Nông Trường Nghĩa Lộ                     | 1564
+Yên Bái              | Văn Chấn             | Nông Trường Liên Sơn                     | 1563
+Yên Bái              | Văn Chấn             | Nông Trường Trần Phú                     | 1565

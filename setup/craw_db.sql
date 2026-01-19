@@ -151,6 +151,7 @@ CREATE TABLE `ad_listing_detail` (
 
 CREATE TABLE `cenhomedetail` (
   `id` bigint NOT NULL,
+  `trade_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `agency_avatar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `agency_avg_rate` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

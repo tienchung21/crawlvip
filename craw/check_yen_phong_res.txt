@@ -1,0 +1,5 @@
+=== CHECKING YEN PHONG ===
+Nhatot: ((100102, 'Huyện Yên Phong', 1001, 2728), (502708, 'Huyện Phong Điền', 5027, 3262), (604002, 'Huyện Phong Điền', 6040, 10094), (1106805, 'Huyện Phong Thổ', 11068, 5602))
+Cafeland: ((2728, 'Yên Phong', 54), (3721, 'Yên Phong', 3700), (6537, 'Yên Phong', 6322), (7175, 'Yên Phong', 7055), (9602, 'Yên Phong', 8987))
+Nhatot Province: (1001, 'Bắc Ninh', 54)
+Cafeland Mapped Province: (54, 'Bắc Ninh')

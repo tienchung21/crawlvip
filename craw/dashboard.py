@@ -235,13 +235,9 @@ def _ad_upsert_ads(
 
     cols_sql = ", ".join(f"`{c}`" for c in AD_ALL_COLUMNS)
     placeholders = ", ".join(["%s"] * len(AD_ALL_COLUMNS))
-    update_cols = [c for c in AD_ALL_COLUMNS if c != "ad_id"]
-    update_sql = ", ".join([f"`{c}`=VALUES(`{c}`)" for c in update_cols])
-
     sql = f"""
-        INSERT INTO `{table}` ({cols_sql})
+        INSERT IGNORE INTO `{table}` ({cols_sql})
         VALUES ({placeholders})
-        ON DUPLICATE KEY UPDATE {update_sql}
     """
 
     rows = []
@@ -263,11 +259,13 @@ def _ad_upsert_ads(
                 row[c] = _ad_normalize_value(c, ad.get(c))
         rows.append([row[c] for c in AD_ALL_COLUMNS])
 
+    inserted = 0
     with conn.cursor() as cur:
         for i in range(0, len(rows), batch_size):
             cur.executemany(sql, rows[i:i + batch_size])
+            inserted += cur.rowcount
         conn.commit()
-    return len(rows)
+    return inserted
 
 
 def _ad_fetch_existing_ids(conn, table: str, ad_ids: List[Any], batch_size: int = 1000) -> set:
