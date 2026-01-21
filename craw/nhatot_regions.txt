@@ -1,0 +1,4 @@
+=== NHATOT REGIONS (Source: ad_listing_detail) ===
+('13000', 'Tp Hồ Chí Minh')
+('2011', 'Bình Dương')
+('2010', 'Bà Rịa - Vũng Tàu')

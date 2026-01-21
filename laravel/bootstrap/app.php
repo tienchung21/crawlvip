@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'data-clean/convert-batch',
+            'data-clean/convert',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

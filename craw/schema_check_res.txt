@@ -1,0 +1,18 @@
+=== FINDING CITY IDs ===
+(105, 'Bà Rịa')
+(58, 'Bà Rịa - Vũng Tàu')
+(51, 'Bình Dương')
+(1699, 'Bình Dương')
+(2215, 'Bình Dương')
+(2748, 'Bình Dương')
+(3051, 'Bình Dương')
+(8046, 'Bình Dương')
+(8115, 'Bình Dương')
+(8306, 'Bình Dương')
+(63, 'TP. Hồ Chí Minh')
+
+=== AD_LISTING_DETAIL COLUMNS ===
+['account_id', 'account_name', 'account_oid', 'ad_features', 'ad_id', 'ad_labels', 'area', 'area_name', 'area_v2', 'avatar', 'average_rating', 'average_rating_for_seller', 'body', 'business_days', 'category', 'category_name', 'contain_videos', 'date', 'fee_type', 'full_name', 'furnishing_sell', 'house_type', 'image', 'image_thumbnails', 'images', 'inspection_images', 'is_sticky', 'is_zalo_show', 'label_campaigns', 'latitude', 'list_id', 'list_time', 'location', 'longitude', 'number_of_images', 'orig_list_time', 'params', 'price', 'price_million_per_m2', 'price_string', 'property_legal_document', 'protection_entitlement', 'pty_characteristics', 'pty_jupiter', 'pty_map', 'pty_map_modifier', 'pty_project_name', 'region', 'region_name', 'region_name_v3', 'region_v2', 'rooms', 'seller_info', 'shop', 'size', 'size_unit_string', 'sold_ads', 'special_display_images', 'specific_service_offered', 'state', 'status', 'street_name', 'street_number', 'streetnumber_display', 'subject', 'thumbnail_image', 'total_rating', 'total_rating_for_seller', 'type', 'videos', 'ward', 'ward_name', 'ward_name_v3', 'webp_image', 'address', 'apartment_feature', 'apartment_type', 'balconydirection', 'block', 'commercial_type', 'company_ad', 'deposit', 'detail_address', 'direction', 'floornumber', 'floors', 'furnishing_rent', 'has_video', 'is_block_similar_ads_other_agent', 'is_good_room', 'is_main_street', 'land_type', 'length', 'living_size', 'location_id', 'project_oid', 'projectid', 'projectimages', 'property_status', 'shop_alias', 'size_unit', 'special_display', 'sticky_ad_type', 'stickyad_feature', 'toilets', 'unique_street_id', 'unitnumber', 'unitnumber_display', 'width', 'raw_json', '__source_file', '__source_o', 'time_crawl']
+
+=== DATA_CLEAN COLUMNS ===
+['ad_id', 'list_id', 'list_time', 'orig_list_time', 'region_v2', 'area_v2', 'ward', 'street_name', 'street_number', 'unique_street_id', 'category', 'size', 'price', 'type', 'time_crawl', 'price_m2_vnd', 'cf_ward_id_new', 'cf_ward_name_new', 'cf_region_id_new', 'cf_region_name_new', 'list_ym', 'median_group', 'median_flag', 'cafeland_id', 'cafeland_new_id', 'cafeland_new_name', 'cafeland_new_parent_id']
