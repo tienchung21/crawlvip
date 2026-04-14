@@ -7,7 +7,7 @@
       "name": "img",
       "valueType": "src",
       "textContent": "",
-      "selector": "#SlickSlider-DetailList"
+      "selector": ".detail-media__thumb .media-thumb-wrap__inner"
     },
     {
       "name": "title",
@@ -20,6 +20,12 @@
       "valueType": "text",
       "textContent": "Nhà trọ",
       "selector": "//div[contains(@class, \"s-dtl-inf\")]/div[contains(@class, \"s-dtl-inf__lbl\")][contains(text(), \"Loại BĐS:\")]/following-sibling::div[contains(@class, \"s-dtl-inf__val\")][1]"
+    },
+    {
+      "name": "thuocduan",
+      "valueType": "text",
+      "textContent": "Can hộ chung cư Vinhomes Grand Park",
+      "selector": "//div[contains(@class, \"dtl-stl__row\")][.//span[contains(normalize-space(), \"Dự án:\")]]//a/b[1]"
     },
     {
       "name": "chieungang",
@@ -41,7 +47,7 @@
     },
     {
       "name": "mota",
-      "valueType": "text",
+      "valueType": "html",
       "textContent": "🌟 ĐẦU TƯ ĐẲNG CẤP – TÒA CHUNG CƯ MINI 7 TẦNG TRÂU QUỲ, GIA LÂM\n💎 Dòng tiền ổn định 1,2 tỷ/năm – Pháp lý chuẩn chỉnh – Vị trí vàng\nKhông phải mọi bất động sản đều xứng đáng gọi là “tài sản đầu tư”.\nNhưng tòa chung cư mini 7 tầng tại Trâu Quỳ, Gia Lâm chính là một sản phẩm hiếm có: vừa mang lại dòng tiền ổn định, vừa sở hữu giá trị tăng trưởng vượt trội.\n📍 Vị trí chiến lược\n•\tTrung tâm Trâu Quỳ – cách Học viện Nông nghiệp chỉ vài ba trăm mét\n•\tKhu vực sầm uất, dân cư đông đúc, nhu cầu thuê cực cao\n•\tGiao thông thuận tiện, kết nối nhanh với các tuyến đường lớn và trung tâm Hà Nội\n🏢 Quy mô & thiết kế\n•\tDiện tích đất: 123m²\n•\tTòa nhà 7 tầng kiên cố, thiết kế hiện đại, tối ưu hóa công năng\n•\tHệ thống phòng khép kín, nội thất đầy đủ, đang cho thuê kín phòng\n💰 Dòng tiền & lợi nhuận\n•\tDoanh thu thực tế: ~1.2 tỷ/năm (~100 triệu/tháng)\n•\tTỷ suất lợi nhuận vượt trội so với gửi ngân hàng hay đầu tư ngắn hạn\n•\tDòng tiền đều đặn, rủi ro thấp, phù hợp nhà đầu tư dài hạn\n📄 Pháp lý & giao dịch\n•\tSổ đỏ chính chủ, pháp lý minh bạch\n•\tHỗ trợ sang tên nhanh chóng, tư vấn tài chính chuyên nghiệp\n✨ Đây không chỉ là một tòa nhà – mà là cỗ máy tạo ra dòng tiền, một khoản đầu tư thông minh cho những ai muốn vừa an toàn vừa sinh lời.\n📞 Liên hệ ngay: Mr. Vỹ – 0989.894.845\n👉 Đầu tư hôm nay – sở hữu dòng tiền bền vững cho tương lai.",
       "selector": ".dtl-inf__dsr"
     },
@@ -64,10 +70,16 @@
       "selector": ".dtl-stl__row > span > b"
     },
     {
+      "name": "ngaydang",
+      "valueType": "text",
+      "textContent": "Cập nhật 1 tháng trước",
+      "selector": "(//div[contains(@class,'dtl-stl__row')])[2]/span[last()]"
+    },
+    {
       "name": "diachi",
       "valueType": "text",
       "textContent": "Phường Ngọc Hà, Hà Nội (Mới)",
-      "selector": ".dtl-col-lft__wrp > .dtl-top > .dtl-main > .dtl-stl > .dtl-stl__row > span"
+      "selector": "(//div[contains(@class, \"dtl-stl__row\")][.//i[contains(@class, \"mdi-map-marker-outline\")]]//span)[1]"
     },
     {
       "name": "tenmoigioi",
@@ -79,25 +91,25 @@
       "name": "khoanggia",
       "valueType": "text",
       "textContent": "22.8 tỷ",
-      "selector": "(//div[contains(@class,'dtl-prc__row')]/div[contains(@class,'dtl-prc__sgl')])[1]"
+      "selector": ".dtl-prc__row > .dtl-prc__sgl:nth-child(1)"
     },
     {
       "name": "dientich",
       "valueType": "text",
       "textContent": "1144m?",
-      "selector": "(//div[contains(@class,'dtl-prc__row')]/div[contains(@class,'dtl-prc__sgl')])[2]"
+      "selector": ".dtl-prc__row > .dtl-prc__sgl:nth-child(2)"
     },
     {
       "name": "gia_m2",
       "valueType": "text",
       "textContent": "8.74 tri?u /m?",
-      "selector": "(//div[contains(@class,'dtl-prc__row')]/div[contains(@class,'dtl-prc__sgl')])[3]"
+      "selector": ".dtl-prc__row > .dtl-prc__sgl:nth-child(3)"
     },
     {
       "name": "gia_mn",
       "valueType": "text",
       "textContent": "279.33 tr /mn",
-      "selector": "(//div[contains(@class,'dtl-prc__row')]/div[contains(@class,'dtl-prc__sgl')])[4]"
+      "selector": ".dtl-prc__row > .dtl-prc__sgl:nth-child(4)"
     }
   ]
 }

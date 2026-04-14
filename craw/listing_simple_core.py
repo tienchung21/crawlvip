@@ -8,12 +8,17 @@ import sys
 from typing import Optional
 from urllib.parse import urljoin
 
+# IMPORTANT: Bypass ALL proxy to avoid ERR_TUNNEL_CONNECTION_FAILED
+os.environ['no_proxy'] = '*'
+os.environ.pop('http_proxy', None)
+os.environ.pop('https_proxy', None)
+os.environ.pop('HTTP_PROXY', None)
+os.environ.pop('HTTPS_PROXY', None)
+
 import nodriver as uc
 
 
 BROWSER_CONFIG_TIET_KIEM = [
-    "--blink-settings=imagesEnabled=false",
-    "--disable-images",
     "--mute-audio",
     # Anti-detection flags
     "--disable-blink-features=AutomationControlled",
@@ -84,7 +89,8 @@ async def crawl_listing_simple(
         browser = await uc.start(
             headless=not show_browser,
             browser_args=BROWSER_CONFIG_TIET_KIEM,
-            user_data_dir=profile_dir_listing
+            user_data_dir=profile_dir_listing,
+            sandbox=False  # <--- FIX: Tránh lỗi "Failed to connect to browser"
         )
 
         page = await browser.get(target_url)
@@ -113,25 +119,85 @@ async def crawl_listing_simple(
             if progress_callback:
                 progress_callback(current_page, max_pages, f"Page {current_page}/{max_pages}", len(total_links))
 
-            # Fake scroll
+            # Fake scroll - upgraded logic from listing_crawler.py
             if enable_fake_scroll:
                 try:
-                    scroll_height = await page.evaluate(
-                        "Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)"
-                    )
-                    if not scroll_height:
-                        scroll_height = 1000
-                    step = max(int(scroll_height) // 10, 200)
-                    pos = 0
-                    for _ in range(10):
-                        pos += step
-                        if pos > scroll_height:
-                            pos = scroll_height
-                        await page.evaluate(f"window.scrollTo(0, {pos})")
-                        await asyncio.sleep(0.2)
-                    await page.evaluate("window.scrollTo(0, 0)")
-                except Exception:
-                    pass
+                    print("[Scheduler Listing] Starting fake scroll...")
+                    before_y = None
+                    try:
+                        before_y = await page.evaluate("() => window.scrollY || window.pageYOffset || 0")
+                    except Exception:
+                        before_y = None
+                    
+                    scrolled = False
+                    # Try native scroll_down first (more realistic)
+                    if hasattr(page, "scroll_down"):
+                        print("[Scheduler Listing] Using native scroll_down()")
+                        steps = random.randint(12, 24)
+                        for _ in range(steps):
+                            await page.scroll_down(random.randint(3, 8))
+                            await asyncio.sleep(random.uniform(0.4, 1.0))
+                        scrolled = True
+                    
+                    # Fallback to manual scrollTo
+                    if not scrolled:
+                        print("[Scheduler Listing] Using manual scrollTo()")
+                        before_y = await page.evaluate("() => window.scrollY || window.pageYOffset || 0")
+                        height = await page.evaluate(
+                            "() => (document.scrollingElement || document.documentElement || document.body).scrollHeight || 2000"
+                        )
+                        max_steps = max(8, min(20, int(height / 250)))
+                        pos = int(before_y)
+                        for _ in range(max_steps):
+                            step = random.randint(150, 450)
+                            pos = min(int(height), pos + step)
+                            await page.evaluate(f"window.scrollTo(0, {pos});")
+                            await asyncio.sleep(random.uniform(0.3, 0.9))
+                        
+                        # Check if window scroll worked
+                        after_y = await page.evaluate("() => window.scrollY || window.pageYOffset || 0")
+                        print(f"[Scheduler Listing] Window scroll: {before_y} -> {after_y}")
+                        
+                        # If window didn't scroll, try scrolling scrollable containers
+                        if after_y == before_y:
+                            print("[Scheduler Listing] Window didn't scroll, trying scrollable containers...")
+                            for _ in range(max_steps):
+                                step = random.randint(150, 450)
+                                await page.evaluate(f"""() => {{
+                                    const els = Array.from(document.querySelectorAll('*'));
+                                    let target = null;
+                                    let maxDiff = 0;
+                                    for (const el of els) {{
+                                        const style = window.getComputedStyle(el);
+                                        if (!style) continue;
+                                        const oy = style.overflowY;
+                                        if (oy !== 'auto' && oy !== 'scroll') continue;
+                                        const diff = el.scrollHeight - el.clientHeight;
+                                        if (diff > maxDiff + 50) {{
+                                            maxDiff = diff;
+                                            target = el;
+                                        }}
+                                    }}
+                                    if (target) {{
+                                        target.scrollTop = (target.scrollTop || 0) + {step};
+                                        console.log('[Scroll] Scrolled container by {step}px');
+                                    }} else {{
+                                        window.scrollBy(0, {step});
+                                    }}
+                                }}""")
+                                await asyncio.sleep(random.uniform(0.3, 0.9))
+                        
+                        await asyncio.sleep(random.uniform(0.6, 1.4))
+                    
+                    after_y = None
+                    try:
+                        after_y = await page.evaluate("() => window.scrollY || window.pageYOffset || 0")
+                    except Exception:
+                        after_y = None
+                    if before_y is not None and after_y is not None:
+                        print(f"[Scheduler Listing] Final scroll position: {before_y} -> {after_y}")
+                except Exception as e:
+                    print(f"[Scheduler Listing] Fake scroll error: {e}")
             # Fake hover
             if enable_fake_hover:
                 try:
@@ -232,12 +298,16 @@ async def crawl_listing_simple(
                         if link.startswith("/"):
                             link = urljoin(target_url, link)
                         page_links.append(link)
+                
+                print(f"[Scheduler Listing] Extracted {len(page_links)} links from raw_links")
             except Exception as e:
                 print(f"[Scheduler Listing] Extract error: {e}")
+                import traceback
+                traceback.print_exc()
                 page_links = []
 
             total_links.extend(page_links)
-            print(f"[Scheduler Listing] Page {current_page}: found {len(page_links)} link(s)")
+            print(f"[Scheduler Listing] Page {current_page}: found {len(page_links)} link(s), total so far: {len(total_links)}")
             if page_links:
                 new_count = db.add_collected_links(
                     page_links,
@@ -259,16 +329,37 @@ async def crawl_listing_simple(
             # Next page
             if current_page < max_pages and next_selector:
                 try:
+                    print(f"[Scheduler Listing] Looking for next page button with selector: {next_selector}")
                     await asyncio.sleep(random.uniform(wait_next_min, wait_next_max))
-                    next_btn = await page.select(next_selector, timeout=5)
-                    if next_btn:
-                        await next_btn.scroll_into_view()
-                        await asyncio.sleep(0.3)
-                        await next_btn.click()
+                    # Pure JS click to avoid nodriver select (CBOR stack limit)
+                    clicked = await page.evaluate(
+                        """
+                        (() => {
+                            let el = null;
+                            try {
+                                el = document.querySelector(arguments[0]);
+                            } catch (e) {}
+                            if (!el) {
+                                const links = Array.from(document.querySelectorAll('a.re__pagination-icon'));
+                                el = links.find(a => a.querySelector('.re__icon-chevron-right--sm')) || links[links.length - 1];
+                            }
+                            if (!el) return {ok:false, reason:'not_found'};
+                            const href = el.getAttribute('href') || el.href || '';
+                            el.scrollIntoView({behavior:'instant', block:'center'});
+                            try { el.click(); } catch (e) {}
+                            return {ok:true, href};
+                        })()
+                        """,
+                        next_selector,
+                    )
+                    if clicked and clicked.get("ok"):
+                        print(f"[Scheduler Listing] Clicked next (href={clicked.get('href','')[:80]})")
                         await asyncio.sleep(2)
                     else:
+                        print(f"[Scheduler Listing] Next not found - stopping at page {current_page}. Reason={clicked}")
                         break
-                except Exception:
+                except Exception as e:
+                    print(f"[Scheduler Listing] Error clicking next button: {e} - stopping at page {current_page}")
                     break
 
         return {

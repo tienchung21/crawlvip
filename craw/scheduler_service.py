@@ -6,6 +6,14 @@ Run: python scheduler_service.py
 import asyncio
 import json
 import os
+
+# IMPORTANT: Bypass proxy to avoid ERR_TUNNEL_CONNECTION_FAILED
+os.environ['no_proxy'] = '*'
+os.environ.pop('http_proxy', None)
+os.environ.pop('https_proxy', None)
+os.environ.pop('HTTP_PROXY', None)
+os.environ.pop('HTTPS_PROXY', None)
+
 import time
 import threading
 import hashlib
@@ -652,6 +660,96 @@ async def scrape_pending_links(
                                     if log_callback:
                                         log_callback(f"[Link {global_idx}] WARNING: display_page is None - will use headless mode")
 
+                                # === PRE-NAVIGATION (giống Tab3) ===
+                                # Tab3 thực hiện goto + hover + scroll TRƯỚC khi gọi scrape_url
+                                # Điều này tạo ra hành vi giống người dùng thực hơn
+                                page_ready = False
+                                if shared_page and detail_show_browser:
+                                    try:
+                                        print(f"[detail] Pre-navigating to: {url[:100]}")
+                                        await shared_page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                                        try:
+                                            await shared_page.bring_to_front()
+                                        except Exception:
+                                            pass
+                                        try:
+                                            await shared_page.wait_for_load_state("networkidle", timeout=15000)
+                                        except Exception:
+                                            pass
+                                        # Thêm banner visual indicator
+                                        try:
+                                            await shared_page.evaluate(
+                                                "(t) => { document.title = t; }",
+                                                f"[C4AI] {url[:80]}"
+                                            )
+                                            await shared_page.evaluate(
+                                                """() => {
+                                                    let b = document.getElementById('c4ai-banner');
+                                                    if (!b) {
+                                                        b = document.createElement('div');
+                                                        b.id = 'c4ai-banner';
+                                                        b.style.position = 'fixed';
+                                                        b.style.top = '0';
+                                                        b.style.left = '0';
+                                                        b.style.right = '0';
+                                                        b.style.zIndex = '2147483647';
+                                                        b.style.background = 'rgba(255,0,0,0.85)';
+                                                        b.style.color = '#fff';
+                                                        b.style.fontSize = '16px';
+                                                        b.style.fontFamily = 'Arial, sans-serif';
+                                                        b.style.padding = '6px 10px';
+                                                        b.textContent = '[C4AI ACTIVE - Scheduler]';
+                                                        document.body.appendChild(b);
+                                                    }
+                                                }"""
+                                            )
+                                        except Exception:
+                                            pass
+                                        await asyncio.sleep(1)
+                                        
+                                        # Fake hover: di chuyển chuột 3 lần
+                                        if detail_fake_hover:
+                                            try:
+                                                width = await shared_page.evaluate("() => window.innerWidth || 1200")
+                                                height = await shared_page.evaluate("() => window.innerHeight || 800")
+                                                for _ in range(3):
+                                                    x = random.randint(0, max(int(width) - 1, 1))
+                                                    y = random.randint(0, max(int(height) - 1, 1))
+                                                    await shared_page.mouse.move(x, y)
+                                                    await asyncio.sleep(0.2)
+                                            except Exception as hover_err:
+                                                print(f"[detail] fake_hover error: {hover_err}")
+                                        
+                                        # Fake scroll: cuộn trang 10 bước
+                                        if detail_fake_scroll:
+                                            try:
+                                                await shared_page.evaluate("""
+                                                    () => {
+                                                        const doc = document.scrollingElement || document.documentElement || document.body;
+                                                        if (doc && doc.focus) { doc.focus(); }
+                                                        const height = doc?.scrollHeight || document.body.scrollHeight || 2000;
+                                                        const step = Math.max(Math.floor(height / 10), 200);
+                                                        let count = 0;
+                                                        function doScroll() {
+                                                            window.scrollBy(0, step);
+                                                            count++;
+                                                            if (count < 10) {
+                                                                setTimeout(doScroll, 200);
+                                                            }
+                                                        }
+                                                        doScroll();
+                                                    }
+                                                """)
+                                                await asyncio.sleep(3)
+                                            except Exception as scroll_err:
+                                                print(f"[detail] fake_scroll error: {scroll_err}")
+                                        
+                                        page_ready = True
+                                        print(f"[detail] Pre-navigation completed for: {url[:80]}")
+                                    except Exception as nav_err:
+                                        print(f"[detail] Pre-navigation error: {nav_err}")
+
+                                # Gọi scrape_url - TẮT fake_scroll/fake_hover vì đã làm ở trên
                                 result = await scrape_url(
                                     url,
                                     template,
@@ -659,8 +757,8 @@ async def scrape_pending_links(
                                     wait_load_min=detail_wait_load_min,
                                     wait_load_max=detail_wait_load_max,
                                     show_browser=detail_show_browser,
-                                    fake_scroll=bool(detail_fake_scroll),
-                                    fake_hover=bool(detail_fake_hover),
+                                    fake_scroll=False if page_ready else bool(detail_fake_scroll),
+                                    fake_hover=False if page_ready else bool(detail_fake_hover),
                                 )
                                 if cancel_callback and cancel_callback():
                                     if log_callback:
@@ -704,7 +802,9 @@ async def scrape_pending_links(
                                         url=url,
                                         data=data,
                                         domain=link.get('domain'),
-                                        link_id=link_id
+                                        link_id=link_id,
+                                        loaihinh=link.get('loaihinh'),
+                                        trade_type=link.get('trade_type')
                                     )
                                     print(f"[detail] Saved detail_id={detail_id}")
                                     imgs = data.get('img') if isinstance(data, dict) else None
@@ -804,7 +904,9 @@ def run_task(db: Database, task: dict):
     def is_cancel_requested() -> bool:
         try:
             heartbeat()  # Gọi heartbeat mỗi lần check cancel
-            return db.is_task_cancel_requested(task_id)
+            res = db.is_task_cancel_requested(task_id)
+            print(f"[DEBUG_DB] Task {task_id} cancel status: {res}")
+            return res
         except Exception:
             return False
 
@@ -820,12 +922,13 @@ def run_task(db: Database, task: dict):
         db.update_scheduler_task(task_id, {'is_running': 0, 'cancel_requested': 0, 'run_now': 0})
         db.add_scheduler_log(task_id, "task", "CANCEL", f"{msg}. Next run at {next_run}")
 
-    if is_cancel_requested():
+    if task.get('run_now'):
+        db.update_scheduler_task(task_id, {'run_now': 0, 'cancel_requested': 0})
+        db.add_scheduler_log(task_id, "task", "RUN_NOW", "Run now acknowledged")
+    elif is_cancel_requested():
         finish_cancel("Cancel requested before start")
         return
-    if task.get('run_now'):
-        db.update_scheduler_task(task_id, {'run_now': 0})
-        db.add_scheduler_log(task_id, "task", "RUN_NOW", "Run now acknowledged")
+
     db.update_scheduler_task(task_id, {'is_running': 1, 'cancel_requested': 0})
     db.add_scheduler_log(task_id, "task", "START", f"Start {name}")
     try:
@@ -888,6 +991,16 @@ def run_task(db: Database, task: dict):
                         )
                         finish_cancel("Canceled during listing stage")
                         return
+                    elif res.get('stopped_due_to_duplicates'):
+                        # Auto-stopped do quá nhiều link trùng liên tiếp
+                        db.add_scheduler_log(
+                            task_id,
+                            "listing",
+                            "WARN",
+                            f"AUTO-STOPPED: {res.get('consecutive_duplicates', 0)} consecutive duplicates detected. "
+                            f"Found {res.get('total_links', 0)} links across {res.get('pages_crawled', 0)} pages before stopping."
+                        )
+                        print(f"[Scheduler] Listing auto-stopped due to {res.get('consecutive_duplicates', 0)} consecutive duplicate links")
                     else:
                         db.add_scheduler_log(
                             task_id,

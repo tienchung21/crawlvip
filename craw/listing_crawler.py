@@ -12,9 +12,30 @@ import shutil
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
+import resource
+
+# Tang stack size cho Linux (Fix CBOR stack limit exceeded)
+try:
+    max_stack = 256 * 1024 * 1024  # 256MB
+    resource.setrlimit(resource.RLIMIT_STACK, (max_stack, max_stack))
+    print(f"[INFO] Stack limit set to {max_stack}")
+except Exception as e:
+    print(f"[WARN] Could not set stack limit: {e}")
+
+# Tang CBOR stack (Fix ProtocolException)
+try:
+    import cbor2
+    cbor2._CBOR_MAX_STACK_LEVEL = 8192  # Tang len muc cao
+except:
+    pass
+
 from urllib.parse import urljoin, urlparse
 
 import nodriver as uc
+# IMPORTANT: Bypass proxy for localhost to prevent ERR_TUNNEL_CONNECTION_FAILED (websocket)
+# But ALLOW proxy for external sites (if system has http_proxy set)
+os.environ['no_proxy'] = '127.0.0.1,localhost'
+
 from nodriver import cdp  # CDP commands for bring_to_front
 # NOTE: Crawl4AI imports đã bị loại bỏ - không còn sử dụng trong file này
 # Việc import và khởi tạo Crawl4AI gây mở thêm browser không cần thiết
@@ -30,14 +51,13 @@ for _stream in (sys.stdout, sys.stderr):
             pass
 
 # Cấu hình tiết kiệm cho nodriver (chặn ảnh, tắt audio để giảm lag và tiết kiệm bandwidth)
+# Cấu hình tiết kiệm + Anti-detect + SANDBOX ENABLED
 BROWSER_CONFIG_TIET_KIEM = [
-    "--blink-settings=imagesEnabled=false", 
-    "--disable-images",
-    "--mute-audio",
+    # "--mute-audio", # Enable audio just in case
     # Anti-detection flags - ẩn webdriver để bypass Cloudflare
     "--disable-blink-features=AutomationControlled",
-    "--no-sandbox",
-    "--disable-dev-shm-usage",
+    "--disable-dev-shm-usage",  # Quan trong cho VPS
+    "--disable-gpu",            # Tat GPU
 ]
 
 
@@ -157,6 +177,10 @@ async def crawl_listing(
     pages_crawled = 0
     cookie_logged = False
     canceled = False
+    # Consecutive duplicate tracking - dừng khi có quá nhiều link trùng liên tiếp
+    consecutive_duplicates = 0
+    MAX_CONSECUTIVE_DUPLICATES = 350
+    stopped_due_to_duplicates = False
 
     # Khởi động nodriver browser để navigate (tránh bot detection)
     browser = None
@@ -184,13 +208,12 @@ async def crawl_listing(
         # Thay thế cho dòng browser = await uc.start(...) cũ
         browser = await uc.start(
             headless=not show_browser,  # Để False để bố thấy trình duyệt và đăng nhập lần đầu
-            browser_args=BROWSER_CONFIG_TIET_KIEM,
-            user_data_dir=profile_dir_listing  # <--- QUAN TRỌNG: Dòng này giúp lưu Profile
+            browser_args=BROWSER_CONFIG_TIET_KIEM, # Use Tuned Config
+            user_data_dir=profile_dir_listing,  # <--- Restore Task Profile (72)
+            sandbox=False  # Avoid "Failed to connect to browser" in scheduler runs
         )
-
-
-        page = await browser.get(start_url)
         
+        page = await browser.get(start_url)
         # Bring browser window to front để tránh lazy-loading issues
         try:
             await page.send(cdp.page.bring_to_front())
@@ -509,8 +532,61 @@ async def crawl_listing(
                             f"Saved {new_count} new links to database...",
                             len(total_links_collected)
                         )
+                    
+                    if new_count > 0:
+                        # Reset consecutive duplicates khi CÓ link mới thực sự được thêm vào DB
+                        consecutive_duplicates = 0
+                        print(f"[Listing] Page {page_num}: Added {new_count} NEW links to DB.")
+                        if log_callback:
+                            log_callback(f"[Listing] Page {page_num}: Added {new_count} NEW links to DB")
+                    else:
+                        # Có link mới trong session, nhưng DB đã có rồi -> Tính là duplicate
+                        duplicates_in_db = len(new_page_links)
+                        consecutive_duplicates += duplicates_in_db
+                        print(f"[Listing] Page {page_num}: Found {len(new_page_links)} links but ALL existed in DB. (consecutive: {consecutive_duplicates}/{MAX_CONSECUTIVE_DUPLICATES})")
+                        if log_callback:
+                            log_callback(f"[Listing] Page {page_num}: All found links existed in DB. Duplicates: {consecutive_duplicates}/{MAX_CONSECUTIVE_DUPLICATES}")
+
+                else:
+                    # Không có link mới trong session = tất cả đều trùng
+                    duplicate_count_this_page = len(page_links)
+                    consecutive_duplicates += duplicate_count_this_page
+                    print(f"[Listing] Page {page_num}: 0 new links session, {duplicate_count_this_page} duplicates (consecutive: {consecutive_duplicates}/{MAX_CONSECUTIVE_DUPLICATES})")
+                    if log_callback:
+                        log_callback(f"[Listing] Duplicates: {consecutive_duplicates}/{MAX_CONSECUTIVE_DUPLICATES} consecutive")
+                
+                # Kiểm tra điều kiện dừng chung cho cả 2 trường hợp
+                if consecutive_duplicates >= MAX_CONSECUTIVE_DUPLICATES:
+                    stopped_due_to_duplicates = True
+                    stop_msg = f"[Listing] AUTO-STOP: Detected {consecutive_duplicates} consecutive duplicate links. Stopping to avoid wasting resources."
+                    print(stop_msg)
+                    if log_callback:
+                        log_callback(stop_msg)
+                    if progress_callback:
+                        progress_callback(
+                            page_num,
+                            max_pages,
+                            f"STOPPED: {consecutive_duplicates} consecutive duplicates detected",
+                            len(total_links_collected)
+                        )
+                    break
 
                 pages_crawled = page_num
+                
+                # Optimize: Clear cache periodically to prevent VPS crash
+                if page_num % 3 == 0:
+                    try:
+                        await page.evaluate("""
+                            if ('caches' in window) {
+                                caches.keys().then(names => {
+                                    names.forEach(name => caches.delete(name));
+                                });
+                            }
+                        """)
+                        print(f"[INFO] Cleared browser cache at page {page_num}")
+                    except Exception:
+                        pass
+
                 print(f"[DEBUG] page_num={page_num}, max_pages={max_pages}, will check next: {page_num < max_pages}")
 
                 if page_num < max_pages:
@@ -565,107 +641,111 @@ async def crawl_listing(
                     print(f"[DEBUG] Done waiting, now finding next button with selector: {next_page_selector}")
                     if progress_callback:
                         progress_callback(page_num, max_pages, "Dang tim nut Next...", len(total_links_collected))
+                    
+                    # (Debug visibility removed)
+
+                    # === PURE JS CLICK - NO NODRIVER SELECTOR (Fix CBOR Stack Limit) ===
+                    print(f"[DEBUG] Clicking next with JS...")
                     try:
-                        # Debug: Kiểm tra visibility state
                         import json as _json
-                        vis_state = await page.evaluate("document.visibilityState")
-                        is_hidden = await page.evaluate("document.hidden")
-                        print(f"[DEBUG] Visibility: state={vis_state}, hidden={is_hidden}")
-                        
-                        # Debug: Tìm tất cả elements có class chứa "Paging"
-                        paging_elements = await page.evaluate("""
-                            (function() {
-                                var els = document.querySelectorAll('[class*="Paging"], [class*="paging"], [class*="pagination"]');
-                                var result = [];
-                                for (var i = 0; i < els.length && i < 10; i++) {
-                                    var el = els[i];
-                                    result.push({
-                                        tag: el.tagName,
-                                        className: el.className,
-                                        id: el.id || '',
-                                        visible: el.offsetParent !== null,
-                                        rect: el.getBoundingClientRect ? {
-                                            top: el.getBoundingClientRect().top,
-                                            height: el.getBoundingClientRect().height
-                                        } : null
-                                    });
+                        selector_js = _json.dumps(next_page_selector or "")
+                        js_click = """
+                            (() => {
+                                const selector = __SELECTOR__ || '';
+                                let next = null;
+                                let strategy = '';
+
+                                // Strategy 1: use template selector (if any)
+                                if (selector) {
+                                    try { next = document.querySelector(selector); } catch (e) {}
+                                    if (next) {
+                                        const isNumber = next.classList && next.classList.contains('re__pagination-number');
+                                        const hasRight = next.querySelector && next.querySelector('.re__icon-chevron-right--sm');
+                                        // Discard non-right icon if selector picked a number link
+                                        if (isNumber && !hasRight) {
+                                            next = null;
+                                        } else {
+                                            strategy = 'selector';
+                                        }
+                                    }
                                 }
-                                return JSON.stringify(result);
+
+                                // Fallback: only if selector empty
+                                if (!next && !selector) {
+                                    const links = Array.from(document.querySelectorAll('.re__pagination-group a'));
+                                    next = links.find(a => a.querySelector('.re__icon-chevron-right--sm')) || null;
+                                    if (next) strategy = 'icon';
+                                }
+
+                                if (!next) return {ok: false, reason: 'not_found'};
+
+                                next.scrollIntoView({behavior: 'instant', block: 'center'});
+                                const href = next.getAttribute('href') || next.href || '';
+                                const pid = next.getAttribute('pid') || '';
+                                try { next.click(); } catch (e) {}
+
+                                return {ok: true, href, pid, strategy};
                             })()
-                        """)
-                        print(f"[DEBUG] Paging elements found: {paging_elements}")
-                        
-                        # Debug: Kiểm tra selector cụ thể
-                        _sel_js = _json.dumps(next_page_selector)
-                        js_check = await page.evaluate(f"""
-                            (function() {{
-                                var el = document.querySelector({_sel_js});
-                                if (!el) return null;
-                                return {{
-                                    tagName: el.tagName,
-                                    className: el.className,
-                                    href: el.href || el.getAttribute('href') || '',
-                                    text: (el.textContent || '').substring(0, 50),
-                                    visible: el.offsetParent !== null,
-                                    display: window.getComputedStyle(el).display,
-                                    visibility: window.getComputedStyle(el).visibility
-                                }};
-                            }})()
-                        """)
-                        print(f"[DEBUG] JS querySelector check: {js_check}")
-                        
-                        next_btn = await page.select(next_page_selector, timeout=5)
-                        print(f"[DEBUG] page.select returned: {next_btn}")
-                        if next_btn:
-                            print(f"[DEBUG] Found next button, will click...")
-                            if log_callback:
-                                try:
-                                    next_class = await next_btn.get_attribute("class") or ""
-                                except Exception:
-                                    next_class = ""
-                                log_callback(f"[Listing] Found next button class='{next_class or 'N/A'}'")
+                            """
+                        js_click = js_click.replace("__SELECTOR__", selector_js)
+                        clicked = await page.evaluate(js_click)
+                        # nodriver may return list of key/value pairs instead of dict
+                        if isinstance(clicked, list):
                             try:
-                                viewport_h = await page.evaluate("() => window.innerHeight || 800")
-                                rect_top = await next_btn.apply("el => el.getBoundingClientRect().top")
-                                steps = 0
-                                while rect_top is not None and rect_top > viewport_h * 0.7 and steps < 25:
-                                    if hasattr(page, "scroll_down"):
-                                        await page.scroll_down(random.randint(6, 14))
-                                    else:
-                                        step = random.randint(200, 500)
-                                        await page.evaluate(f"window.scrollBy(0, {step});")
-                                    await asyncio.sleep(random.uniform(0.2, 0.6))
-                                    rect_top = await next_btn.apply("el => el.getBoundingClientRect().top")
-                                    steps += 1
+                                clicked = {
+                                    k: (v.get('value') if isinstance(v, dict) else v)
+                                    for k, v in clicked
+                                }
                             except Exception:
-                                pass
-                            await asyncio.sleep(0.5)
-                            try:
-                                await next_btn.click()
-                                print(f"[DEBUG] Clicked next button successfully")
-                            except Exception as click_err:
-                                print(f"[DEBUG] First click failed: {click_err}, trying scroll_into_view...")
-                                try:
-                                    await next_btn.scroll_into_view()
-                                except Exception:
-                                    pass
-                                await asyncio.sleep(0.3)
-                                await next_btn.click()
-                                print(f"[DEBUG] Second click succeeded")
+                                clicked = {}
+                        if not isinstance(clicked, dict):
+                            clicked = {}
+
+                        if clicked and clicked.get('ok'):
+                            print(f"[OK] Clicked next: {clicked.get('href', '')[:80]}")
+                            if log_callback:
+                                log_callback(
+                                    f"[Listing] Next clicked: {clicked.get('href', '')} "
+                                    f"(strategy={clicked.get('strategy','')}, pid={clicked.get('pid','')})"
+                                )
                             if progress_callback:
-                                progress_callback(page_num, max_pages, "Da click Next, cho load trang moi...", len(total_links_collected))
+                                progress_callback(page_num, max_pages, "Da click Next (Pure JS)...", len(total_links_collected))
                             await asyncio.sleep(5)
+                            prev_url = current_url
+                            try:
+                                curr_url_after = await page.evaluate("location.href")
+                            except Exception:
+                                curr_url_after = ""
+                            if log_callback:
+                                log_callback(f"[Listing] URL after click: {curr_url_after}")
+                            # Update current_url to avoid falling back to page 1
+                            if curr_url_after:
+                                current_url = curr_url_after
+                            # If URL didn't change, navigate directly using href
+                            try:
+                                if clicked.get('href') and curr_url_after and curr_url_after == prev_url:
+                                    from urllib.parse import urljoin
+                                    next_url = urljoin(current_url, clicked.get('href'))
+                                    if log_callback:
+                                        log_callback(f"[Listing] URL not changed, forcing GET: {next_url}")
+                                    await page.get(next_url)
+                                    current_url = next_url
+                            except Exception as nav_err:
+                                if log_callback:
+                                    log_callback(f"[Listing] Force GET failed: {nav_err}")
                         else:
-                            print(f"[DEBUG] next_btn is None/False - no next button found!")
-                            if progress_callback:
-                                progress_callback(page_num, max_pages, "Khong thay nut Next. Dung.", len(total_links_collected))
+                            reason = clicked.get('reason', 'unknown') if clicked else 'null_result'
+                            print(f"[STOP] Next not found: {reason}")
+                            if log_callback:
+                                log_callback(f"[Listing] Stop: Next not found. Reason={reason}")
                             break
+
                     except Exception as e:
-                        print(f"[DEBUG] Exception in next page logic: {e}")
+                        print(f"[ERROR] Click failed: {e}")
+                        if log_callback:
+                            log_callback(f"[Listing] Click failed: {e}")
                         import traceback
                         traceback.print_exc()
-                        if progress_callback:
-                            progress_callback(page_num, max_pages, f"Loi khi Next trang: {e}", len(total_links_collected))
                         break
             except Exception as e:
                 if log_callback:
@@ -710,5 +790,7 @@ async def crawl_listing(
         'total_links': len(unique_links),
         'pages_crawled': pages_crawled,
         'new_links_added': len(unique_links),  # db already handles duplicates
-        'canceled': canceled
+        'canceled': canceled,
+        'stopped_due_to_duplicates': stopped_due_to_duplicates,
+        'consecutive_duplicates': consecutive_duplicates
     }

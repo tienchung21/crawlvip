@@ -588,13 +588,27 @@ SQL;
             }
         }
 
-        // Small rows (trimmed < 10?)
-        // Assuming user wants to see rows with small sample size in separate tab
-        // Filter rows where total_rows < 10
-        $smallRows = (clone $base)
-            ->where('total_rows', '<', 10)
-            ->orderBy('month', 'desc')
-            ->limit(100)
+        // Small rows query logic (Decoupled from Chart base query)
+        $smallQuery = DB::table(self::STATS_TABLE . ' as s');
+        
+        if ($wardId) {
+             $smallQuery->where('s.new_ward_id', (int)$wardId);
+        } elseif ($regionId) {
+             // Show all records in this region (including Wards) that match the criteria
+             $smallQuery->where('s.new_region_id', (int)$regionId);
+        }
+        
+        if ($medianGroup) {
+            $smallQuery->where('s.median_group', (int)$medianGroup);
+        }
+        if ($month) {
+            $smallQuery->where('s.month', $month);
+        }
+
+        $smallRows = $smallQuery
+            ->where('s.total_rows', '<', 10)
+            ->orderBy('s.month', 'desc')
+            ->limit(200)
             ->get();
         
         return view('demo', [

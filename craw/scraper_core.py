@@ -493,13 +493,15 @@ async def scrape_url(
                 print(f"[scrape_url] display_page error: {error_msg}")
                 result = {"success": False, "url": url, "error": error_msg, "html": ""}
         else:
-            # Fallback khi không có display_page (headless mode hoặc display_page không tồn tại)
+            # Fallback khi không có display_page
             print(f"[scrape_url] No display_page, using scrape_simple for: {url[:100]}")
             if scraper:
+                # Dùng scraper đã có sẵn - KHÔNG tạo browser mới
                 result = await scraper.scrape_simple(url, bypass_cache=True)
             else:
-                async with WebScraper(headless=not show_browser, verbose=False) as new_scraper:
-                    result = await new_scraper.scrape_simple(url, bypass_cache=True)
+                # KHÔNG tạo browser mới nữa - return lỗi thay vì tạo browser "ma"
+                print(f"[scrape_url] ERROR: No scraper and no display_page - cannot scrape without creating new browser")
+                result = {"success": False, "url": url, "error": "No scraper or display_page available", "html": ""}
 
         if not result.get('success'):
             return {'success': False, 'url': url, 'error': result.get('error'), 'timestamp': datetime.now().isoformat()}

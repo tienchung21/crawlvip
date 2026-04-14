@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'data-clean/convert-batch',
             'data-clean/convert',
+            'data-median/convert-batch',
+            'api/pg/data-median/sync',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -1,46 +1,79 @@
 # Auto Merge & Sync Scripts Documentation
 
-Thư mục này chứa các script Python dùng để tự động đồng bộ ID, hợp nhất dữ liệu địa chính và chuẩn hóa bảng `data_clean`.
+Thư mục này chứa các script Python tự động hóa quy trình ETL, đồng bộ địa chính và chuẩn hóa dữ liệu.
 
-## Danh sách Script và Chức năng
+## A. Nhóm Script MOGI ETL (Quan trọng hàng ngày)
 
-### 1. `merge_new_id_dataclean.py` (Quan trọng nhất)
-*   **Chức năng**: Tạo và cập nhật 3 cột mới trong bảng `data_clean` để phục vụ thống kê chính xác:
-    *   `cafeland_new_id`: ID Xã chuẩn (lấy từ bảng Merge).
-    *   `cafeland_new_name`: Tên Xã chuẩn.
-    *   `cafeland_new_parent_id`: ID Huyện (Parent) để group theo khu vực.
-*   **Logic**: `data_clean (cafeland_id)` -> `transaction_city_merge (old -> new)` -> `transaction_city (new -> parent)`.
-*   **Khi nào chạy**: Chạy khi có dữ liệu crawl mới vào `data_clean` để điền ID chuẩn.
+### 1. `run_mogi_etl.py` (Mogi ETL Orchestrator)
+*   **Chức năng**: Script CHÍNH để chạy hàng ngày sau khi crawl.
+*   **Logic**:
+    *   Chuyển dữ liệu từ `scraped_details_flat` (Mogi thô) sang `data_full` (Bảng chuẩn).
+    *   Sử dụng **Direct ID Mapping**: Join bảng `location_mogi` để lấy CafeLand ID ngay lập tức.
+    *   Tự động tính toán giá, diện tích, quy chuẩn dữ liệu.
 
-### 2. `sync_all_provinces.py`
-*   **Chức năng**: Script chạy đệ quy quét toàn bộ 63 tỉnh thành để khớp ID Xã (Ward) từ Nhatot sang Cafeland.
-*   **Logic**: Dùng thuật toán so khớp tên (normalize name) để tìm ID tương ứng.
-*   **Output**: Cập nhật bảng `location_detail` hoặc bảng mapping trung gian.
+### 2. `sql_convert_mogi.sql`
+*   **Chức năng**: File SQL chứa câu lệnh logic cho `run_mogi_etl.py`. Chỉ chỉnh sửa khi cần thay đổi logic mapping cột.
 
-### 3. `sync_levels_1_2.py`
-*   **Chức năng**: Đồng bộ ID cấp Tỉnh (Level 1) và Huyện (Level 2).
-*   **Logic**: Đảm bảo rằng mọi Tỉnh/Huyện trong `location_detail` đều đã được map sang ID của Cafeland.
-
-### 4. `update_data_clean.py`
-*   **Chức năng**: Script ban đầu để đẩy `cafeland_id` vào bảng `data_clean` dựa trên bảng mapping `location_detail`.
-*   **Lưu ý**: Đây là bước sơ khởi, trước khi có logic Merge ID mới.
-
-### 5. `merge_id_dataclean.py`
-*   **Chức năng**: Script cũ dùng để update incremental `cafeland_id` cho các dòng mới. (Có thể coi là phiên bản cũ của quy trình update ID).
-
-### 6. `check_merge_table.py`
-*   **Chức năng**: Kiểm tra cấu trúc (Schema) và dữ liệu mẫu của bảng `transaction_city_merge`.
-*   **Dùng để**: Debug xem bảng Merge đang chứa dữ liệu gì.
+### 3. `update_full_status.py`
+*   **Chức năng**: Tiện ích chạy bổ sung để tính lại cột `full` (ví dụ: khi thay đổi định nghĩa "thế nào là tin full").
 
 ---
-**Quy trình chạy tự động khuyến nghị:**
-1.  Chạy Crawl để lấy dữ liệu thô.
-2.  Chạy `sync_levels_1_2.py` & `sync_all_provinces.py` (nếu có tỉnh mới chưa map).
-3.  Chạy `merge_new_id_dataclean.py` để chuẩn hóa ID trong `data_clean`.
-### 7. `update_list_ym.py`
-*   **Chức năng**: Tự động điền cột `list_ym` (Tháng đăng tin) dựa trên thời gian đăng tin gốc.
-*   **Logic**: 
-    *   Ưu tiên dùng `orig_list_time` (chuyển đổi timestamp -> YYYY-MM).
-    *   Nếu không có `orig`, dùng `list_time` (fallback).
-*   **Khi nào chạy**: Chạy sau bước Crawl để chuẩn hóa thời gian phục vụ thống kê theo tháng.
 
+## B. Nhóm Sync & Map Địa Chính (Location System)
+
+### 4. `sync_mogi_locations.py`
+*   **Chức năng**: **Cào toàn bộ danh sách địa chính** (Tỉnh -> Huyện -> Xã -> Đường) từ API của Mogi.vn về bảng `location_mogi`.
+*   **Khi nào chạy**: Khi Mogi cập nhật địa giới hành chính hoặc chạy setup lần đầu.
+
+### 5. `merge_mogi_locations.py`
+*   **Chức năng**: **Map ID Mogi sang CafeLand ID**.
+*   **Logic**:
+    *   Chạy so khớp tên (Fuzzy Matching) giữa `location_mogi` và `transaction_city`.
+    *   Điền ID khớp vào cột `cafeland_id` trong bảng `location_mogi`.
+    *   Tự động cập nhật bảng `transaction_city_merge`.
+
+### 6. `map_mogi_to_transaction_city.py`
+*   **Chức năng**: Script cũ/thử nghiệm logic map địa chỉ (tương tự `merge_mogi_locations.py` nhưng logic khác). Ít dùng hơn.
+
+### 7. `sync_levels_1_2.py`
+*   **Chức năng**: Đồng bộ ID cấp Tỉnh/Huyện cho hệ thống Nhatot cũ.
+
+### 8. `sync_all_provinces.py`
+*   **Chức năng**: Đồng bộ ID cấp Xã cho hệ thống Nhatot cũ (quét tên xã).
+
+### 9. `check_merge_table.py`
+*   **Chức năng**: Kiểm tra nhanh dữ liệu bảng `transaction_city_merge` để debug.
+
+---
+
+## C. Nhóm Data Clean & Nhatot (Hệ thống cũ/Song song)
+
+### 10. `merge_new_id_dataclean.py`
+*   **Chức năng**: Cập nhật cột `cafeland_new_id`, `cafeland_new_parent_id` trong bảng `data_clean` dựa trên bảng Merge. (Dùng cho Nhatot/Data Clean).
+
+### 11. `update_median_group.py`
+*   **Chức năng**: Phân loại bất động sản (`median_group` 1,2,3,4) dựa trên `type` và `category` trong bảng `data_clean`. Phục vụ tính giá trung vị.
+
+### 12. `recreate_data_clean.py`
+*   **Chức năng**: **XÓA TRẮNG** và nạp lại toàn bộ bảng `data_clean` từ `ad_listing_detail` (Nhatot). **Cẩn thận: Dữ liệu lớn sẽ rất lâu.**
+
+### 13. `batch_insert_data_clean.py`
+*   **Chức năng**: Giống `recreate_data_clean.py` nhưng chạy theo Batch (từng lô 10k dòng) để tránh treo máy.
+
+### 14. `update_list_ym.py`
+*   **Chức năng**: Tính toán cột `list_ym` (Tháng đăng tin) cho `data_clean`.
+
+---
+
+## D. Nhóm Utility (Hỗ trợ)
+
+### 15. `recreate_data_full_table.py`
+*   **Chức năng**: Xóa và tạo lại bảng `data_full` (Reset schema). Chỉ dùng khi muốn làm sạch dữ liệu từ đầu.
+
+---
+
+**QUY TRÌNH SETUP HỆ THỐNG MỚI (MOGI):**
+1.  Chạy `sync_mogi_locations.py`: Lấy full địa chính Mogi.
+2.  Chạy `merge_mogi_locations.py`: Map ID Mogi -> CafeLand.
+3.  (Hàng ngày) Chạy `daily_mogi_crawl.py`.
+4.  (Hàng ngày - Tự động) Chạy `run_mogi_etl.py`.

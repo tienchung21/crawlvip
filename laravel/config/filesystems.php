@@ -60,6 +60,13 @@ return [
             'report' => false,
         ],
 
+        'ftpnhadat' => [
+            'driver'   => 'ftp',
+            'host'     => 'static2.cafeland.vn',
+            'username' => 'uploadernhadat',
+            'password' => 'aUvluckHS2H6Hu',
+        ],
+
     ],
 
     /*

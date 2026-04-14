@@ -13,6 +13,9 @@ from datetime import datetime
 
 # Force UTF-8 to avoid Windows console encoding errors (rich logger)
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+# Patch: Bypass proxy for localhost
+os.environ['no_proxy'] = '127.0.0.1,localhost'
+
 for _stream in (sys.stdout, sys.stderr):
     if hasattr(_stream, "reconfigure"):
         try:
@@ -77,7 +80,11 @@ class WebScraper:
         # Thêm unique window name để tránh browser bị share
         extra_args.append(f"--class=crawl4ai-instance-{self._unique_id}")
         
-        ua_xin = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+        # Tự động phát hiện OS để set User-Agent phù hợp tránh lệch pha Fingerprint
+        if sys.platform == "linux" or sys.platform == "linux2":
+            ua_xin = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+        else:
+            ua_xin = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
         
         # Xác định có dùng persistent context hay không
         # Chỉ bật persistent context khi có user_data_dir
@@ -104,9 +111,31 @@ class WebScraper:
         self.crawler = None
     
     async def __aenter__(self):
-        """Context manager entry"""
-        self.crawler = AsyncWebCrawler(config=self.browser_config)
-        await self.crawler.__aenter__()
+        """Context manager entry with retry for CDP connection"""
+        import asyncio
+        max_retries = 3
+        retry_delay = 2  # seconds
+        
+        for attempt in range(1, max_retries + 1):
+            try:
+                self.crawler = AsyncWebCrawler(config=self.browser_config)
+                await self.crawler.__aenter__()
+                print(f"[WebScraper #{self._instance_id}] Crawler initialized successfully on attempt {attempt}")
+                return self
+            except Exception as e:
+                error_msg = str(e)
+                if "CDP endpoint" in error_msg or "not ready" in error_msg.lower():
+                    print(f"[WebScraper #{self._instance_id}] CDP connection failed (attempt {attempt}/{max_retries}): {error_msg}")
+                    if attempt < max_retries:
+                        print(f"[WebScraper #{self._instance_id}] Waiting {retry_delay}s before retry...")
+                        await asyncio.sleep(retry_delay)
+                        retry_delay *= 2  # Exponential backoff
+                    else:
+                        print(f"[WebScraper #{self._instance_id}] All {max_retries} attempts failed, raising error")
+                        raise
+                else:
+                    # Lỗi khác không phải CDP, raise ngay
+                    raise
         return self
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):

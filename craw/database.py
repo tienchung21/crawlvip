@@ -88,8 +88,12 @@ class Database:
                 'host': self.host,
                 'user': self.user,
                 'password': self.password,
-                'port': self.port
+                'port': self.port,
+                'charset': 'utf8mb4',
+                'cursorclass': pymysql.cursors.DictCursor,
+                'autocommit': True
             }
+            
             if use_database:
                 conn_params['db'] = self.database
             conn = MySQLdb.connect(**conn_params)
@@ -407,6 +411,54 @@ class Database:
             cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN loaihinhcanho VARCHAR(255)")
         except Exception:
             pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN city_code VARCHAR(255)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN district_id VARCHAR(255)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN ward_id VARCHAR(255)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN street_id VARCHAR(255)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN lat VARCHAR(255)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat ADD COLUMN lng VARCHAR(255)")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN city_code VARCHAR(10) NULL")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN district_id INT NULL")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN ward_id INT NULL")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN street_id INT NULL")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN lat VARCHAR(150) NULL")
+        except Exception:
+            pass
+        try:
+            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN lng VARCHAR(150) NULL")
+        except Exception:
+            pass
 
         # Create scraped_detail_images table (lưu danh sách ảnh theo detail_id)
         cursor.execute('''
@@ -563,6 +615,45 @@ class Database:
                 INDEX idx_scheduler_logs_created (created_at)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ''')
+
+        # Create data_full table (Requested by user)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS data_full (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                title TEXT DEFAULT NULL,
+                slug_name VARCHAR(255) DEFAULT NULL,
+                diachi TEXT DEFAULT NULL,
+                ngaydang VARCHAR(255) DEFAULT NULL,
+                img TEXT DEFAULT NULL,
+                gia VARCHAR(255) DEFAULT NULL,
+                dientich VARCHAR(255) DEFAULT NULL,
+                mota TEXT DEFAULT NULL,
+                loaihinh VARCHAR(255) DEFAULT NULL,
+                type VARCHAR(50) DEFAULT NULL,
+                huongnha VARCHAR(255) DEFAULT NULL,
+                sotang VARCHAR(255) DEFAULT NULL,
+                sotoilet VARCHAR(255) DEFAULT NULL,
+                duongtruocnha VARCHAR(255) DEFAULT NULL,
+                sophongkhach VARCHAR(255) DEFAULT NULL,
+                sophongngu VARCHAR(255) DEFAULT NULL,
+                phaply VARCHAR(255) DEFAULT NULL,
+                latitude FLOAT DEFAULT NULL,
+                longitude FLOAT DEFAULT NULL,
+                moigioi VARCHAR(255) DEFAULT NULL,
+                phone VARCHAR(255) DEFAULT NULL,
+                source VARCHAR(255) DEFAULT NULL,
+                time_convert DATETIME DEFAULT NULL,
+                id_goc VARCHAR(255) DEFAULT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_data_full_source (source),
+                INDEX idx_data_full_id_goc (id_goc)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ''')
+        try:
+            cursor.execute("ALTER TABLE data_full ADD COLUMN slug_name VARCHAR(255) DEFAULT NULL")
+        except Exception:
+            pass
         
         conn.commit()
         cursor.close()
@@ -635,73 +726,112 @@ class Database:
         if not links_list:
             return 0
         
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        
-        added_count = 0
-        normalized_links = []
-        for url in links_list:
-            if not url or not isinstance(url, str):
-                continue
-            
-            # Normalize URL before inserting
-            normalized_url = self.normalize_url(url)
-            normalized_links.append(normalized_url)
-            
+        # Retry loop for Deadlock handling
+        max_retries = 3
+        attempt = 0
+        while attempt < max_retries:
             try:
-                # Use INSERT IGNORE for MySQL (skips duplicates)
-                cursor.execute('''
-                    INSERT IGNORE INTO collected_links (
-                        url, status, domain, loaihinh, trade_type,
-                        city_id, city_name, ward_id, ward_name,
-                        new_city_id, new_city_name, new_ward_id, new_ward_name,
-                        created_at
-                    )
-                    VALUES (%s, 'PENDING', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ''', (
-                    normalized_url,
-                    domain,
-                    loaihinh,
-                    trade_type,
-                    city_id,
-                    city_name,
-                    ward_id,
-                    ward_name,
-                    new_city_id,
-                    new_city_name,
-                    new_ward_id,
-                    new_ward_name,
-                    datetime.now()
-                ))
+                conn = self.get_connection()
+                cursor = conn.cursor()
                 
-                if cursor.rowcount > 0:
-                    added_count += 1
-                else:
-                    # URL đã tồn tại trong DB, bỏ qua (KHÔNG thêm vào)
-                    pass
-            except Exception as e:
-                # Skip if error (likely duplicate or invalid)
-                print(f"Error adding link {normalized_url[:50]}: {e}")
-                continue
-        
-        # If trade_type is provided, backfill NULL trade_type for these URLs.
-        if trade_type:
-            for i in range(0, len(normalized_links), 500):
-                chunk = normalized_links[i:i + 500]
-                placeholders = ",".join(["%s"] * len(chunk))
-                cursor.execute(
-                    f"""
-                    UPDATE collected_links
-                    SET trade_type = %s
-                    WHERE trade_type IS NULL AND url IN ({placeholders})
-                    """,
-                    [trade_type, *chunk]
-                )
+                added_count = 0
+                normalized_links = []
+                for url in links_list:
+                    if not url or not isinstance(url, str):
+                        continue
+                    
+                    # Normalize URL before inserting
+                    normalized_url = self.normalize_url(url)
+                    normalized_links.append(normalized_url)
+                    
+                    try:
+                        # Use INSERT IGNORE for MySQL (skips duplicates)
+                        cursor.execute('''
+                            INSERT IGNORE INTO collected_links (
+                                url, status, domain, loaihinh, trade_type,
+                                city_id, city_name, ward_id, ward_name,
+                                new_city_id, new_city_name, new_ward_id, new_ward_name,
+                                created_at
+                            )
+                            VALUES (%s, 'PENDING', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ''', (
+                            normalized_url,
+                            domain,
+                            loaihinh,
+                            trade_type,
+                            city_id,
+                            city_name,
+                            ward_id,
+                            ward_name,
+                            new_city_id,
+                            new_city_name,
+                            new_ward_id,
+                            new_ward_name,
+                            datetime.now()
+                        ))
+                        
+                        if cursor.rowcount > 0:
+                            added_count += 1
+                        else:
+                            # URL đã tồn tại trong DB, bỏ qua (KHÔNG thêm vào)
+                            pass
+                    except Exception as e:
+                        # Check if it is a mysql deadlock error hidden in Exception
+                        is_deadlock = False
+                        if hasattr(e, 'errno') and e.errno == 1213:
+                            is_deadlock = True
+                        
+                        if is_deadlock:
+                            raise e # Raise to outer loop to handle retry
+                            
+                        # Skip if other error (likely duplicate or invalid)
+                        print(f"Error adding link {normalized_url[:50]}: {e}")
+                        continue
+                
+                # If trade_type is provided, backfill NULL trade_type for these URLs.
+                if trade_type and normalized_links:
+                    for i in range(0, len(normalized_links), 500):
+                        chunk = normalized_links[i:i + 500]
+                        placeholders = ",".join(["%s"] * len(chunk))
+                        cursor.execute(
+                            f"""
+                            UPDATE collected_links
+                            SET trade_type = %s
+                            WHERE trade_type IS NULL AND url IN ({placeholders})
+                            """,
+                            (trade_type, *chunk)
+                        )
+                
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return added_count
 
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return added_count
+            except mysql.connector.Error as err:
+                # Catch Deadlock from outer loop (or propagated from inner)
+                if err.errno == 1213: # Deadlock
+                    attempt += 1
+                    print(f"Deadlock detected in add_collected_links (Attempt {attempt}/{max_retries}). Retrying in {attempt}s...")
+                    time.sleep(random.uniform(1, 3)) # Backoff
+                    if attempt >= max_retries:
+                         print("Max retries reached for Deadlock.")
+                         raise err
+                    # Continue while loop to retry
+                else:
+                    raise err
+            except Exception as e:
+                # Check for deadlock in generic exception
+                if hasattr(e, 'errno') and e.errno == 1213:
+                     attempt += 1
+                     print(f"Deadlock detected (Generic) in add_collected_links (Attempt {attempt}/{max_retries})...")
+                     time.sleep(random.uniform(1, 3))
+                     if attempt >= max_retries:
+                         raise e
+                     continue
+                
+                print(f"Database Error in add_collected_links: {e}")
+                return 0
+        return 0
 
     def add_scraped_detail(self, url: str, data: dict, domain: Optional[str] = None, link_id: Optional[int] = None, success: bool = True):
         """
@@ -777,9 +907,11 @@ class Database:
             cursor.close()
             conn.close()
 
-    def add_scraped_detail_flat(self, url: str, data: dict, domain: Optional[str] = None, link_id: Optional[int] = None) -> Optional[int]:
+    def add_scraped_detail_flat(self, url: str, data: dict, domain: Optional[str] = None, link_id: Optional[int] = None, loaihinh: Optional[str] = None, trade_type: Optional[str] = None) -> Optional[int]:
         """
         Lưu bản ghi detail vào bảng scraped_details_flat với các cột cụ thể.
+        loaihinh, trade_type: lấy từ collected_links khi crawl detail
+        full: auto=1 nếu có đủ title, domain, mota, khoanggia, dientich, diachi, sodienthoai, loaihinh, trade_type
         """
         if not data:
             return None
@@ -805,6 +937,35 @@ class Database:
                 if alias_lower in data_lower:
                     return data_lower.get(alias_lower)
             return None
+        
+        # Get values for full check
+        title_val = data.get('title')
+        mota_val = data.get('mota')
+        khoanggia_val = data.get('khoanggia')
+        dientich_val = data.get('dientich')
+        dientichsudung_val = data.get('dientichsudung')
+        diachi_val = data.get('diachi')
+        sodienthoai_val = data.get('sodienthoai')
+        
+        loaihinh_val = loaihinh if loaihinh and str(loaihinh).strip() else _get_data_value('loaibds')
+
+        # Check area: dientich OR dientichsudung
+        has_area = (dientich_val and str(dientich_val).strip()) or (dientichsudung_val and str(dientichsudung_val).strip())
+        
+        # Calculate full: 1 if all required fields present.
+        # Some sources only provide `loaibds`, so allow it as a fallback for `loaihinh`.
+        is_full = 1 if all([
+            title_val and str(title_val).strip(),
+            domain and str(domain).strip(),
+            mota_val and str(mota_val).strip(),
+            khoanggia_val and str(khoanggia_val).strip(),
+            has_area,
+            diachi_val and str(diachi_val).strip(),
+            sodienthoai_val and str(sodienthoai_val).strip(),
+            loaihinh_val and str(loaihinh_val).strip(),
+            trade_type and str(trade_type).strip()
+        ]) else 0
+        
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
@@ -826,13 +987,49 @@ class Database:
                     sophongngu, sophongvesinh, huongnha, huongbancong, mattien, duongvao, phaply, noithat,
                     sotang, loaihinhnhao, dientichsudung, gia_m2, gia_mn, dacdiemnhadat, chieungang, chieudai, thuocduan,
                     trangthaiduan, tenmoigioi, sodienthoai, map, matin, loaitin, ngayhethan, ngaydang, diachi,
+                    street_ext, ward_ext, district_ext, city_ext,
+                    city_code, district_id, ward_id, street_id, lat, lng,
+                    mogi_city_id, mogi_district_id, mogi_ward_id, mogi_street_id,
                     thoigianvaoo, giadien, gianuoc, giainternet, sotiencoc, tangso, loaihinhvanphong, loaihinhdat, loaihinhcanho,
-                    diachicu, loaibds, phongan, nhabep, santhuong, chodexehoi, chinhchu
+                    diachicu, loaibds, phongan, nhabep, santhuong, chodexehoi, chinhchu,
+                    loaihinh, trade_type, full
                 ) VALUES (
                     %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s
                 )
+                ON DUPLICATE KEY UPDATE
+                    khoanggia = IF(
+                        VALUES(khoanggia) IS NOT NULL
+                        AND TRIM(CAST(VALUES(khoanggia) AS CHAR)) <> ''
+                        AND (
+                            khoanggia IS NULL
+                            OR TRIM(CAST(khoanggia AS CHAR)) = ''
+                            OR TRIM(CAST(khoanggia AS CHAR)) = '0'
+                        ),
+                        VALUES(khoanggia),
+                        khoanggia
+                    ),
+                    thuocduan = VALUES(thuocduan),
+                    map = VALUES(map),
+                    full = VALUES(full),
+                    ngaydang = VALUES(ngaydang), -- Updated date if changed
+                    -- Update location inputs if improved
+                    city_code = IF(VALUES(city_code) IS NOT NULL, VALUES(city_code), city_code),
+                    district_id = IF(VALUES(district_id) IS NOT NULL, VALUES(district_id), district_id),
+                    ward_id = IF(VALUES(ward_id) IS NOT NULL, VALUES(ward_id), ward_id),
+                    street_id = IF(VALUES(street_id) IS NOT NULL, VALUES(street_id), street_id),
+                    lat = IF(VALUES(lat) IS NOT NULL, VALUES(lat), lat),
+                    lng = IF(VALUES(lng) IS NOT NULL, VALUES(lng), lng),
+                    mogi_city_id = IF(VALUES(mogi_city_id) IS NOT NULL, VALUES(mogi_city_id), mogi_city_id),
+                    mogi_district_id = IF(VALUES(mogi_district_id) IS NOT NULL, VALUES(mogi_district_id), mogi_district_id),
+                    mogi_ward_id = IF(VALUES(mogi_ward_id) IS NOT NULL, VALUES(mogi_ward_id), mogi_ward_id),
+                    mogi_street_id = IF(VALUES(mogi_street_id) IS NOT NULL, VALUES(mogi_street_id), mogi_street_id)
             ''', (
                 link_id,
                 url,
@@ -868,6 +1065,20 @@ class Database:
                 data.get('ngayhethan'),
                 data.get('ngaydang'),
                 data.get('diachi'),
+                data.get('street_ext'),
+                data.get('ward_ext'),
+                data.get('district_ext'),
+                data.get('city_ext'),
+                data.get('city_code'),
+                data.get('district_id'),
+                data.get('ward_id'),
+                data.get('street_id'),
+                data.get('lat'),
+                data.get('lng'),
+                data.get('mogi_city_id'),
+                data.get('mogi_district_id'),
+                data.get('mogi_ward_id'),
+                data.get('mogi_street_id'),
                 data.get('thoigianvaoo'),
                 data.get('giadien'),
                 data.get('gianuoc'),
@@ -883,7 +1094,10 @@ class Database:
                 data.get('nhabep'),
                 data.get('santhuong'),
                 data.get('chodexehoi'),
-                data.get('chinhchu')
+                data.get('chinhchu'),
+                loaihinh,
+                trade_type,
+                is_full
             ))
             conn.commit()
             return cursor.lastrowid
@@ -908,7 +1122,7 @@ class Database:
                 if not img:
                     continue
                 cursor.execute('''
-                    INSERT INTO scraped_detail_images (detail_id, image_url, idx, status)
+                    INSERT IGNORE INTO scraped_detail_images (detail_id, image_url, idx, status)
                     VALUES (%s, %s, %s, 'PENDING')
                 ''', (detail_id, img, idx_counter))
                 idx_counter += 1
@@ -924,9 +1138,9 @@ class Database:
         conn = self.get_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT COUNT(*) FROM scraped_detail_images")
+            cursor.execute("SELECT COUNT(*) as count FROM scraped_detail_images")
             row = cursor.fetchone()
-            return int(row[0]) if row else 0
+            return int(row['count']) if row else 0
         finally:
             cursor.close()
             conn.close()
@@ -950,7 +1164,7 @@ class Database:
                 params.append(status)
             cursor.execute(query, params)
             row = cursor.fetchone()
-            return int(row[0]) if row else 0
+            return int(list(row.values())[0]) if row else 0
         finally:
             cursor.close()
             conn.close()
@@ -1109,6 +1323,146 @@ class Database:
                         'created_at': row.get('created_at'),
                         'domain': row.get('domain'),
                     })
+            return result
+        finally:
+            cursor.close()
+            conn.close()
+
+    def count_detail_images_in_data_full(self, status: Optional[str] = None) -> int:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            query = '''
+                SELECT COUNT(*) as count
+                FROM scraped_detail_images di
+                JOIN data_full df ON df.id_img = di.detail_id
+                WHERE 1=1
+            '''
+            params = []
+            if status:
+                query += ' AND di.status = %s'
+                params.append(status)
+            cursor.execute(query, params)
+            row = cursor.fetchone()
+            return int(list(row.values())[0]) if row else 0
+        finally:
+            cursor.close()
+            conn.close()
+
+    def get_detail_images_paginated_in_data_full(self, limit: int = 20, offset: int = 0, status: Optional[str] = None):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            query = '''
+                SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at, df.slug_name, df.id as data_full_id
+                FROM scraped_detail_images di
+                JOIN data_full df ON df.id_img = di.detail_id
+                WHERE 1=1
+            '''
+            params = []
+            if status:
+                query += ' AND di.status = %s'
+                params.append(status)
+            query += ' ORDER BY di.id DESC LIMIT %s OFFSET %s'
+            params.extend([limit, offset])
+            cursor.execute(query, params)
+            rows = cursor.fetchall()
+            result = []
+            for row in rows:
+                if isinstance(row, tuple):
+                    result.append({
+                        'id': row[0],
+                        'detail_id': row[1],
+                        'image_url': row[2],
+                        'idx': row[3],
+                        'status': row[4],
+                        'created_at': row[5],
+                        'slug_name': row[6],
+                        'data_full_id': row[7],
+                    })
+                else:
+                    result.append({
+                        'id': row.get('id'),
+                        'detail_id': row.get('detail_id'),
+                        'image_url': row.get('image_url'),
+                        'idx': row.get('idx'),
+                        'status': row.get('status'),
+                        'created_at': row.get('created_at'),
+                        'slug_name': row.get('slug_name'),
+                        'data_full_id': row.get('data_full_id'),
+                    })
+            return result
+        finally:
+            cursor.close()
+            conn.close()
+
+    def get_detail_images_by_data_full_id_range(self, start_id: int, end_id: int, status: Optional[str] = None):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            query = '''
+                SELECT di.id, di.detail_id, di.image_url, di.idx, di.status, di.created_at, df.slug_name, df.id as data_full_id
+                FROM scraped_detail_images di
+                JOIN data_full df ON df.id_img = di.detail_id
+                WHERE df.id BETWEEN %s AND %s
+            '''
+            params = [start_id, end_id]
+            if status:
+                query += ' AND di.status = %s'
+                params.append(status)
+            query += ' ORDER BY di.id ASC'
+            cursor.execute(query, params)
+            rows = cursor.fetchall()
+            result = []
+            for row in rows:
+                if isinstance(row, tuple):
+                    result.append({
+                        'id': row[0],
+                        'detail_id': row[1],
+                        'image_url': row[2],
+                        'idx': row[3],
+                        'status': row[4],
+                        'created_at': row[5],
+                        'slug_name': row[6],
+                        'data_full_id': row[7],
+                    })
+                else:
+                    result.append({
+                        'id': row.get('id'),
+                        'detail_id': row.get('detail_id'),
+                        'image_url': row.get('image_url'),
+                        'idx': row.get('idx'),
+                        'status': row.get('status'),
+                        'created_at': row.get('created_at'),
+                        'slug_name': row.get('slug_name'),
+                        'data_full_id': row.get('data_full_id'),
+                    })
+            return result
+        finally:
+            cursor.close()
+            conn.close()
+
+    def get_slug_names_by_detail_ids(self, detail_ids: List[int]) -> dict:
+        if not detail_ids:
+            return {}
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            placeholders = ",".join(["%s"] * len(detail_ids))
+            query = f"""
+                SELECT id_img, slug_name
+                FROM data_full
+                WHERE id_img IN ({placeholders})
+                  AND slug_name IS NOT NULL AND slug_name <> ''
+            """
+            cursor.execute(query, detail_ids)
+            rows = cursor.fetchall()
+            result = {}
+            for row in rows:
+                if isinstance(row, tuple):
+                    result[row[0]] = row[1]
+                else:
+                    result[row.get('id_img')] = row.get('slug_name')
             return result
         finally:
             cursor.close()
@@ -1837,7 +2191,10 @@ class Database:
             row = cursor.fetchone()
             if row is None:
                 return False
-            if isinstance(row, tuple):
+            # Handle both dict (DictCursor) and tuple formats
+            if isinstance(row, dict):
+                return bool(row.get('cancel_requested', 0))
+            elif isinstance(row, tuple):
                 return bool(row[0])
             return bool(row)
         finally:
@@ -1862,23 +2219,23 @@ class Database:
                 cursor.execute("START TRANSACTION")
                 if domain or loaihinh:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
                         WHERE status = 'PENDING'
                           AND (domain = %s OR %s IS NULL)
                           AND (loaihinh = %s OR %s IS NULL)
                           AND (trade_type = %s OR %s IS NULL)
-                        ORDER BY id ASC
+                        ORDER BY id DESC
                         LIMIT %s
                         FOR UPDATE SKIP LOCKED
                     ''', (domain, domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
                         WHERE status = 'PENDING'
                           AND (trade_type = %s OR %s IS NULL)
-                        ORDER BY id ASC
+                        ORDER BY id DESC
                         LIMIT %s
                         FOR UPDATE SKIP LOCKED
                     ''', (trade_type, trade_type, limit))
@@ -1902,20 +2259,20 @@ class Database:
                 # Fallback for older MySQL versions (no SKIP LOCKED)
                 if domain or loaihinh:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
                         WHERE status = 'PENDING' AND (domain = %s OR %s IS NULL) AND (loaihinh = %s OR %s IS NULL)
                           AND (trade_type = %s OR %s IS NULL)
-                        ORDER BY id ASC
+                        ORDER BY id DESC
                         LIMIT %s
                     ''', (domain, domain, loaihinh, loaihinh, trade_type, trade_type, limit))
                 else:
                     cursor.execute('''
-                        SELECT id, url, status, domain, loaihinh, created_at
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
                         FROM collected_links
                         WHERE status = 'PENDING'
                           AND (trade_type = %s OR %s IS NULL)
-                        ORDER BY id ASC
+                        ORDER BY id DESC
                         LIMIT %s
                     ''', (trade_type, trade_type, limit))
                 rows = cursor.fetchall()
@@ -1928,7 +2285,8 @@ class Database:
                         'status': row[2],
                         'domain': row[3],
                         'loaihinh': row[4],
-                        'created_at': row[5],
+                        'trade_type': row[5],
+                        'created_at': row[6],
                     })
                 else:
                     result.append(row)

@@ -1,4 +1,26 @@
+# Python virtual environment
+venv/
+
+# Browser profiles and cached browser data
+crawlvip_profile/
 craw/playwright_profile_tab3_detail*/
 craw/nodriver_profile_listing*/
-craw/template/cenhomebuy*.json
-craw/template/ad_listing_detail.sql
+
+# Logs, temp and generated files
+*.log
+logs/
+tmp/
+downloads/
+downloaded_files/
+output/
+
+# Browser cache / profiles
+craw/playwright_profile*/
+craw/nodriver_profile*/
+
+# Ignore common editor/temp files
+*.pyc
+__pycache__/
+*.swp
+*.swo
+.DS_Store

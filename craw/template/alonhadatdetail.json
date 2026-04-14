@@ -17,7 +17,7 @@
     },
     {
       "name": "mota",
-      "valueType": "text",
+      "valueType": "multiline_text",
       "textContent": "Cần sang lại căn nhà đẹp 1 trệt 1 lầu ngay bến xe Quận 8, HCM\n- Vị trí: Đường QL50, Quận 8, HCM\n- Diện tích: 80m2 (6x30) full thổ cư. hoàn công đầy đủ\n- Pháp lý: SHR\n- Nhà 1 trệt 1 lầu: 3pn, 3wc, 1 bếp, 1 phòng khách, hệ thống điện nước đầy đủ, đường trước nhà 12m nhựa, 2 xe oto quay đầu, có thể cho thuê 10-12tr/ tháng\n- Tiện ích: Bán kính 500m có đầy đủ, bệnh viện, trường học, bệnh viện, TTTM, uỷ ban nhân dân, bến xe quận 8\n- Trước gia đình tôi ở nên nhà rất mới, nhưng nay Vì chuyển nhà nơi khác và trả nợ ngân hàng nên cần bán gấp trong năm\nLH a Xuân để xem nhà",
       "selector": "//section[contains(@class, \"detail\") and contains(@class, \"text-content\")]/h2[contains(text(), \"Thông tin chi tiết\")]/following-sibling::p[1]"
     },
@@ -40,6 +40,12 @@
       "selector": "//tr/td[contains(text(), \"Mã tin\")]/following-sibling::td[1]"
     },
     {
+      "name": "ngaydang",
+      "valueType": "text",
+      "textContent": "17/02/2026",
+      "selector": "//time[contains(@class, \"date\") and @itemprop=\"datePosted\"]/@datetime"
+    },
+    {
       "name": "loaitin",
       "valueType": "text",
       "textContent": "Cần bán",
@@ -50,6 +56,12 @@
       "valueType": "text",
       "textContent": "Nhà mặt tiền",
       "selector": "//tr/td[contains(text(), \"Loại BDS\")]/following-sibling::td[1]"
+    },
+    {
+      "name": "thuocduan",
+      "valueType": "text",
+      "textContent": "Khu đô thị mới Eco Palace - Ecopark",
+      "selector": "//tr/td[contains(text(), \"Thuộc dự án\")]/following-sibling::td[1]"
     },
     {
       "name": "chieungang",

@@ -7,72 +7,71 @@
       "name": "title",
       "valueType": "text",
       "textContent": "Bán nhà tổ 5 Thạch Bàn chỉ 2 tỷ 40m2 x 4T, ô tô vào được ngõ",
-      "selector": "h1"
+      "selector": ".main-info h1"
     },
     {
-      "name": "diacÊU",
-      "name": "diacÊU",
+      "name": "diachi",
       "valueType": "text",
       "textContent": "Cổ Linh, Phường Thạch Bàn, Quận Long Biên, Hà Nội",
-      "selector": ".address"
+      "selector": ".main-info .address"
     },
     {
       "name": "khoanggia",
       "valueType": "text",
       "textContent": "2 tỷ",
-      "selector": ".price"
+      "selector": ".main-info .price"
     },
     {
       "name": "dientich",
       "valueType": "text",
       "textContent": "40 m2 (4x10)",
-      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Diện tích đất\")]/following-sibling::span[1]"
+      "selector": "//div[contains(@class, 'info-attr')]//span[contains(text(), 'Diện tích đất')]/following-sibling::span"
     },
     {
       "name": "dientichsudung",
       "valueType": "text",
       "textContent": "40 m2",
-      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Diện tích sử dụng\")]/following-sibling::span[1]"
+      "selector": "//div[contains(@class, 'info-attr')]//span[contains(text(), 'Diện tích sử dụng')]/following-sibling::span"
     },
     {
       "name": "sophongngu",
       "valueType": "text",
       "textContent": "3",
-      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Phòng ngủ\")]/following-sibling::span[1]"
+      "selector": "//div[contains(@class, 'info-attr')]//span[contains(text(), 'Phòng ngủ')]/following-sibling::span"
     },
     {
       "name": "sophongvesinh",
       "valueType": "text",
       "textContent": "4",
-      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Nhà tắm\")]/following-sibling::span[1]"
+      "selector": "//div[contains(@class, 'info-attr')]//span[contains(text(), 'Nhà tắm')]/following-sibling::span"
     },
     {
       "name": "phaply",
       "valueType": "text",
       "textContent": "Sổ đỏ",
-      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Pháp lý\")]/following-sibling::span[1]"
+      "selector": "//div[contains(@class, 'info-attr')]//span[contains(text(), 'Pháp lý')]/following-sibling::span"
     },
     {
       "name": "ngaydang",
       "valueType": "text",
       "textContent": "06/01/2026",
-      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Ngày đăng\")]/following-sibling::span[1]"
+      "selector": "//div[contains(@class, 'info-attr')]//span[contains(text(), 'Ngày đăng')]/following-sibling::span"
     },
     {
       "name": "matin",
       "valueType": "text",
       "textContent": "21205142",
-      "selector": "//div[contains(@class, \"info-attr\") and contains(@class, \"clearfix\")]/span[contains(text(), \"Mã BĐS\")]/following-sibling::span[1]"
+      "selector": "//div[contains(@class, 'info-attr')]//span[contains(text(), 'Mã BĐS')]/following-sibling::span"
     },
     {
       "name": "mota",
-      "valueType": "text",
-      "textContent": "Nhà bao việc phải lo, nhưng lo nhất là việc có một mái ấm để đoàn viên. Mua về là ở luôn. Nhà còn rất mới, xây dựng 4 tầng tại đường Cổ Linh, tổ 5, Thạch Bàn, Long Biên, Hà Nội. Diện tích: 40m2 mặt tiền: 4m ngõ rộng, vừa ô tô con. Gần với đường lớn trung tâm. Thiết kế: 4 tầng.- Tầng 1: Phòng khách, bếp, nhà vệ sinh.- Tầng 2: 2 phòng ngủ, 1 nhà vệ sinh.- Tầng 3: 2 phòng ngủ, 1 nhà vệ sinh.- Tầng 4: Phòng thờ, phòng giặt, phòng để đồ, phơi đồ.Liên hệ xem nhà: Mr Tùng: 0912017115 để đi xem nhà trực tiếp và miễn phí.",
+      "valueType": "html",
+      "textContent": "Nhà bao việc phải lo, nhưng lo nhất là việc có một mái ấm để đoàn viên...",
       "selector": "//div[contains(@class, \"main-info\")]/h2[contains(@class, \"info-title\")][contains(text(), \"Giới thiệu\")]/following-sibling::div[contains(@class, \"info-content-body\")][1]"
     },
     {
       "name": "map",
-      "valueType": "text",
+      "valueType": "src",
       "textContent": "21.02143669,105.91858673000002",
       "selector": "//div[contains(@class,\"map-content\")]//iframe"
     },
@@ -90,9 +89,36 @@
     },
     {
       "name": "img",
-      "valueType": "src",
+      "valueType": "src_list",
       "textContent": "n1/6",
       "selector": "#gallery"
+    },
+    {
+      "name": "mogi_city_id",
+      "valueType": "regex",
+      "textContent": "24",
+      "selector": "\"cid\"\\s*:\\s*(\\d+)",
+      "comment": "Extract city ID from JavaScript variable in page source"
+    },
+    {
+      "name": "mogi_district_id",
+      "valueType": "regex",
+      "textContent": "295",
+      "selector": "\"did\"\\s*:\\s*(\\d+)",
+      "comment": "Extract district ID from JavaScript variable in page source"
+    },
+    {
+      "name": "mogi_ward_id",
+      "valueType": "regex",
+      "textContent": "9",
+      "selector": "\"psid\"\\s*:\\s*(\\d+)",
+      "comment": "Extract ward/street ID from JavaScript variable in page source"
+    },
+    {
+      "name": "thuocduan",
+      "valueType": "text",
+      "textContent": "Cosmo city",
+      "selector": ".project-info .project-title"
     }
   ]
 }

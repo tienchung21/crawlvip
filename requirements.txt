@@ -1,0 +1,11 @@
+seleniumbase
+pymysql
+requests
+crawl4ai
+curl_cffi
+beautifulsoup4
+lxml
+pandas
+streamlit
+nodriver
+playwright

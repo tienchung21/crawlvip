@@ -9,6 +9,15 @@ Manages bulk scraping tasks using templates exported from the Extension
 
 
 import streamlit as st
+import os
+
+# Patch: Bypass proxy for localhost to prevent Streamlit/Network timeouts
+os.environ['no_proxy'] = '127.0.0.1,localhost'
+
+# Disable Streamlit Telemetry to prevent timeouts (30s delay)
+os.environ['STREAMLIT_BROWSER_GATHER_USAGE_STATS'] = 'false'
+os.environ['STREAMLIT_SERVER_HEADLESS'] = 'true'
+
 import asyncio
 import random
 import json
@@ -27,6 +36,8 @@ import io
 from lxml import html as lxml_html
 import re
 import requests
+from mogi_crawler_helper import render_mogi_ui
+from database import Database
 # Fix asyncio for Windows
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
@@ -299,6 +310,11 @@ def _ad_build_url_with_params(url: str, params: Dict[str, Any]) -> str:
     return urlunsplit((parts.scheme, parts.netloc, parts.path, new_query, parts.fragment))
 
 
+
+def _db_cache_key(db: "Database") -> str:
+    return f"{getattr(db, 'host', '')}|{getattr(db, 'database', '')}|{getattr(db, 'user', '')}"
+
+@st.cache_data(show_spinner=False, ttl=300, hash_funcs={Database: _db_cache_key})
 def _fetch_wards_for_area(db: "Database", region_id: int, area_id: int) -> List[Dict[str, Any]]:
     conn = db.get_connection(use_database=True)
     cur = conn.cursor()
@@ -328,6 +344,7 @@ def _fetch_wards_for_area(db: "Database", region_id: int, area_id: int) -> List[
         conn.close()
 
 
+@st.cache_data(show_spinner=False, ttl=300, hash_funcs={Database: _db_cache_key})
 def _fetch_areas_for_region(db: "Database", region_id: int) -> List[Dict[str, Any]]:
     conn = db.get_connection(use_database=True)
     cur = conn.cursor()
@@ -386,6 +403,7 @@ def _ad_get_db_count(db: "Database", region_id: Optional[int], area_id: Optional
         conn.close()
 
 
+@st.cache_data(show_spinner=False, ttl=300, hash_funcs={Database: _db_cache_key})
 def _fetch_location_map(db: "Database", sql: str, params: tuple, id_key: str) -> Dict[int, str]:
     conn = db.get_connection(use_database=True)
     cur = conn.cursor()
@@ -614,7 +632,7 @@ async def _reveal_phone_before_extract(page, url: str, template: Dict[str, Any])
                 await locator.first.click(timeout=2000)
                 try:
                     await page.wait_for_function(
-                        """([sel, useXpath]) => {
+                        r"""([sel, useXpath]) => {
                             let el = null;
                             if (useXpath) {
                                 const res = document.evaluate(sel, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
@@ -765,6 +783,32 @@ def _save_image_bytes(image_bytes: bytes, file_path: str, max_width: int = 1100)
         with open(file_path, 'wb') as f:
             f.write(image_bytes)
 
+
+def _create_small_clone(src_path: str, target_width: int = 750) -> Optional[str]:
+    try:
+        from PIL import Image
+    except Exception:
+        return None
+
+    base, ext = os.path.splitext(src_path)
+    if not ext:
+        ext = ".jpg"
+    dst_path = f"{base}-sm{ext}"
+    try:
+        img = Image.open(src_path)
+        width, height = img.size
+        if width > target_width:
+            new_height = max(int(height * target_width / width), 1)
+            img = img.resize((target_width, new_height), Image.LANCZOS)
+        fmt = img.format
+        if not fmt:
+            fmt = "PNG" if ext.lower() == ".png" else "JPEG"
+        if fmt.upper() == "JPEG" and img.mode in ("RGBA", "LA", "P"):
+            img = img.convert("RGB")
+        img.save(dst_path, format=fmt)
+        return dst_path
+    except Exception:
+        return None
 
 def _apply_watermark(base_img, logo_img, position: str, scale_pct: int, opacity: float, margin: int):
     from PIL import Image
@@ -1038,6 +1082,7 @@ async def _open_nodriver_profile(profile_dir: str, url: str, wait_seconds: int, 
         raise e
 
 # City lookup helpers (transaction_city_new)
+@st.cache_data(show_spinner=False, ttl=300, hash_funcs={Database: _db_cache_key})
 def _fetch_cities(db):
     def _safe_text(val):
         if val is None:
@@ -1077,6 +1122,7 @@ def _fetch_cities(db):
         conn.close()
 
 
+@st.cache_data(show_spinner=False, ttl=300, hash_funcs={Database: _db_cache_key})
 def _fetch_city_children(db, parent_id):
     if not parent_id:
         return []
@@ -1123,8 +1169,6 @@ def _fetch_city_children(db, parent_id):
 sys.path.insert(0, str(Path(__file__).parent))
 
 from web_scraper import WebScraper
-
-from database import Database
 
 from listing_crawler import crawl_listing
 from listing_simple_core import crawl_listing_simple
@@ -2487,213 +2531,284 @@ tab1, tab3, tab4, tab5, tab6, tab7 = st.tabs(
 # ============================================
 
 with tab1:
+    t1_sub1, t1_sub2 = st.tabs(["NhaTot API", "Mogi Crawler"])
+    
+    with t1_sub2:
+        if "db_location" not in st.session_state:
+            st.session_state.db_location = Database(
+                host="localhost", user="root", password="", database="craw_db"
+            )
+        render_mogi_ui(st, st.session_state.db_location)
 
-    st.header("Task 1 - API URL Builder")
+    with t1_sub1:
 
-    st.markdown("Chon tinh/quan/xa tu bang location_detail va tu dong ghep query.")
+        st.header("Task 1 - API URL Builder")
 
-    if "db_location" not in st.session_state:
-        st.session_state.db_location = Database(
-            host="localhost",
-            user="root",
-            password="",
-            database="craw_db",
-        )
+        st.markdown("Chon tinh/quan/xa tu bang location_detail va tu dong ghep query.")
 
-    base_url = "https://gateway.chotot.com/v1/public/ad-listing?cg=1000"
+        if "db_location" not in st.session_state:
+            st.session_state.db_location = Database(
+                host="localhost",
+                user="root",
+                password="",
+                database="craw_db",
+            )
 
-    try:
-        region_map = _fetch_location_map(
-            st.session_state.db_location,
-            """
-            SELECT region_id, name
-            FROM location_detail
-            WHERE level = 1 AND is_active = 1
-            ORDER BY name
-            """,
-            (),
-            "region_id",
-        )
-    except Exception as exc:
-        st.error(f"Khong load duoc location_detail: {exc}")
-        region_map = {}
+        base_url = "https://gateway.chotot.com/v1/public/ad-listing?cg=1000"
 
-    select_all_regions = st.checkbox("Chon tat ca tinh", value=False, key="task1_select_all_regions")
-    excluded_regions = []
-    if select_all_regions:
-        excluded_regions = st.multiselect(
-            "Loai tru tinh",
-            options=list(region_map.keys()),
-            format_func=lambda x: region_map.get(x, str(x)),
-            key="task1_exclude_regions",
-        )
+        try:
+            region_map = _fetch_location_map(
+                st.session_state.db_location,
+                """
+                SELECT region_id, name
+                FROM location_detail
+                WHERE level = 1 AND is_active = 1
+                ORDER BY name
+                """,
+                (),
+                "region_id",
+            )
+        except Exception as exc:
+            st.error(f"Khong load duoc location_detail: {exc}")
+            region_map = {}
 
-    region_options = [None] + list(region_map.keys())
-    if st.session_state.get("task1_region_id") not in region_options:
-        st.session_state["task1_region_id"] = None
-    region_id = st.selectbox(
-        "Tinh/TP",
-        region_options,
-        format_func=lambda x: region_map.get(x, "(Chon tinh)"),
-        key="task1_region_id",
-    )
-
-    area_map: Dict[int, str] = {}
-    if region_id:
-        area_map = _fetch_location_map(
-            st.session_state.db_location,
-            """
-            SELECT area_id, name
-            FROM location_detail
-            WHERE level = 2 AND region_id = %s AND area_id IS NOT NULL AND is_active = 1
-            ORDER BY name
-            """,
-            (region_id,),
-            "area_id",
-        )
-    area_options = [None] + list(area_map.keys())
-    if st.session_state.get("task1_area_id") not in area_options:
-        st.session_state["task1_area_id"] = None
-    area_id = st.selectbox(
-        "Quan/Huyen",
-        area_options,
-        format_func=lambda x: area_map.get(x, "(Chon huyen)"),
-        key="task1_area_id",
-    )
-
-    ward_map: Dict[int, str] = {}
-    if region_id and area_id:
-        ward_map = _fetch_location_map(
-            st.session_state.db_location,
-            """
-            SELECT ward_id, name
-            FROM location_detail
-            WHERE level = 3 AND region_id = %s AND area_id = %s AND ward_id IS NOT NULL AND is_active = 1
-            ORDER BY name
-            """,
-            (region_id, area_id),
-            "ward_id",
-        )
-    ward_options = [None] + list(ward_map.keys())
-    if st.session_state.get("task1_ward_id") not in ward_options:
-        st.session_state["task1_ward_id"] = None
-    ward_id = st.selectbox(
-        "Xa/Phuong",
-        ward_options,
-        format_func=lambda x: ward_map.get(x, "(Chon xa)"),
-        key="task1_ward_id",
-    )
-
-    col_limit, col_offset, col_flags = st.columns([1, 1, 2])
-    with col_limit:
-        limit_value = st.number_input(
-            "Limit",
-            min_value=1,
-            step=1,
-            value=50,
-            key="task1_limit",
-        )
-    with col_offset:
-        offset_value = st.number_input(
-            "Offset (o)",
-            min_value=0,
-            step=1,
-            value=0,
-            key="task1_offset",
-        )
-    with col_flags:
-        key_param_included = st.checkbox(
-            "key_param_included=true",
-            value=False,
-            key="task1_key_param_included",
-        )
-        include_expired_ads = st.checkbox(
-            "include_expired_ads=true",
-            value=False,
-            key="task1_include_expired_ads",
-        )
-
-    params = []
-    if region_id and not select_all_regions:
-        params.append(f"region_v2={region_id}")
-    if area_id and not select_all_regions:
-        params.append(f"area_v2={area_id}")
-    if ward_id and not select_all_regions:
-        params.append(f"ward={ward_id}")
-    if limit_value:
-        params.append(f"limit={int(limit_value)}")
-    if offset_value is not None:
-        params.append(f"o={int(offset_value)}")
-    if key_param_included:
-        params.append("key_param_included=true")
-    if include_expired_ads:
-        params.append("include_expired_ads=true")
-    query_suffix = f"&{'&'.join(params)}" if params else ""
-    final_url = f"{base_url}{query_suffix}"
-
-    st.text_input("API URL", value=final_url, disabled=True)
-
-    if "task1_tasks" not in st.session_state:
-        st.session_state.task1_tasks = []
-    if "task1_next_id" not in st.session_state:
-        st.session_state.task1_next_id = 1
-
-    with st.form("task1_add_task_form"):
-        task_name_default = f"API Task {st.session_state.task1_next_id}"
-        task_name = st.text_input("Task name", value=task_name_default)
-        task_url = st.text_input("Task URL", value=final_url)
-        split_by_ward = st.checkbox("Tu dong chia task theo xa/phuong khi chi chon quan/huyen", value=True)
-        no_media_fields = st.checkbox("Khong luu anh + body + avatar + seller + subject + raw_json", value=False)
-        new_only = st.checkbox("Chi lay tin moi (loc theo total + dung khi trung)", value=False)
-        skip_total_threshold = st.number_input(
-            "Bo qua check total neu >= (tinh/huyen)",
-            min_value=1000,
-            max_value=200000,
-            value=10000,
-            step=1000,
-        )
-        stop_on_duplicate = st.number_input(
-            "Dung khi trung lien tiep (so tin)",
-            min_value=5,
-            max_value=500,
-            value=30,
-            step=5,
-        )
-        submit_task1 = st.form_submit_button("Add task")
-
-    if submit_task1:
-        base_name = task_name.strip() or f"API Task {st.session_state.task1_next_id}"
-        base_url = _ad_build_url_with_params(task_url.strip() or final_url, {"cg": 1000})
+        select_all_regions = st.checkbox("Chon tat ca tinh", value=False, key="task1_select_all_regions")
+        excluded_regions = []
         if select_all_regions:
-            region_ids = [rid for rid in region_map.keys() if rid not in set(excluded_regions or [])]
-            if not region_ids:
-                st.warning("Khong con tinh nao de chay.")
-            parent_id = st.session_state.task1_next_id
-            st.session_state.task1_next_id += 1
-            child_ids = []
-            for rid in region_ids:
-                region_name = region_map.get(rid, str(rid))
-                areas = _fetch_areas_for_region(st.session_state.db_location, rid)
+            excluded_regions = st.multiselect(
+                "Loai tru tinh",
+                options=list(region_map.keys()),
+                format_func=lambda x: region_map.get(x, str(x)),
+                key="task1_exclude_regions",
+            )
+
+        region_options = [None] + list(region_map.keys())
+        if st.session_state.get("task1_region_id") not in region_options:
+            st.session_state["task1_region_id"] = None
+        region_id = st.selectbox(
+            "Tinh/TP",
+            region_options,
+            format_func=lambda x: region_map.get(x, "(Chon tinh)"),
+            key="task1_region_id",
+        )
+
+        area_map: Dict[int, str] = {}
+        if region_id:
+            area_map = _fetch_location_map(
+                st.session_state.db_location,
+                """
+                SELECT area_id, name
+                FROM location_detail
+                WHERE level = 2 AND region_id = %s AND area_id IS NOT NULL AND is_active = 1
+                ORDER BY name
+                """,
+                (region_id,),
+                "area_id",
+            )
+        area_options = [None] + list(area_map.keys())
+        if st.session_state.get("task1_area_id") not in area_options:
+            st.session_state["task1_area_id"] = None
+        area_id = st.selectbox(
+            "Quan/Huyen",
+            area_options,
+            format_func=lambda x: area_map.get(x, "(Chon huyen)"),
+            key="task1_area_id",
+        )
+
+        ward_map: Dict[int, str] = {}
+        if region_id and area_id:
+            ward_map = _fetch_location_map(
+                st.session_state.db_location,
+                """
+                SELECT ward_id, name
+                FROM location_detail
+                WHERE level = 3 AND region_id = %s AND area_id = %s AND ward_id IS NOT NULL AND is_active = 1
+                ORDER BY name
+                """,
+                (region_id, area_id),
+                "ward_id",
+            )
+        ward_options = [None] + list(ward_map.keys())
+        if st.session_state.get("task1_ward_id") not in ward_options:
+            st.session_state["task1_ward_id"] = None
+        ward_id = st.selectbox(
+            "Xa/Phuong",
+            ward_options,
+            format_func=lambda x: ward_map.get(x, "(Chon xa)"),
+            key="task1_ward_id",
+        )
+
+        col_limit, col_offset, col_flags = st.columns([1, 1, 2])
+        with col_limit:
+            limit_value = st.number_input(
+                "Limit",
+                min_value=1,
+                step=1,
+                value=50,
+                key="task1_limit",
+            )
+        with col_offset:
+            offset_value = st.number_input(
+                "Offset (o)",
+                min_value=0,
+                step=1,
+                value=0,
+                key="task1_offset",
+            )
+        with col_flags:
+            key_param_included = st.checkbox(
+                "key_param_included=true",
+                value=False,
+                key="task1_key_param_included",
+            )
+            include_expired_ads = st.checkbox(
+                "include_expired_ads=true",
+                value=False,
+                key="task1_include_expired_ads",
+            )
+
+        params = []
+        if region_id and not select_all_regions:
+            params.append(f"region_v2={region_id}")
+        if area_id and not select_all_regions:
+            params.append(f"area_v2={area_id}")
+        if ward_id and not select_all_regions:
+            params.append(f"ward={ward_id}")
+        if limit_value:
+            params.append(f"limit={int(limit_value)}")
+        if offset_value is not None:
+            params.append(f"o={int(offset_value)}")
+        if key_param_included:
+            params.append("key_param_included=true")
+        if include_expired_ads:
+            params.append("include_expired_ads=true")
+        query_suffix = f"&{'&'.join(params)}" if params else ""
+        final_url = f"{base_url}{query_suffix}"
+
+        st.text_input("API URL", value=final_url, disabled=True)
+
+        if "task1_tasks" not in st.session_state:
+            st.session_state.task1_tasks = []
+        if "task1_next_id" not in st.session_state:
+            st.session_state.task1_next_id = 1
+
+        with st.form("task1_add_task_form"):
+            task_name_default = f"API Task {st.session_state.task1_next_id}"
+            task_name = st.text_input("Task name", value=task_name_default)
+            task_url = st.text_input("Task URL", value=final_url)
+            split_by_ward = st.checkbox("Tu dong chia task theo xa/phuong khi chi chon quan/huyen", value=True)
+            no_media_fields = st.checkbox("Khong luu anh + body + avatar + seller + subject + raw_json", value=False)
+            new_only = st.checkbox("Chi lay tin moi (loc theo total + dung khi trung)", value=False)
+            skip_total_threshold = st.number_input(
+                "Bo qua check total neu >= (tinh/huyen)",
+                min_value=1000,
+                max_value=200000,
+                value=10000,
+                step=1000,
+            )
+            stop_on_duplicate = st.number_input(
+                "Dung khi trung lien tiep (so tin)",
+                min_value=5,
+                max_value=500,
+                value=30,
+                step=5,
+            )
+            submit_task1 = st.form_submit_button("Add task")
+
+        if submit_task1:
+            base_name = task_name.strip() or f"API Task {st.session_state.task1_next_id}"
+            base_url = _ad_build_url_with_params(task_url.strip() or final_url, {"cg": 1000})
+            if select_all_regions:
+                region_ids = [rid for rid in region_map.keys() if rid not in set(excluded_regions or [])]
+                if not region_ids:
+                    st.warning("Khong con tinh nao de chay.")
+                parent_id = st.session_state.task1_next_id
+                st.session_state.task1_next_id += 1
+                child_ids = []
+                for rid in region_ids:
+                    region_name = region_map.get(rid, str(rid))
+                    areas = _fetch_areas_for_region(st.session_state.db_location, rid)
+                    for area in areas:
+                        area_id_val = area.get("area_id")
+                        area_name_val = area.get("name") or str(area_id_val)
+                        wards = _fetch_wards_for_area(st.session_state.db_location, rid, area_id_val)
+                        for ward in wards:
+                            task_id = st.session_state.task1_next_id
+                            st.session_state.task1_next_id += 1
+                            ward_id_val = ward.get("ward_id")
+                            ward_name_val = ward.get("name") or str(ward_id_val)
+                            url_with_all = _ad_build_url_with_params(
+                                base_url,
+                                {"region_v2": rid, "area_v2": area_id_val, "ward": ward_id_val},
+                            )
+                            child_ids.append(task_id)
+                            st.session_state.task1_tasks.append({
+                                "id": task_id,
+                                "name": f"{base_name} - {region_name} - {area_name_val} - {ward_name_val}",
+                                "url": url_with_all,
+                                "region_id": rid,
+                                "region_name": region_name,
+                                "area_id": area_id_val,
+                                "area_name": area_name_val,
+                                "ward_id": ward_id_val,
+                                "ward_name": ward_name_val,
+                                "limit": int(limit_value) if limit_value else None,
+                                "offset": int(offset_value) if offset_value is not None else None,
+                                "key_param_included": bool(key_param_included),
+                                "include_expired_ads": bool(include_expired_ads),
+                                "parent_id": parent_id,
+                                "no_media_fields": bool(no_media_fields),
+                                "new_only": bool(new_only),
+                                "stop_on_duplicate": int(stop_on_duplicate),
+                                "skip_total_threshold": int(skip_total_threshold),
+                            })
+                st.session_state.task1_tasks.append({
+                    "id": parent_id,
+                    "name": f"{base_name} (Tat ca tinh - {len(child_ids)} task con)",
+                    "url": base_url,
+                    "region_id": None,
+                    "region_name": "Tat ca tinh",
+                    "area_id": None,
+                    "area_name": None,
+                    "ward_id": None,
+                    "ward_name": None,
+                    "limit": int(limit_value) if limit_value else None,
+                    "offset": int(offset_value) if offset_value is not None else None,
+                    "key_param_included": bool(key_param_included),
+                    "include_expired_ads": bool(include_expired_ads),
+                    "child_ids": child_ids,
+                    "no_media_fields": bool(no_media_fields),
+                    "new_only": bool(new_only),
+                    "stop_on_duplicate": int(stop_on_duplicate),
+                    "skip_total_threshold": int(skip_total_threshold),
+                })
+                st.success(f"Da tao {len(child_ids)} task con + 1 task tong (tat ca tinh).")
+            elif split_by_ward and region_id and not area_id and not ward_id:
+                areas = _fetch_areas_for_region(st.session_state.db_location, region_id)
+                if not areas:
+                    st.warning("Khong tim thay quan/huyen trong khu vuc da chon.")
+                parent_id = st.session_state.task1_next_id
+                st.session_state.task1_next_id += 1
+                child_ids = []
                 for area in areas:
                     area_id_val = area.get("area_id")
                     area_name_val = area.get("name") or str(area_id_val)
-                    wards = _fetch_wards_for_area(st.session_state.db_location, rid, area_id_val)
+                    wards = _fetch_wards_for_area(st.session_state.db_location, region_id, area_id_val)
                     for ward in wards:
                         task_id = st.session_state.task1_next_id
                         st.session_state.task1_next_id += 1
                         ward_id_val = ward.get("ward_id")
                         ward_name_val = ward.get("name") or str(ward_id_val)
-                        url_with_all = _ad_build_url_with_params(
-                            base_url,
-                            {"region_v2": rid, "area_v2": area_id_val, "ward": ward_id_val},
+                        url_with_area_ward = _ad_build_url_with_params(
+                            base_url, {"area_v2": area_id_val, "ward": ward_id_val}
                         )
                         child_ids.append(task_id)
                         st.session_state.task1_tasks.append({
                             "id": task_id,
-                            "name": f"{base_name} - {region_name} - {area_name_val} - {ward_name_val}",
-                            "url": url_with_all,
-                            "region_id": rid,
-                            "region_name": region_name,
+                            "name": f"{base_name} - {area_name_val} - {ward_name_val}",
+                            "url": url_with_area_ward,
+                            "region_id": region_id,
+                            "region_name": region_map.get(region_id, str(region_id)),
                             "area_id": area_id_val,
                             "area_name": area_name_val,
                             "ward_id": ward_id_val,
@@ -2708,55 +2823,49 @@ with tab1:
                             "stop_on_duplicate": int(stop_on_duplicate),
                             "skip_total_threshold": int(skip_total_threshold),
                         })
-            st.session_state.task1_tasks.append({
-                "id": parent_id,
-                "name": f"{base_name} (Tat ca tinh - {len(child_ids)} task con)",
-                "url": base_url,
-                "region_id": None,
-                "region_name": "Tat ca tinh",
-                "area_id": None,
-                "area_name": None,
-                "ward_id": None,
-                "ward_name": None,
-                "limit": int(limit_value) if limit_value else None,
-                "offset": int(offset_value) if offset_value is not None else None,
-                "key_param_included": bool(key_param_included),
-                "include_expired_ads": bool(include_expired_ads),
-                "child_ids": child_ids,
-                "no_media_fields": bool(no_media_fields),
-                "new_only": bool(new_only),
-                "stop_on_duplicate": int(stop_on_duplicate),
-                "skip_total_threshold": int(skip_total_threshold),
-            })
-            st.success(f"Da tao {len(child_ids)} task con + 1 task tong (tat ca tinh).")
-        elif split_by_ward and region_id and not area_id and not ward_id:
-            areas = _fetch_areas_for_region(st.session_state.db_location, region_id)
-            if not areas:
-                st.warning("Khong tim thay quan/huyen trong khu vuc da chon.")
-            parent_id = st.session_state.task1_next_id
-            st.session_state.task1_next_id += 1
-            child_ids = []
-            for area in areas:
-                area_id_val = area.get("area_id")
-                area_name_val = area.get("name") or str(area_id_val)
-                wards = _fetch_wards_for_area(st.session_state.db_location, region_id, area_id_val)
+                st.session_state.task1_tasks.append({
+                    "id": parent_id,
+                    "name": f"{base_name} (Tong {len(child_ids)} xa/phuong)",
+                    "url": base_url,
+                    "region_id": region_id,
+                    "region_name": region_map.get(region_id, str(region_id)),
+                    "area_id": None,
+                    "area_name": None,
+                    "ward_id": None,
+                    "ward_name": None,
+                    "limit": int(limit_value) if limit_value else None,
+                    "offset": int(offset_value) if offset_value is not None else None,
+                    "key_param_included": bool(key_param_included),
+                    "include_expired_ads": bool(include_expired_ads),
+                    "child_ids": child_ids,
+                    "no_media_fields": bool(no_media_fields),
+                    "new_only": bool(new_only),
+                    "stop_on_duplicate": int(stop_on_duplicate),
+                    "skip_total_threshold": int(skip_total_threshold),
+                })
+                st.success(f"Da tao {len(child_ids)} task con + 1 task tong.")
+            elif split_by_ward and region_id and area_id and not ward_id:
+                wards = _fetch_wards_for_area(st.session_state.db_location, region_id, area_id)
+                if not wards:
+                    st.warning("Khong tim thay xa/phuong trong khu vuc da chon.")
+                parent_id = st.session_state.task1_next_id
+                st.session_state.task1_next_id += 1
+                child_ids = []
                 for ward in wards:
                     task_id = st.session_state.task1_next_id
                     st.session_state.task1_next_id += 1
                     ward_id_val = ward.get("ward_id")
                     ward_name_val = ward.get("name") or str(ward_id_val)
-                    url_with_area_ward = _ad_build_url_with_params(
-                        base_url, {"area_v2": area_id_val, "ward": ward_id_val}
-                    )
+                    url_with_ward = _ad_build_url_with_params(base_url, {"ward": ward_id_val})
                     child_ids.append(task_id)
                     st.session_state.task1_tasks.append({
                         "id": task_id,
-                        "name": f"{base_name} - {area_name_val} - {ward_name_val}",
-                        "url": url_with_area_ward,
+                        "name": f"{base_name} - {ward_name_val}",
+                        "url": url_with_ward,
                         "region_id": region_id,
                         "region_name": region_map.get(region_id, str(region_id)),
-                        "area_id": area_id_val,
-                        "area_name": area_name_val,
+                        "area_id": area_id,
+                        "area_name": area_map.get(area_id, str(area_id)),
                         "ward_id": ward_id_val,
                         "ward_name": ward_name_val,
                         "limit": int(limit_value) if limit_value else None,
@@ -2769,719 +2878,664 @@ with tab1:
                         "stop_on_duplicate": int(stop_on_duplicate),
                         "skip_total_threshold": int(skip_total_threshold),
                     })
-            st.session_state.task1_tasks.append({
-                "id": parent_id,
-                "name": f"{base_name} (Tong {len(child_ids)} xa/phuong)",
-                "url": base_url,
-                "region_id": region_id,
-                "region_name": region_map.get(region_id, str(region_id)),
-                "area_id": None,
-                "area_name": None,
-                "ward_id": None,
-                "ward_name": None,
-                "limit": int(limit_value) if limit_value else None,
-                "offset": int(offset_value) if offset_value is not None else None,
-                "key_param_included": bool(key_param_included),
-                "include_expired_ads": bool(include_expired_ads),
-                "child_ids": child_ids,
-                "no_media_fields": bool(no_media_fields),
-                "new_only": bool(new_only),
-                "stop_on_duplicate": int(stop_on_duplicate),
-                "skip_total_threshold": int(skip_total_threshold),
-            })
-            st.success(f"Da tao {len(child_ids)} task con + 1 task tong.")
-        elif split_by_ward and region_id and area_id and not ward_id:
-            wards = _fetch_wards_for_area(st.session_state.db_location, region_id, area_id)
-            if not wards:
-                st.warning("Khong tim thay xa/phuong trong khu vuc da chon.")
-            parent_id = st.session_state.task1_next_id
-            st.session_state.task1_next_id += 1
-            child_ids = []
-            for ward in wards:
-                task_id = st.session_state.task1_next_id
-                st.session_state.task1_next_id += 1
-                ward_id_val = ward.get("ward_id")
-                ward_name_val = ward.get("name") or str(ward_id_val)
-                url_with_ward = _ad_build_url_with_params(base_url, {"ward": ward_id_val})
-                child_ids.append(task_id)
                 st.session_state.task1_tasks.append({
-                    "id": task_id,
-                    "name": f"{base_name} - {ward_name_val}",
-                    "url": url_with_ward,
+                    "id": parent_id,
+                    "name": f"{base_name} (Tong {len(child_ids)} xa/phuong)",
+                    "url": base_url,
                     "region_id": region_id,
                     "region_name": region_map.get(region_id, str(region_id)),
                     "area_id": area_id,
                     "area_name": area_map.get(area_id, str(area_id)),
-                    "ward_id": ward_id_val,
-                    "ward_name": ward_name_val,
+                    "ward_id": None,
+                    "ward_name": None,
                     "limit": int(limit_value) if limit_value else None,
                     "offset": int(offset_value) if offset_value is not None else None,
                     "key_param_included": bool(key_param_included),
                     "include_expired_ads": bool(include_expired_ads),
-                    "parent_id": parent_id,
+                    "child_ids": child_ids,
                     "no_media_fields": bool(no_media_fields),
                     "new_only": bool(new_only),
                     "stop_on_duplicate": int(stop_on_duplicate),
                     "skip_total_threshold": int(skip_total_threshold),
                 })
-            st.session_state.task1_tasks.append({
-                "id": parent_id,
-                "name": f"{base_name} (Tong {len(child_ids)} xa/phuong)",
-                "url": base_url,
-                "region_id": region_id,
-                "region_name": region_map.get(region_id, str(region_id)),
-                "area_id": area_id,
-                "area_name": area_map.get(area_id, str(area_id)),
-                "ward_id": None,
-                "ward_name": None,
-                "limit": int(limit_value) if limit_value else None,
-                "offset": int(offset_value) if offset_value is not None else None,
-                "key_param_included": bool(key_param_included),
-                "include_expired_ads": bool(include_expired_ads),
-                "child_ids": child_ids,
-                "no_media_fields": bool(no_media_fields),
-                "new_only": bool(new_only),
-                "stop_on_duplicate": int(stop_on_duplicate),
-                "skip_total_threshold": int(skip_total_threshold),
-            })
-            st.success(f"Da tao {len(child_ids)} task con + 1 task tong.")
-        else:
-            task_id = st.session_state.task1_next_id
-            st.session_state.task1_next_id += 1
-            st.session_state.task1_tasks.append({
-                "id": task_id,
-                "name": base_name,
-                "url": base_url,
-                "region_id": region_id,
-                "region_name": region_map.get(region_id, str(region_id)) if region_id else None,
-                "area_id": area_id,
-                "area_name": area_map.get(area_id, str(area_id)) if area_id else None,
-                "ward_id": ward_id,
-                "ward_name": ward_map.get(ward_id, str(ward_id)) if ward_id else None,
-                "limit": int(limit_value) if limit_value else None,
-                "offset": int(offset_value) if offset_value is not None else None,
-                "key_param_included": bool(key_param_included),
-                "include_expired_ads": bool(include_expired_ads),
-                "no_media_fields": bool(no_media_fields),
-                "new_only": bool(new_only),
-                "stop_on_duplicate": int(stop_on_duplicate),
-                "skip_total_threshold": int(skip_total_threshold),
-            })
-            st.success(f"Task added: {base_name}")
+                st.success(f"Da tao {len(child_ids)} task con + 1 task tong.")
+            else:
+                task_id = st.session_state.task1_next_id
+                st.session_state.task1_next_id += 1
+                st.session_state.task1_tasks.append({
+                    "id": task_id,
+                    "name": base_name,
+                    "url": base_url,
+                    "region_id": region_id,
+                    "region_name": region_map.get(region_id, str(region_id)) if region_id else None,
+                    "area_id": area_id,
+                    "area_name": area_map.get(area_id, str(area_id)) if area_id else None,
+                    "ward_id": ward_id,
+                    "ward_name": ward_map.get(ward_id, str(ward_id)) if ward_id else None,
+                    "limit": int(limit_value) if limit_value else None,
+                    "offset": int(offset_value) if offset_value is not None else None,
+                    "key_param_included": bool(key_param_included),
+                    "include_expired_ads": bool(include_expired_ads),
+                    "no_media_fields": bool(no_media_fields),
+                    "new_only": bool(new_only),
+                    "stop_on_duplicate": int(stop_on_duplicate),
+                    "skip_total_threshold": int(skip_total_threshold),
+                })
+                st.success(f"Task added: {base_name}")
 
-    tasks = st.session_state.task1_tasks
-    if tasks:
-        st.subheader("Tasks")
-        df_tasks = pd.DataFrame(tasks)
-        st.dataframe(df_tasks, use_container_width=True, hide_index=True)
+        tasks = st.session_state.task1_tasks
+        if tasks:
+            st.subheader("Tasks")
+            df_tasks = pd.DataFrame(tasks)
+            st.dataframe(df_tasks, use_container_width=True, hide_index=True)
 
-        task_labels = [f"{t['id']} - {t['name']}" for t in tasks]
-        selected_labels = st.multiselect("Chon task", options=task_labels)
+            task_labels = [f"{t['id']} - {t['name']}" for t in tasks]
+            selected_labels = st.multiselect("Chon task", options=task_labels)
 
-        col_run_a, col_run_b, col_run_c = st.columns([1, 1, 2])
-        with col_run_a:
-            workers = st.number_input("So luong chay song song", min_value=1, max_value=10, value=3, step=1)
-        with col_run_b:
-            auto_fetch_all = st.checkbox("Tu dong lay het theo total", value=False)
-            show_progress_detail = st.checkbox("Hien tien trinh chi tiet", value=True)
-            delay_seconds = st.number_input("Delay moi lan (giay)", min_value=0.0, max_value=10.0, value=1.0, step=0.5)
-            run_clicked = st.button("Run selected")
-        with col_run_c:
-            if st.button("Clear tasks"):
-                st.session_state.task1_tasks = []
-                st.session_state.task1_next_id = 1
-                st.rerun()
+            col_run_a, col_run_b, col_run_c = st.columns([1, 1, 2])
+            with col_run_a:
+                workers = st.number_input("So luong chay song song", min_value=1, max_value=10, value=3, step=1)
+            with col_run_b:
+                auto_fetch_all = st.checkbox("Tu dong lay het theo total", value=False)
+                show_progress_detail = st.checkbox("Hien tien trinh chi tiet", value=True)
+                delay_seconds = st.number_input("Delay moi lan (giay)", min_value=0.0, max_value=10.0, value=1.0, step=0.5)
+                run_clicked = st.button("Run selected")
+            with col_run_c:
+                if st.button("Clear tasks"):
+                    st.session_state.task1_tasks = []
+                    st.session_state.task1_next_id = 1
+                    st.rerun()
 
-        if run_clicked and selected_labels:
-            if "db_adlisting" not in st.session_state:
-                st.session_state.db_adlisting = Database(
-                    host="localhost",
-                    user="root",
-                    password="",
-                    database="craw_db",
-                )
-
-            conn = st.session_state.db_adlisting.get_connection()
-            try:
-                _ad_ensure_table(conn, "ad_listing_detail")
-                _ad_ensure_raw_json_column(conn, "ad_listing_detail")
-                _ad_ensure_extra_columns(conn, "ad_listing_detail")
-            finally:
-                conn.close()
-
-            label_to_task = {f"{t['id']} - {t['name']}": t for t in tasks}
-            task_map = {t["id"]: t for t in tasks}
-            run_ids = set()
-            for lbl in selected_labels:
-                task = label_to_task.get(lbl)
-                if not task:
-                    continue
-                child_ids = task.get("child_ids") or []
-                if child_ids:
-                    for cid in child_ids:
-                        if cid in task_map:
-                            run_ids.add(cid)
-                else:
-                    run_ids.add(task.get("id"))
-            tasks_to_run = [task_map[tid] for tid in sorted(run_ids) if tid in task_map]
-            total = len(tasks_to_run)
-            progress = st.progress(0)
-            status = st.empty()
-
-            db_adlisting = st.session_state.db_adlisting
-
-            parent_check_cache = {}
-            parent_log_cache = set()
-            region_check_cache = {}
-            region_log_cache = set()
-            area_check_cache = {}
-            area_log_cache = set()
-
-            def _run_one(task: Dict[str, Any]) -> Dict[str, Any]:
-                try:
-                    total_fetched = 0
-                    total_upserted = 0
-                    total_new = 0
-                    total_dup = 0
-                    dup_streak = 0
-                    stop_on_dup = int(task.get("stop_on_duplicate") or 0)
-                    new_only_mode = bool(task.get("new_only"))
-                    duplicate_samples = []
-                    first_total = None
-                    limit_val = task.get("limit") or 50
-                    offset_val = task.get("offset") or 0
-                    log_lines = []
-                    last_status = None
-                    checked_total = False
-                    db_count_scope = None
-                    checked_parent = False
-
-                    def _task_flag_params() -> Dict[str, Any]:
-                        params = {}
-                        if task.get("key_param_included"):
-                            params["key_param_included"] = "true"
-                        if task.get("include_expired_ads"):
-                            params["include_expired_ads"] = "true"
-                        return params
-
-                    current_url = _ad_build_url_with_params(
-                        task["url"], {"cg": 1000, **_task_flag_params()}
+            if run_clicked and selected_labels:
+                if "db_adlisting" not in st.session_state:
+                    st.session_state.db_adlisting = Database(
+                        host="localhost",
+                        user="root",
+                        password="",
+                        database="craw_db",
                     )
 
-                    if new_only_mode and task.get("region_id"):
-                        rid = task.get("region_id")
-                        threshold = int(task.get("skip_total_threshold") or 0)
-                        if rid not in region_check_cache:
-                            url_region = _ad_build_url_with_params(
-                                task["url"],
-                                {
-                                    "cg": 1000,
-                                    "limit": 1,
-                                    "o": 0,
-                                    "region_v2": rid,
-                                    "area_v2": None,
-                                    "ward": None,
-                                    **_task_flag_params(),
-                                },
-                            )
-                            ads_region, total_region, status_code, challenge, _ = _ad_fetch_ads(url_region)
-                            if status_code in (403, 429) or challenge:
-                                log_lines.append(
-                                    f"{task.get('name')}: HTTP {status_code} - challenge (region check)"
-                                )
-                                return {
-                                    "id": task.get("id"),
-                                    "name": task.get("name"),
-                                    "fetched": 0,
-                                    "upserted": 0,
-                                    "new_rows": 0,
-                                    "duplicate_rows": 0,
-                                    "total": None,
-                                    "error": "",
-                                    "duplicate_samples": [],
-                                    "log_lines": log_lines,
-                                    "last_status": status_code,
-                                }
-                            db_count_region = _ad_get_db_count(db_adlisting, rid, None, None)
-                            ok_region = True
-                            if total_region is not None and threshold and int(total_region) >= threshold:
-                                ok_region = True
-                            elif total_region is not None and db_count_region >= int(total_region):
-                                ok_region = False
-                            region_check_cache[rid] = (ok_region, total_region, db_count_region)
-                        ok_region, total_region, db_count_region = region_check_cache.get(rid, (True, None, None))
-                        if not ok_region:
-                            if rid not in region_log_cache:
-                                region_log_cache.add(rid)
-                                region_name = task.get("region_name") or str(rid)
-                                log_lines.append(
-                                    f"{region_name}: total={total_region} <= db={db_count_region} -> bo qua tat ca huyen/xA"
-                                )
-                                log_lines.append(f"URL check (region): {url_region}")
-                            return {
-                                "id": task.get("id"),
-                                "name": task.get("name"),
-                                "region_name": task.get("region_name"),
-                                "area_name": task.get("area_name"),
-                                "fetched": 0,
-                                "upserted": 0,
-                                "new_rows": 0,
-                                "duplicate_rows": 0,
-                                "total": None,
-                                "error": "",
-                                "duplicate_samples": [],
-                                "log_lines": log_lines,
-                                "last_status": None,
-                                "skip_reason": "region",
-                            }
+                conn = st.session_state.db_adlisting.get_connection()
+                try:
+                    _ad_ensure_table(conn, "ad_listing_detail")
+                    _ad_ensure_raw_json_column(conn, "ad_listing_detail")
+                    _ad_ensure_extra_columns(conn, "ad_listing_detail")
+                finally:
+                    conn.close()
 
-                    if new_only_mode and task.get("region_id") and task.get("area_id"):
-                        rid = task.get("region_id")
-                        aid = task.get("area_id")
-                        key = (rid, aid)
-                        threshold = int(task.get("skip_total_threshold") or 0)
-                        if key not in area_check_cache:
-                            url_area = _ad_build_url_with_params(
-                                task["url"],
-                                {
-                                    "cg": 1000,
-                                    "limit": 1,
-                                    "o": 0,
-                                    "region_v2": rid,
-                                    "area_v2": aid,
-                                    "ward": None,
-                                    **_task_flag_params(),
-                                },
-                            )
-                            ads_area, total_area, status_code, challenge, _ = _ad_fetch_ads(url_area)
-                            if status_code in (403, 429) or challenge:
-                                log_lines.append(
-                                    f"{task.get('name')}: HTTP {status_code} - challenge (area check)"
-                                )
-                                return {
-                                    "id": task.get("id"),
-                                    "name": task.get("name"),
-                                    "fetched": 0,
-                                    "upserted": 0,
-                                    "new_rows": 0,
-                                    "duplicate_rows": 0,
-                                    "total": None,
-                                    "error": "",
-                                    "duplicate_samples": [],
-                                    "log_lines": log_lines,
-                                    "last_status": status_code,
-                                }
-                            db_count_area = _ad_get_db_count(db_adlisting, rid, aid, None)
-                            ok_area = True
-                            if total_area is not None and threshold and int(total_area) >= threshold:
-                                ok_area = True
-                            elif total_area is not None and db_count_area >= int(total_area):
-                                ok_area = False
-                            area_check_cache[key] = (ok_area, total_area, db_count_area)
-                        ok_area, total_area, db_count_area = area_check_cache.get(key, (True, None, None))
-                        if not ok_area:
-                            if key not in area_log_cache:
-                                area_log_cache.add(key)
-                                region_name = task.get("region_name") or str(rid)
-                                area_name = task.get("area_name") or str(aid)
-                                log_lines.append(
-                                    f"{region_name} - {area_name}: total={total_area} <= db={db_count_area} -> bo qua tat ca xa/phuong"
-                                )
-                                log_lines.append(f"URL check (area): {url_area}")
-                            return {
-                                "id": task.get("id"),
-                                "name": task.get("name"),
-                                "region_name": task.get("region_name"),
-                                "area_name": task.get("area_name"),
-                                "fetched": 0,
-                                "upserted": 0,
-                                "new_rows": 0,
-                                "duplicate_rows": 0,
-                                "total": None,
-                                "error": "",
-                                "duplicate_samples": [],
-                                "log_lines": log_lines,
-                                "last_status": None,
-                                "skip_reason": "area",
-                            }
+                label_to_task = {f"{t['id']} - {t['name']}": t for t in tasks}
+                task_map = {t["id"]: t for t in tasks}
+                run_ids = set()
+                for lbl in selected_labels:
+                    task = label_to_task.get(lbl)
+                    if not task:
+                        continue
+                    child_ids = task.get("child_ids") or []
+                    if child_ids:
+                        for cid in child_ids:
+                            if cid in task_map:
+                                run_ids.add(cid)
+                    else:
+                        run_ids.add(task.get("id"))
+                tasks_to_run = [task_map[tid] for tid in sorted(run_ids) if tid in task_map]
+                total = len(tasks_to_run)
+                progress = st.progress(0)
+                status = st.empty()
 
-                    while True:
-                        if auto_fetch_all:
-                            current_url = _ad_build_url_with_params(
-                                task["url"],
-                                {
-                                    "cg": 1000,
-                                    "limit": int(limit_val),
-                                    "o": int(offset_val),
-                                    **_task_flag_params(),
-                                },
-                            )
-                        else:
-                            current_url = _ad_build_url_with_params(
-                                task["url"],
-                                {"cg": 1000, **_task_flag_params()},
-                            )
-                        retry_count = 0
-                        while True:
-                            ads, total, status_code, challenge, err_text = _ad_fetch_ads(current_url)
-                            last_status = status_code
-                            if status_code in (403, 429) or challenge:
-                                retry_count += 1
-                                msg = f"HTTP {status_code} - challenge" if challenge else f"HTTP {status_code}"
-                                log_lines.append(
-                                    f"{task.get('name')}: {msg} (offset {offset_val}) retry {retry_count}/3"
+                db_adlisting = st.session_state.db_adlisting
+
+                parent_check_cache = {}
+                parent_log_cache = set()
+                region_check_cache = {}
+                region_log_cache = set()
+                area_check_cache = {}
+                area_log_cache = set()
+
+                def _run_one(task: Dict[str, Any]) -> Dict[str, Any]:
+                    try:
+                        total_fetched = 0
+                        total_upserted = 0
+                        total_new = 0
+                        total_dup = 0
+                        dup_streak = 0
+                        stop_on_dup = int(task.get("stop_on_duplicate") or 0)
+                        new_only_mode = bool(task.get("new_only"))
+                        duplicate_samples = []
+                        first_total = None
+                        limit_val = task.get("limit") or 50
+                        offset_val = task.get("offset") or 0
+                        log_lines = []
+                        last_status = None
+                        checked_total = False
+                        db_count_scope = None
+                        checked_parent = False
+
+                        def _task_flag_params() -> Dict[str, Any]:
+                            params = {}
+                            if task.get("key_param_included"):
+                                params["key_param_included"] = "true"
+                            if task.get("include_expired_ads"):
+                                params["include_expired_ads"] = "true"
+                            return params
+
+                        current_url = _ad_build_url_with_params(
+                            task["url"], {"cg": 1000, **_task_flag_params()}
+                        )
+
+                        if new_only_mode and task.get("region_id"):
+                            rid = task.get("region_id")
+                            threshold = int(task.get("skip_total_threshold") or 0)
+                            if rid not in region_check_cache:
+                                url_region = _ad_build_url_with_params(
+                                    task["url"],
+                                    {
+                                        "cg": 1000,
+                                        "limit": 1,
+                                        "o": 0,
+                                        "region_v2": rid,
+                                        "area_v2": None,
+                                        "ward": None,
+                                        **_task_flag_params(),
+                                    },
                                 )
-                                if retry_count >= 3:
-                                    break
-                                wait_sec = float(delay_seconds or 1.0)
-                                time.sleep(max(wait_sec, 1.0))
-                                continue
-                            break
-                        if status_code in (403, 429) or challenge:
-                            break
-                        if first_total is None and total is not None:
-                            first_total = total
-                        if new_only_mode and not checked_parent and task.get("parent_id"):
-                            checked_parent = True
-                            parent = task_map.get(task.get("parent_id"))
-                            if parent and parent.get("region_id"):
-                                parent_id = parent.get("id")
-                                cached = parent_check_cache.get(parent_id)
-                                if cached is False:
-                                    if parent_id not in parent_log_cache:
-                                        parent_log_cache.add(parent_id)
-                                        log_lines.append(
-                                            f"{parent.get('name')}: khong co tin moi -> bo qua tat ca con"
-                                        )
+                                ads_region, total_region, status_code, challenge, _ = _ad_fetch_ads(url_region)
+                                if status_code in (403, 429) or challenge:
                                     log_lines.append(
-                                        f"{task.get('name')}: bo qua, khong co tin moi (parent)"
+                                        f"{task.get('name')}: HTTP {status_code} - challenge (region check)"
                                     )
-                                    break
-                                if cached is None:
-                                    url_parent = _ad_build_url_with_params(
-                                        task["url"],
-                                        {
-                                            "cg": 1000,
-                                            "limit": 1,
-                                            "o": 0,
-                                            "region_v2": parent.get("region_id"),
-                                            "area_v2": parent.get("area_id"),
-                                            "ward": parent.get("ward_id"),
-                                            "ward": None,
-                                            **_task_flag_params(),
-                                        },
+                                    return {
+                                        "id": task.get("id"),
+                                        "name": task.get("name"),
+                                        "fetched": 0,
+                                        "upserted": 0,
+                                        "new_rows": 0,
+                                        "duplicate_rows": 0,
+                                        "total": None,
+                                        "error": "",
+                                        "duplicate_samples": [],
+                                        "log_lines": log_lines,
+                                        "last_status": status_code,
+                                    }
+                                db_count_region = _ad_get_db_count(db_adlisting, rid, None, None)
+                                ok_region = True
+                                if total_region is not None and threshold and int(total_region) >= threshold:
+                                    ok_region = True
+                                elif total_region is not None and db_count_region >= int(total_region):
+                                    ok_region = False
+                                region_check_cache[rid] = (ok_region, total_region, db_count_region)
+                            ok_region, total_region, db_count_region = region_check_cache.get(rid, (True, None, None))
+                            if not ok_region:
+                                if rid not in region_log_cache:
+                                    region_log_cache.add(rid)
+                                    region_name = task.get("region_name") or str(rid)
+                                    log_lines.append(
+                                        f"{region_name}: total={total_region} <= db={db_count_region} -> bo qua tat ca huyen/xA"
                                     )
-                                    ads_parent, total_parent, status_code, challenge, _ = _ad_fetch_ads(url_parent)
-                                    if status_code in (403, 429) or challenge:
-                                        log_lines.append(
-                                            f"{task.get('name')}: HTTP {status_code} - challenge (parent check)"
-                                        )
+                                    log_lines.append(f"URL check (region): {url_region}")
+                                return {
+                                    "id": task.get("id"),
+                                    "name": task.get("name"),
+                                    "region_name": task.get("region_name"),
+                                    "area_name": task.get("area_name"),
+                                    "fetched": 0,
+                                    "upserted": 0,
+                                    "new_rows": 0,
+                                    "duplicate_rows": 0,
+                                    "total": None,
+                                    "error": "",
+                                    "duplicate_samples": [],
+                                    "log_lines": log_lines,
+                                    "last_status": None,
+                                    "skip_reason": "region",
+                                }
+
+                        if new_only_mode and task.get("region_id") and task.get("area_id"):
+                            rid = task.get("region_id")
+                            aid = task.get("area_id")
+                            key = (rid, aid)
+                            threshold = int(task.get("skip_total_threshold") or 0)
+                            if key not in area_check_cache:
+                                url_area = _ad_build_url_with_params(
+                                    task["url"],
+                                    {
+                                        "cg": 1000,
+                                        "limit": 1,
+                                        "o": 0,
+                                        "region_v2": rid,
+                                        "area_v2": aid,
+                                        "ward": None,
+                                        **_task_flag_params(),
+                                    },
+                                )
+                                ads_area, total_area, status_code, challenge, _ = _ad_fetch_ads(url_area)
+                                if status_code in (403, 429) or challenge:
+                                    log_lines.append(
+                                        f"{task.get('name')}: HTTP {status_code} - challenge (area check)"
+                                    )
+                                    return {
+                                        "id": task.get("id"),
+                                        "name": task.get("name"),
+                                        "fetched": 0,
+                                        "upserted": 0,
+                                        "new_rows": 0,
+                                        "duplicate_rows": 0,
+                                        "total": None,
+                                        "error": "",
+                                        "duplicate_samples": [],
+                                        "log_lines": log_lines,
+                                        "last_status": status_code,
+                                    }
+                                db_count_area = _ad_get_db_count(db_adlisting, rid, aid, None)
+                                ok_area = True
+                                if total_area is not None and threshold and int(total_area) >= threshold:
+                                    ok_area = True
+                                elif total_area is not None and db_count_area >= int(total_area):
+                                    ok_area = False
+                                area_check_cache[key] = (ok_area, total_area, db_count_area)
+                            ok_area, total_area, db_count_area = area_check_cache.get(key, (True, None, None))
+                            if not ok_area:
+                                if key not in area_log_cache:
+                                    area_log_cache.add(key)
+                                    region_name = task.get("region_name") or str(rid)
+                                    area_name = task.get("area_name") or str(aid)
+                                    log_lines.append(
+                                        f"{region_name} - {area_name}: total={total_area} <= db={db_count_area} -> bo qua tat ca xa/phuong"
+                                    )
+                                    log_lines.append(f"URL check (area): {url_area}")
+                                return {
+                                    "id": task.get("id"),
+                                    "name": task.get("name"),
+                                    "region_name": task.get("region_name"),
+                                    "area_name": task.get("area_name"),
+                                    "fetched": 0,
+                                    "upserted": 0,
+                                    "new_rows": 0,
+                                    "duplicate_rows": 0,
+                                    "total": None,
+                                    "error": "",
+                                    "duplicate_samples": [],
+                                    "log_lines": log_lines,
+                                    "last_status": None,
+                                    "skip_reason": "area",
+                                }
+
+                        while True:
+                            if auto_fetch_all:
+                                current_url = _ad_build_url_with_params(
+                                    task["url"],
+                                    {
+                                        "cg": 1000,
+                                        "limit": int(limit_val),
+                                        "o": int(offset_val),
+                                        **_task_flag_params(),
+                                    },
+                                )
+                            else:
+                                current_url = _ad_build_url_with_params(
+                                    task["url"],
+                                    {"cg": 1000, **_task_flag_params()},
+                                )
+                            retry_count = 0
+                            while True:
+                                ads, total, status_code, challenge, err_text = _ad_fetch_ads(current_url)
+                                last_status = status_code
+                                if status_code in (403, 429) or challenge:
+                                    retry_count += 1
+                                    msg = f"HTTP {status_code} - challenge" if challenge else f"HTTP {status_code}"
+                                    log_lines.append(
+                                        f"{task.get('name')}: {msg} (offset {offset_val}) retry {retry_count}/3"
+                                    )
+                                    if retry_count >= 3:
                                         break
-                                    db_count_parent = _ad_get_db_count(
-                                        db_adlisting,
-                                        parent.get("region_id"),
-                                        parent.get("area_id"),
-                                        parent.get("ward_id"),
-                                    )
-                                    if total_parent is not None and db_count_parent >= int(total_parent):
-                                        parent_check_cache[parent_id] = False
+                                    wait_sec = float(delay_seconds or 1.0)
+                                    time.sleep(max(wait_sec, 1.0))
+                                    continue
+                                break
+                            if status_code in (403, 429) or challenge:
+                                break
+                            if first_total is None and total is not None:
+                                first_total = total
+                            if new_only_mode and not checked_parent and task.get("parent_id"):
+                                checked_parent = True
+                                parent = task_map.get(task.get("parent_id"))
+                                if parent and parent.get("region_id"):
+                                    parent_id = parent.get("id")
+                                    cached = parent_check_cache.get(parent_id)
+                                    if cached is False:
                                         if parent_id not in parent_log_cache:
                                             parent_log_cache.add(parent_id)
                                             log_lines.append(
-                                                f"{parent.get('name')}: total={total_parent} <= db={db_count_parent} -> bo qua tat ca con"
+                                                f"{parent.get('name')}: khong co tin moi -> bo qua tat ca con"
                                             )
                                         log_lines.append(
-                                            f"{task.get('name')}: bo qua, total={total_parent} <= db={db_count_parent} (parent)"
+                                            f"{task.get('name')}: bo qua, khong co tin moi (parent)"
                                         )
                                         break
-                                    parent_check_cache[parent_id] = True
-                        if new_only_mode and not checked_total and first_total is not None:
-                            checked_total = True
-                            db_count_scope = _ad_get_db_count(
-                                db_adlisting,
-                                task.get("region_id"),
-                                task.get("area_id"),
-                                task.get("ward_id"),
+                                    if cached is None:
+                                        url_parent = _ad_build_url_with_params(
+                                            task["url"],
+                                            {
+                                                "cg": 1000,
+                                                "limit": 1,
+                                                "o": 0,
+                                                "region_v2": parent.get("region_id"),
+                                                "area_v2": parent.get("area_id"),
+                                                "ward": parent.get("ward_id"),
+                                                "ward": None,
+                                                **_task_flag_params(),
+                                            },
+                                        )
+                                        ads_parent, total_parent, status_code, challenge, _ = _ad_fetch_ads(url_parent)
+                                        if status_code in (403, 429) or challenge:
+                                            log_lines.append(
+                                                f"{task.get('name')}: HTTP {status_code} - challenge (parent check)"
+                                            )
+                                            break
+                                        db_count_parent = _ad_get_db_count(
+                                            db_adlisting,
+                                            parent.get("region_id"),
+                                            parent.get("area_id"),
+                                            parent.get("ward_id"),
+                                        )
+                                        if total_parent is not None and db_count_parent >= int(total_parent):
+                                            parent_check_cache[parent_id] = False
+                                            if parent_id not in parent_log_cache:
+                                                parent_log_cache.add(parent_id)
+                                                log_lines.append(
+                                                    f"{parent.get('name')}: total={total_parent} <= db={db_count_parent} -> bo qua tat ca con"
+                                                )
+                                            log_lines.append(
+                                                f"{task.get('name')}: bo qua, total={total_parent} <= db={db_count_parent} (parent)"
+                                            )
+                                            break
+                                        parent_check_cache[parent_id] = True
+                            if new_only_mode and not checked_total and first_total is not None:
+                                checked_total = True
+                                db_count_scope = _ad_get_db_count(
+                                    db_adlisting,
+                                    task.get("region_id"),
+                                    task.get("area_id"),
+                                    task.get("ward_id"),
+                                )
+                                if db_count_scope >= int(first_total):
+                                    log_lines.append(
+                                        f"{task.get('name')}: bo qua, total={first_total} <= db={db_count_scope}"
+                                    )
+                                    break
+                            if not ads:
+                                break
+                            ad_ids = [ad.get("ad_id") for ad in ads if ad.get("ad_id") is not None]
+                            conn_check = db_adlisting.get_connection()
+                            try:
+                                existing_ids = _ad_fetch_existing_ids(conn_check, "ad_listing_detail", ad_ids)
+                            finally:
+                                conn_check.close()
+                            dup_count = len([aid for aid in ad_ids if aid in existing_ids])
+                            new_count = len(ad_ids) - dup_count
+                            total_dup += dup_count
+                            total_new += new_count
+                            if stop_on_dup and ad_ids:
+                                for aid in ad_ids:
+                                    if aid in existing_ids:
+                                        dup_streak += 1
+                                    else:
+                                        dup_streak = 0
+                                    if dup_streak >= stop_on_dup:
+                                        break
+                            # raw json mau da bi tat theo yeu cau UI
+                            conn_local = db_adlisting.get_connection()
+                            try:
+                                skip_fields = AD_SKIP_FIELDS_NO_MEDIA if task.get("no_media_fields") else None
+                                upserted = _ad_upsert_ads(
+                                    conn_local,
+                                    "ad_listing_detail",
+                                    ads,
+                                    source_file="api",
+                                    source_o=offset_val,
+                                    skip_fields=skip_fields,
+                                )
+                            finally:
+                                conn_local.close()
+                            total_fetched += len(ads)
+                            total_upserted += upserted
+                            log_lines.append(
+                                f"{task.get('name')}: da lay {total_fetched}"
+                                f"{'/' + str(first_total) if first_total else ''}"
+                                f" | offset {offset_val}"
                             )
-                            if db_count_scope >= int(first_total):
+
+                            if not auto_fetch_all:
+                                break
+                            if stop_on_dup and dup_streak >= stop_on_dup:
                                 log_lines.append(
-                                    f"{task.get('name')}: bo qua, total={first_total} <= db={db_count_scope}"
+                                    f"{task.get('name')}: dung do trung lien tiep {dup_streak}"
                                 )
                                 break
-                        if not ads:
-                            break
-                        ad_ids = [ad.get("ad_id") for ad in ads if ad.get("ad_id") is not None]
-                        conn_check = db_adlisting.get_connection()
-                        try:
-                            existing_ids = _ad_fetch_existing_ids(conn_check, "ad_listing_detail", ad_ids)
-                        finally:
-                            conn_check.close()
-                        dup_count = len([aid for aid in ad_ids if aid in existing_ids])
-                        new_count = len(ad_ids) - dup_count
-                        total_dup += dup_count
-                        total_new += new_count
-                        if stop_on_dup and ad_ids:
-                            for aid in ad_ids:
-                                if aid in existing_ids:
-                                    dup_streak += 1
-                                else:
-                                    dup_streak = 0
-                                if dup_streak >= stop_on_dup:
-                                    break
-                        # raw json mau da bi tat theo yeu cau UI
-                        conn_local = db_adlisting.get_connection()
-                        try:
-                            skip_fields = AD_SKIP_FIELDS_NO_MEDIA if task.get("no_media_fields") else None
-                            upserted = _ad_upsert_ads(
-                                conn_local,
-                                "ad_listing_detail",
-                                ads,
-                                source_file="api",
-                                source_o=offset_val,
-                                skip_fields=skip_fields,
-                            )
-                        finally:
-                            conn_local.close()
-                        total_fetched += len(ads)
-                        total_upserted += upserted
-                        log_lines.append(
-                            f"{task.get('name')}: da lay {total_fetched}"
-                            f"{'/' + str(first_total) if first_total else ''}"
-                            f" | offset {offset_val}"
+
+                            offset_val += int(limit_val)
+                            if first_total is not None and offset_val >= int(first_total):
+                                break
+                            if delay_seconds and delay_seconds > 0:
+                                time.sleep(float(delay_seconds))
+
+                        return {
+                            "id": task.get("id"),
+                            "name": task.get("name"),
+                            "region_name": task.get("region_name"),
+                            "area_name": task.get("area_name"),
+                            "fetched": total_fetched,
+                            "upserted": total_upserted,
+                            "new_rows": total_new,
+                            "duplicate_rows": total_dup,
+                            "total": first_total,
+                            "error": "",
+                            "duplicate_samples": duplicate_samples,
+                            "log_lines": log_lines,
+                            "last_status": last_status,
+                            "skip_reason": "none",
+                        }
+                    except Exception as exc:
+                        return {
+                            "id": task.get("id"),
+                            "name": task.get("name"),
+                            "region_name": task.get("region_name"),
+                            "area_name": task.get("area_name"),
+                            "fetched": 0,
+                            "upserted": 0,
+                            "new_rows": 0,
+                            "duplicate_rows": 0,
+                            "total": None,
+                            "error": str(exc),
+                            "duplicate_samples": [],
+                            "log_lines": [f"{task.get('name')}: ERROR {exc}"],
+                            "last_status": None,
+                            "skip_reason": "error",
+                        }
+
+                results = []
+                log_lines = []
+                log_box = st.empty()
+                region_log_box = st.empty()
+
+                def _task_flag_params_outer(task: Dict[str, Any]) -> Dict[str, Any]:
+                    params = {}
+                    if task.get("key_param_included"):
+                        params["key_param_included"] = "true"
+                    if task.get("include_expired_ads"):
+                        params["include_expired_ads"] = "true"
+                    return params
+
+                # Pre-check region totals once; skip all child tasks if region has no new items.
+                if any(t.get("new_only") for t in tasks_to_run):
+                    region_groups = {}
+                    for t in tasks_to_run:
+                        rid = t.get("region_id")
+                        if rid:
+                            region_groups.setdefault(rid, t)
+                    for rid, sample_task in region_groups.items():
+                        if rid in region_check_cache:
+                            continue
+                        url_region = _ad_build_url_with_params(
+                            sample_task["url"],
+                            {
+                                "cg": 1000,
+                                "limit": 1,
+                                "o": 0,
+                                "region_v2": rid,
+                                "area_v2": None,
+                                "ward": None,
+                                **_task_flag_params_outer(sample_task),
+                            },
                         )
-
-                        if not auto_fetch_all:
-                            break
-                        if stop_on_dup and dup_streak >= stop_on_dup:
+                        ads_region, total_region, status_code, challenge, _ = _ad_fetch_ads(url_region)
+                        if status_code in (403, 429) or challenge:
                             log_lines.append(
-                                f"{task.get('name')}: dung do trung lien tiep {dup_streak}"
+                                f"{sample_task.get('region_name') or rid}: HTTP {status_code} - challenge (region check)"
                             )
-                            break
+                            region_check_cache[rid] = (True, total_region, None)
+                            continue
+                        db_count_region = _ad_get_db_count(db_adlisting, rid, None, None)
+                        threshold = int(sample_task.get("skip_total_threshold") or 0)
+                        ok_region = True
+                        if total_region is not None and threshold and int(total_region) >= threshold:
+                            ok_region = True
+                        elif total_region is not None and db_count_region >= int(total_region):
+                            ok_region = False
+                        region_check_cache[rid] = (ok_region, total_region, db_count_region)
+                        if not ok_region and rid not in region_log_cache:
+                            region_log_cache.add(rid)
+                            region_name = sample_task.get("region_name") or str(rid)
+                            log_lines.append(
+                                f"{region_name}: total={total_region} <= db={db_count_region} -> bo qua tat ca huyen/xA"
+                            )
+                            log_lines.append(f"URL check (region): {url_region}")
+                        if log_lines:
+                            log_box.text("\n".join(log_lines[-200:]))
 
-                        offset_val += int(limit_val)
-                        if first_total is not None and offset_val >= int(first_total):
-                            break
+                    # Drop all tasks whose region has no new data.
+                    filtered = []
+                    for t in tasks_to_run:
+                        rid = t.get("region_id")
+                        if rid and rid in region_check_cache:
+                            ok_region, _, _ = region_check_cache[rid]
+                            if not ok_region:
+                                continue
+                        filtered.append(t)
+                    tasks_to_run = filtered
+
+                    # Pre-check area totals once; skip all child tasks if area has no new items.
+                    area_groups = {}
+                    for t in tasks_to_run:
+                        rid = t.get("region_id")
+                        aid = t.get("area_id")
+                        if rid and aid:
+                            area_groups.setdefault((rid, aid), t)
+                    for (rid, aid), sample_task in area_groups.items():
+                        if (rid, aid) in area_check_cache:
+                            continue
+                        url_area = _ad_build_url_with_params(
+                            sample_task["url"],
+                            {
+                                "cg": 1000,
+                                "limit": 1,
+                                "o": 0,
+                                "region_v2": rid,
+                                "area_v2": aid,
+                                "ward": None,
+                                **_task_flag_params_outer(sample_task),
+                            },
+                        )
+                        ads_area, total_area, status_code, challenge, _ = _ad_fetch_ads(url_area)
+                        if status_code in (403, 429) or challenge:
+                            log_lines.append(
+                                f"{sample_task.get('region_name') or rid} - {sample_task.get('area_name') or aid}: "
+                                f"HTTP {status_code} - challenge (area check)"
+                            )
+                            area_check_cache[(rid, aid)] = (True, total_area, None)
+                            if log_lines:
+                                log_box.text("\n".join(log_lines[-200:]))
+                            continue
+                        db_count_area = _ad_get_db_count(db_adlisting, rid, aid, None)
+                        threshold = int(sample_task.get("skip_total_threshold") or 0)
+                        ok_area = True
+                        if total_area is not None and threshold and int(total_area) >= threshold:
+                            ok_area = True
+                        elif total_area is not None and db_count_area >= int(total_area):
+                            ok_area = False
+                        area_check_cache[(rid, aid)] = (ok_area, total_area, db_count_area)
+                        if not ok_area and (rid, aid) not in area_log_cache:
+                            area_log_cache.add((rid, aid))
+                            region_name = sample_task.get("region_name") or str(rid)
+                            area_name = sample_task.get("area_name") or str(aid)
+                            log_lines.append(
+                                f"{region_name} - {area_name}: total={total_area} <= db={db_count_area} -> bo qua tat ca xa/phuong"
+                            )
+                            log_lines.append(f"URL check (area): {url_area}")
+                        if log_lines:
+                            log_box.text("\n".join(log_lines[-200:]))
+
+                    filtered = []
+                    for t in tasks_to_run:
+                        rid = t.get("region_id")
+                        aid = t.get("area_id")
+                        if rid and aid and (rid, aid) in area_check_cache:
+                            ok_area, _, _ = area_check_cache[(rid, aid)]
+                            if not ok_area:
+                                continue
+                        filtered.append(t)
+                    tasks_to_run = filtered
+                with ThreadPoolExecutor(max_workers=int(workers)) as executor:
+                    future_map = {executor.submit(_run_one, t): t for t in tasks_to_run}
+                    done = 0
+                    for future in as_completed(future_map):
+                        result = future.result()
+                        results.append(result)
+                        done += 1
+                        pct = int((done / total) * 100) if total else 100
+                        progress.progress(pct)
+                        status.write(f"Hoan thanh {done}/{total}")
+                        if show_progress_detail:
+                            for line in result.get("log_lines", []):
+                                log_lines.append(line)
+                            log_box.text("\n".join(log_lines[-200:]))
                         if delay_seconds and delay_seconds > 0:
                             time.sleep(float(delay_seconds))
 
-                    return {
-                        "id": task.get("id"),
-                        "name": task.get("name"),
-                        "region_name": task.get("region_name"),
-                        "area_name": task.get("area_name"),
-                        "fetched": total_fetched,
-                        "upserted": total_upserted,
-                        "new_rows": total_new,
-                        "duplicate_rows": total_dup,
-                        "total": first_total,
-                        "error": "",
-                        "duplicate_samples": duplicate_samples,
-                        "log_lines": log_lines,
-                        "last_status": last_status,
-                        "skip_reason": "none",
-                    }
-                except Exception as exc:
-                    return {
-                        "id": task.get("id"),
-                        "name": task.get("name"),
-                        "region_name": task.get("region_name"),
-                        "area_name": task.get("area_name"),
-                        "fetched": 0,
-                        "upserted": 0,
-                        "new_rows": 0,
-                        "duplicate_rows": 0,
-                        "total": None,
-                        "error": str(exc),
-                        "duplicate_samples": [],
-                        "log_lines": [f"{task.get('name')}: ERROR {exc}"],
-                        "last_status": None,
-                        "skip_reason": "error",
-                    }
-
-            results = []
-            log_lines = []
-            log_box = st.empty()
-            region_log_box = st.empty()
-
-            def _task_flag_params_outer(task: Dict[str, Any]) -> Dict[str, Any]:
-                params = {}
-                if task.get("key_param_included"):
-                    params["key_param_included"] = "true"
-                if task.get("include_expired_ads"):
-                    params["include_expired_ads"] = "true"
-                return params
-
-            # Pre-check region totals once; skip all child tasks if region has no new items.
-            if any(t.get("new_only") for t in tasks_to_run):
-                region_groups = {}
-                for t in tasks_to_run:
-                    rid = t.get("region_id")
-                    if rid:
-                        region_groups.setdefault(rid, t)
-                for rid, sample_task in region_groups.items():
-                    if rid in region_check_cache:
-                        continue
-                    url_region = _ad_build_url_with_params(
-                        sample_task["url"],
-                        {
-                            "cg": 1000,
-                            "limit": 1,
-                            "o": 0,
-                            "region_v2": rid,
-                            "area_v2": None,
-                            "ward": None,
-                            **_task_flag_params_outer(sample_task),
-                        },
-                    )
-                    ads_region, total_region, status_code, challenge, _ = _ad_fetch_ads(url_region)
-                    if status_code in (403, 429) or challenge:
-                        log_lines.append(
-                            f"{sample_task.get('region_name') or rid}: HTTP {status_code} - challenge (region check)"
+                df_results = pd.DataFrame(results)
+                st.subheader("Run results")
+                st.dataframe(df_results, use_container_width=True, hide_index=True)
+                if show_progress_detail:
+                    region_summary = {}
+                    for r in results:
+                        region_name = r.get("region_name") or "(Unknown)"
+                        summary = region_summary.setdefault(
+                            region_name,
+                            {
+                                "new_rows": 0,
+                                "fetched": 0,
+                                "skip_region": 0,
+                                "skip_area": 0,
+                            },
                         )
-                        region_check_cache[rid] = (True, total_region, None)
-                        continue
-                    db_count_region = _ad_get_db_count(db_adlisting, rid, None, None)
-                    threshold = int(sample_task.get("skip_total_threshold") or 0)
-                    ok_region = True
-                    if total_region is not None and threshold and int(total_region) >= threshold:
-                        ok_region = True
-                    elif total_region is not None and db_count_region >= int(total_region):
-                        ok_region = False
-                    region_check_cache[rid] = (ok_region, total_region, db_count_region)
-                    if not ok_region and rid not in region_log_cache:
-                        region_log_cache.add(rid)
-                        region_name = sample_task.get("region_name") or str(rid)
-                        log_lines.append(
-                            f"{region_name}: total={total_region} <= db={db_count_region} -> bo qua tat ca huyen/xA"
+                        if r.get("skip_reason") == "region":
+                            summary["skip_region"] += 1
+                        elif r.get("skip_reason") == "area":
+                            summary["skip_area"] += 1
+                        else:
+                            summary["new_rows"] += int(r.get("new_rows") or 0)
+                            summary["fetched"] += int(r.get("fetched") or 0)
+                    lines = []
+                    for region_name, s in region_summary.items():
+                        lines.append(
+                            f"{region_name}: moi={s['new_rows']}, fetched={s['fetched']}, bo qua tinh={s['skip_region']}, bo qua huyen={s['skip_area']}"
                         )
-                        log_lines.append(f"URL check (region): {url_region}")
-                    if log_lines:
-                        log_box.text("\n".join(log_lines[-200:]))
+                    region_log_box.text("\n".join(lines))
+                # Da loai bo hien raw json mau theo yeu cau UI
 
-                # Drop all tasks whose region has no new data.
-                filtered = []
-                for t in tasks_to_run:
-                    rid = t.get("region_id")
-                    if rid and rid in region_check_cache:
-                        ok_region, _, _ = region_check_cache[rid]
-                        if not ok_region:
-                            continue
-                    filtered.append(t)
-                tasks_to_run = filtered
-
-                # Pre-check area totals once; skip all child tasks if area has no new items.
-                area_groups = {}
-                for t in tasks_to_run:
-                    rid = t.get("region_id")
-                    aid = t.get("area_id")
-                    if rid and aid:
-                        area_groups.setdefault((rid, aid), t)
-                for (rid, aid), sample_task in area_groups.items():
-                    if (rid, aid) in area_check_cache:
-                        continue
-                    url_area = _ad_build_url_with_params(
-                        sample_task["url"],
-                        {
-                            "cg": 1000,
-                            "limit": 1,
-                            "o": 0,
-                            "region_v2": rid,
-                            "area_v2": aid,
-                            "ward": None,
-                            **_task_flag_params_outer(sample_task),
-                        },
-                    )
-                    ads_area, total_area, status_code, challenge, _ = _ad_fetch_ads(url_area)
-                    if status_code in (403, 429) or challenge:
-                        log_lines.append(
-                            f"{sample_task.get('region_name') or rid} - {sample_task.get('area_name') or aid}: "
-                            f"HTTP {status_code} - challenge (area check)"
-                        )
-                        area_check_cache[(rid, aid)] = (True, total_area, None)
-                        if log_lines:
-                            log_box.text("\n".join(log_lines[-200:]))
-                        continue
-                    db_count_area = _ad_get_db_count(db_adlisting, rid, aid, None)
-                    threshold = int(sample_task.get("skip_total_threshold") or 0)
-                    ok_area = True
-                    if total_area is not None and threshold and int(total_area) >= threshold:
-                        ok_area = True
-                    elif total_area is not None and db_count_area >= int(total_area):
-                        ok_area = False
-                    area_check_cache[(rid, aid)] = (ok_area, total_area, db_count_area)
-                    if not ok_area and (rid, aid) not in area_log_cache:
-                        area_log_cache.add((rid, aid))
-                        region_name = sample_task.get("region_name") or str(rid)
-                        area_name = sample_task.get("area_name") or str(aid)
-                        log_lines.append(
-                            f"{region_name} - {area_name}: total={total_area} <= db={db_count_area} -> bo qua tat ca xa/phuong"
-                        )
-                        log_lines.append(f"URL check (area): {url_area}")
-                    if log_lines:
-                        log_box.text("\n".join(log_lines[-200:]))
-
-                filtered = []
-                for t in tasks_to_run:
-                    rid = t.get("region_id")
-                    aid = t.get("area_id")
-                    if rid and aid and (rid, aid) in area_check_cache:
-                        ok_area, _, _ = area_check_cache[(rid, aid)]
-                        if not ok_area:
-                            continue
-                    filtered.append(t)
-                tasks_to_run = filtered
-            with ThreadPoolExecutor(max_workers=int(workers)) as executor:
-                future_map = {executor.submit(_run_one, t): t for t in tasks_to_run}
-                done = 0
-                for future in as_completed(future_map):
-                    result = future.result()
-                    results.append(result)
-                    done += 1
-                    pct = int((done / total) * 100) if total else 100
-                    progress.progress(pct)
-                    status.write(f"Hoan thanh {done}/{total}")
-                    if show_progress_detail:
-                        for line in result.get("log_lines", []):
-                            log_lines.append(line)
-                        log_box.text("\n".join(log_lines[-200:]))
-                    if delay_seconds and delay_seconds > 0:
-                        time.sleep(float(delay_seconds))
-
-            df_results = pd.DataFrame(results)
-            st.subheader("Run results")
-            st.dataframe(df_results, use_container_width=True, hide_index=True)
-            if show_progress_detail:
-                region_summary = {}
-                for r in results:
-                    region_name = r.get("region_name") or "(Unknown)"
-                    summary = region_summary.setdefault(
-                        region_name,
-                        {
-                            "new_rows": 0,
-                            "fetched": 0,
-                            "skip_region": 0,
-                            "skip_area": 0,
-                        },
-                    )
-                    if r.get("skip_reason") == "region":
-                        summary["skip_region"] += 1
-                    elif r.get("skip_reason") == "area":
-                        summary["skip_area"] += 1
-                    else:
-                        summary["new_rows"] += int(r.get("new_rows") or 0)
-                        summary["fetched"] += int(r.get("fetched") or 0)
-                lines = []
-                for region_name, s in region_summary.items():
-                    lines.append(
-                        f"{region_name}: moi={s['new_rows']}, fetched={s['fetched']}, bo qua tinh={s['skip_region']}, bo qua huyen={s['skip_area']}"
-                    )
-                region_log_box.text("\n".join(lines))
-            # Da loai bo hien raw json mau theo yeu cau UI
-
-    st.markdown("---")
+        st.markdown("---")
 
 
-# ============================================
+    # ============================================
 
 with tab3:
 
@@ -3902,29 +3956,111 @@ with tab3:
         })
 
     
-
     st.markdown("---")
 
     
 
-    # Start button
+    # Start button & Queue Management
+    col_btn1, col_btn2 = st.columns(2)
+    
+    if 'multi_task_queue' not in st.session_state:
+        st.session_state.multi_task_queue = []
 
-    start_crawl_btn = st.button(
+    with col_btn1:
+        start_crawl_btn = st.button(
+            "🚀 Start Direct (Single Task)",
+            type="primary",
+            use_container_width=True,
+            help="Chạy ngay task hiện tại (Block UI)",
+            key="start_crawl_listing_btn_direct"
+        )
+    
+    with col_btn2:
+        if st.button("➕ Add to Queue", use_container_width=True, help="Thêm vào danh sách chạy song song"):
+            if target_url and item_selector:
+                # Add to queue
+                task_item = {
+                    "id": str(uuid.uuid4())[:8],
+                    "url": target_url,
+                    "item_selector": item_selector,
+                    "next_selector": next_selector,
+                    "max_pages": max_pages,
+                    "domain": domain,
+                    "loaihinh": loaihinh,
+                    "trade_type": trade_type_value,
+                    "city_id": city_id, "city_name": city_name,
+                    "ward_id": ward_id, "ward_name": ward_name,
+                    "new_city_id": new_city_id, "new_city_name": new_city_name,
+                    "new_ward_id": new_ward_id, "new_ward_name": new_ward_name
+                }
+                st.session_state.multi_task_queue.append(task_item)
+                st.success(f"Added task to queue! Total: {len(st.session_state.multi_task_queue)}")
+            else:
+                st.error("Missing URL or Selector!")
 
-        "🚀 Start Crawling",
-
-        type="primary",
-
-        use_container_width=True,
-
-        key="start_crawl_listing_btn"
-
-    )
+    # Display Queue
+    if st.session_state.multi_task_queue:
+        with st.expander(f"📋 Task Queue ({len(st.session_state.multi_task_queue)})", expanded=True):
+            if st.button("🗑️ Clear Queue"):
+                st.session_state.multi_task_queue = []
+                st.rerun()
+            
+            # Show table
+            queue_data = []
+            for i, t in enumerate(st.session_state.multi_task_queue):
+                queue_data.append({
+                    "Index": i+1,
+                    "Category": t['loaihinh'],
+                    "Max Pages": t['max_pages'],
+                    "URL": t['url'][:50] + "..."
+                })
+            st.table(queue_data)
+            
+            if st.button("🚀 LAUNCH ALL TASKS (Background)", type="primary", use_container_width=True):
+                # Submit all to DB
+                count = 0
+                for task in st.session_state.multi_task_queue:
+                    # Construct Scheduler Task Data
+                    # Note: We need to inject 'start_start_page' if logic supports it, 
+                    # but currently 'crawl_listing_simple' handles pagination internally.
+                    # Wait, 'start_page' is not in 'crawl_listing_simple' arguments?
+                    # The current crawler creates URLs dynamically.
+                    # If user modifies URL to include ?page=X, it works.
+                    # The 'max_pages' just limits how many pages to crawl.
+                    
+                    db_task = {
+                        "name": f"Queue_{task['loaihinh']}_{task['id']}",
+                        "active": 1,
+                        "is_running": 0, # Scheduler picks it up
+                        "enable_listing": 1,
+                        "enable_detail": 1, # Default full pipeline
+                        "enable_image": 0,
+                        "schedule_type": "once", # Run once
+                        "start_url": task['url'],
+                        "max_pages": task['max_pages'],
+                        "domain": task['domain'],
+                        "loaihinh": task['loaihinh'],
+                        "trade_type": task['trade_type'],
+                        "city_id": task['city_id'], "city_name": task['city_name'],
+                        "ward_id": task['ward_id'], "ward_name": task['ward_name'],
+                        "new_city_id": task['new_city_id'], "new_city_name": task['new_city_name'],
+                        "new_ward_id": task['new_ward_id'], "new_ward_name": task['new_ward_name'],
+                        "listing_show_browser": 1 if show_browser else 0,
+                        "next_run_at": datetime.now() # Run immediately
+                    }
+                    try:
+                        st.session_state.db_crawl_listing.add_scheduler_task(db_task)
+                        count += 1
+                    except Exception as e:
+                        st.error(f"Failed to add task {task['id']}: {e}")
+                
+                st.success(f"✅ Successfully launched {count} tasks to background scheduler!")
+                st.session_state.multi_task_queue = [] # Clear queue
+                time.sleep(1)
+                st.rerun()
 
     
-
-    # Execute crawling
-
+    # Execute crawling (Direct Mode)
     if start_crawl_btn and target_url and item_selector:
 
         if not next_selector and max_pages > 1:
@@ -4926,7 +5062,9 @@ with tab3:
                                     url=url,
                                     data=result.get('data'),
                                     domain=link_data.get('domain'),
-                                    link_id=link_id
+                                    link_id=link_id,
+                                    loaihinh=link_data.get('loaihinh'),
+                                    trade_type=link_data.get('trade_type')
                                 )
                             except Exception as e:
                                 print(f"[scraped_details] cannot save {url}: {e}")
@@ -5484,11 +5622,20 @@ with tab4:
             progress = st.progress(0)
             progress_text = st.empty()
             os.makedirs(output_dir, exist_ok=True)
+            sm_done_detail_ids = set()
 
             def _download_rows(batch_rows, start_idx, total_count):
+                detail_ids = [
+                    row.get('detail_id')
+                    for row in batch_rows
+                    if isinstance(row, dict) and row.get('detail_id')
+                ]
+                slug_map = st.session_state.db_images.get_slug_names_by_detail_ids(list(set(detail_ids)))
+                idx_seq = {}
                 for idx, row in enumerate(batch_rows, start_idx):
                     url = row['image_url']
                     image_id = row.get('id') if isinstance(row, dict) else None
+                    detail_id = row.get('detail_id') if isinstance(row, dict) else None
                     log_lines.append(f"{idx}/{total_count} - {url[:80]}...")
                     file_path = None
                     try:
@@ -5496,7 +5643,17 @@ with tab4:
                         resp.raise_for_status()
                         parsed = os.path.splitext(url.split('?')[0])
                         ext = parsed[1] if parsed[1] else '.jpg'
-                        filename = f"{hashlib.md5(url.encode()).hexdigest()}{ext}"
+                        slug_name = slug_map.get(detail_id) or f"detail-{detail_id or 'unknown'}"
+                        slug_name = re.sub(r'[^a-z0-9-]+', '-', slug_name.lower()).strip('-')
+                        if len(slug_name) > 150:
+                            slug_name = slug_name[:150].rstrip('-')
+                        idx_val = row.get('idx') if isinstance(row, dict) else None
+                        if idx_val is None:
+                            idx_seq[detail_id] = idx_seq.get(detail_id, 0) + 1
+                            index_hinh = idx_seq[detail_id]
+                        else:
+                            index_hinh = int(idx_val) + 1
+                        filename = f"{slug_name}-{index_hinh}-nhadat.cafeland.vn{ext}"
                         file_path = os.path.join(output_dir, filename)
                         _save_image_bytes(resp.content, file_path, max_width=1100)
                         stats["ok"] += 1
@@ -5508,6 +5665,11 @@ with tab4:
                             domain=domain_label or None,
                             error=None
                         )
+                        if detail_id and detail_id not in sm_done_detail_ids:
+                            sm_path = _create_small_clone(file_path, target_width=750)
+                            if sm_path:
+                                sm_done_detail_ids.add(detail_id)
+                                log_lines.append(f"SM: {sm_path}")
                         if image_id:
                             st.session_state.db_images.update_detail_image_status(image_id, "DOWNLOADED")
                     except Exception as e:
@@ -5572,10 +5734,170 @@ with tab4:
                     st.success(f"Tim thay {total} anh. Bat dau tai ...")
                     _download_rows(rows, 1, total)
                     progress.progress(100)
-                progress_text.write(f"Hoan thanh: {total} anh | Thanh cong: {ok} | Loi: {fail}")
-                st.success(f"Xong range. Thanh cong: {ok}, Loi: {fail}")
+                progress_text.write(f"Hoan thanh: {total} anh | Thanh cong: {stats['ok']} | Loi: {stats['fail']}")
+                st.success(f"Xong range. Thanh cong: {stats['ok']}, Loi: {stats['fail']}")
                 if log_lines:
                     st.code("\\n".join(log_lines), language="text")
+
+    st.markdown("---")
+    st.subheader("Download anh (chi lay id_img trong data_full)")
+    coldf1, coldf2 = st.columns(2)
+    with coldf1:
+        df_range_start = st.number_input("Start data_full ID (0 = all)", min_value=0, value=0, step=1)
+    with coldf2:
+        df_range_end = st.number_input("End data_full ID (0 = all)", min_value=0, value=0, step=1)
+    coldf3, coldf4 = st.columns(2)
+    with coldf3:
+        df_status = st.selectbox("Status (data_full)", ["(Tat ca)", "PENDING", "DOWNLOADED", "FAILED"], index=0, key="df_status")
+    with coldf4:
+        df_images_per_minute = st.number_input("So anh/phut (data_full)", min_value=1, max_value=600, value=30, key="df_images_per_minute")
+        df_download_btn = st.button("Download theo data_full", use_container_width=True)
+
+    if df_download_btn:
+        if (df_range_start == 0 and df_range_end > 0) or (df_range_end == 0 and df_range_start > 0):
+            st.warning("Vui long nhap ca Start ID va End ID (hoac de 0 de lay tat ca).")
+        elif df_range_start > 0 and df_range_end > 0 and df_range_end < df_range_start:
+            st.warning("End ID phai >= Start ID")
+        else:
+            worker_count = 20
+            fixed_delay = 0.2
+            stats = {"ok": 0, "fail": 0}
+            log_lines = []
+            progress = st.progress(0)
+            progress_text = st.empty()
+            os.makedirs(output_dir, exist_ok=True)
+            sm_done_detail_ids = set()
+            db_images = st.session_state.db_images
+            status_filter = None if df_status == "(Tat ca)" else df_status
+            idx_seq = {}
+            from threading import Lock
+            idx_lock = Lock()
+            sm_lock = Lock()
+            seen_lock = Lock()
+            seen_url_counts = {}
+            processed_done = {"count": 0}
+
+            def _worker_download_df(row):
+                url = row['image_url']
+                image_id = row.get('id') if isinstance(row, dict) else None
+                detail_id = row.get('detail_id') if isinstance(row, dict) else None
+                slug_name = row.get('slug_name') if isinstance(row, dict) else None
+                file_path = None
+                try:
+                    with seen_lock:
+                        seen_url_counts[url] = seen_url_counts.get(url, 0) + 1
+                        dup_count = seen_url_counts[url]
+                    resp = requests.get(url, timeout=30)
+                    resp.raise_for_status()
+                    parsed = os.path.splitext(url.split('?')[0])
+                    ext = parsed[1] if parsed[1] else '.jpg'
+                    slug_name = slug_name or f"detail-{detail_id or 'unknown'}"
+                    slug_name = re.sub(r'[^a-z0-9-]+', '-', slug_name.lower()).strip('-')
+                    if len(slug_name) > 150:
+                        slug_name = slug_name[:150].rstrip('-')
+                    idx_val = row.get('idx') if isinstance(row, dict) else None
+                    if idx_val is None:
+                        with idx_lock:
+                            idx_seq[detail_id] = idx_seq.get(detail_id, 0) + 1
+                            index_hinh = idx_seq[detail_id]
+                    else:
+                        index_hinh = int(idx_val) + 1
+                    if dup_count > 1:
+                        suffix_id = image_id or detail_id or dup_count
+                        filename = f"{slug_name}-{index_hinh}-nhadat.cafeland.vn-{suffix_id}{ext}"
+                    else:
+                        filename = f"{slug_name}-{index_hinh}-nhadat.cafeland.vn{ext}"
+                    file_path = os.path.join(output_dir, filename)
+                    _save_image_bytes(resp.content, file_path, max_width=1100)
+                    db_images.add_downloaded_image(
+                        image_url=url,
+                        file_path=file_path,
+                        status='SUCCESS',
+                        domain=domain_label or None,
+                        error=None
+                    )
+                    if detail_id:
+                        with sm_lock:
+                            if detail_id not in sm_done_detail_ids:
+                                sm_path = _create_small_clone(file_path, target_width=750)
+                                if sm_path:
+                                    sm_done_detail_ids.add(detail_id)
+                    if image_id:
+                        db_images.update_detail_image_status(image_id, "DOWNLOADED")
+                    time.sleep(fixed_delay)
+                    return "ok", url, None
+                except Exception as e:
+                    db_images.add_downloaded_image(
+                        image_url=url,
+                        file_path=file_path,
+                        status='FAILED',
+                        domain=domain_label or None,
+                        error=str(e)
+                    )
+                    if image_id:
+                        db_images.update_detail_image_status(image_id, "FAILED")
+                    time.sleep(fixed_delay)
+                    return "fail", url, str(e)
+
+            def _download_rows_df(batch_rows, total_count):
+                with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                    futures = [executor.submit(_worker_download_df, row) for row in batch_rows]
+                    for fut in as_completed(futures):
+                        status, url, err = fut.result()
+                        processed_done["count"] += 1
+                        if status == "ok":
+                            stats["ok"] += 1
+                            log_lines.append(f"OK: {url}")
+                        else:
+                            stats["fail"] += 1
+                            log_lines.append(f"FAIL: {url} - {err}")
+                        progress_value = int((processed_done["count"] / total_count) * 100)
+                        progress.progress(progress_value)
+                        progress_text.write(
+                            f"Da tai: {processed_done['count']}/{total_count} | "
+                            f"Thanh cong: {stats['ok']} | Loi: {stats['fail']}"
+                        )
+
+            if df_range_start == 0 and df_range_end == 0:
+                total = st.session_state.db_images.count_detail_images_in_data_full(status=status_filter)
+                if total == 0:
+                    st.info("Khong co ban ghi nao theo bo loc hien tai.")
+                else:
+                    st.success(f"Tim thay {total} anh. Bat dau tai ...")
+                    batch_size = 200
+                    processed = 0
+                    while processed < total:
+                        batch_rows = st.session_state.db_images.get_detail_images_paginated_in_data_full(
+                            limit=batch_size,
+                            offset=processed,
+                            status=status_filter,
+                        )
+                        if not batch_rows:
+                            break
+                        _download_rows_df(batch_rows, total)
+                        processed += len(batch_rows)
+                    progress.progress(100)
+                    progress_text.write(f"Hoan thanh: {total} anh | Thanh cong: {stats['ok']} | Loi: {stats['fail']}")
+                    st.success(f"Xong. Thanh cong: {stats['ok']}, Loi: {stats['fail']}")
+                    if log_lines:
+                        st.code("\\n".join(log_lines), language="text")
+            else:
+                rows = st.session_state.db_images.get_detail_images_by_data_full_id_range(
+                    df_range_start,
+                    df_range_end,
+                    status=status_filter,
+                )
+                if not rows:
+                    st.info("Khong co ban ghi nao trong khoang ID nay.")
+                else:
+                    total = len(rows)
+                    st.success(f"Tim thay {total} anh. Bat dau tai ...")
+                    _download_rows_df(rows, total)
+                    progress.progress(100)
+                    progress_text.write(f"Hoan thanh: {total} anh | Thanh cong: {stats['ok']} | Loi: {stats['fail']}")
+                    st.success(f"Xong. Thanh cong: {stats['ok']}, Loi: {stats['fail']}")
+                    if log_lines:
+                        st.code("\\n".join(log_lines), language="text")
 # ============================================
 # TAB 5: Auto Schedule
 # ============================================
@@ -5593,7 +5915,7 @@ with tab5:
 
     # Add task form
     st.subheader("Add Task")
-    template_dir = os.path.join(os.getcwd(), "template")
+    template_dir = os.path.join(os.getcwd(), "craw", "template")
     template_files = []
     try:
         if os.path.isdir(template_dir):
@@ -5647,8 +5969,17 @@ with tab5:
     with enable_cols[2]:
         enable_image = st.checkbox("Bat hinh anh", value=False, key="task_enable_image")
 
+    # Define cached functions inside tab scope or global if possible (using st.cache_data)
+    @st.cache_data(ttl=3600)
+    def _get_cities_cached():
+        return _fetch_cities(st.session_state.db_scheduler)
+
+    @st.cache_data(ttl=3600) 
+    def _get_wards_cached(city_id):
+        return _fetch_city_children(st.session_state.db_scheduler, city_id)
+
     st.markdown("Chon tinh/xa (luu kem vao collected_links)")
-    city_options_task = _fetch_cities(st.session_state.db_scheduler)
+    city_options_task = _get_cities_cached()
     city_choices_task = [(None, "(Tat ca)", None, None)] + [
         (c["old_city_id"], c["old_city_name"], c["new_city_id"], c["new_city_name"])
         for c in city_options_task
@@ -5664,7 +5995,7 @@ with tab5:
     task_new_city_id = selected_city_task[2] if isinstance(selected_city_task, (list, tuple)) and selected_city_task[0] else None
     task_new_city_name = selected_city_task[3] if isinstance(selected_city_task, (list, tuple)) and selected_city_task[0] else None
 
-    ward_options_task = _fetch_city_children(st.session_state.db_scheduler, task_city_id)
+    ward_options_task = _get_wards_cached(task_city_id)
     ward_choices_task = [(None, "(Tat ca)", None, None)] + [
         (c["old_city_id"], c["old_city_name"], c["new_city_id"], c["new_city_name"])
         for c in ward_options_task
@@ -5747,7 +6078,12 @@ with tab5:
             if enable_image:
                 image_dir = st.text_input("Image dir", value=os.path.join(os.getcwd(), "output", "images"))
                 images_per_minute = st.number_input("Images per minute", min_value=1, max_value=600, value=30)
-                image_domain_options = ["(Tat ca)"] + st.session_state.db_scheduler.get_detail_image_domains()
+                
+                @st.cache_data(ttl=300)
+                def _get_image_domains_cached():
+                     return st.session_state.db_scheduler.get_detail_image_domains()
+                
+                image_domain_options = ["(Tat ca)"] + _get_image_domains_cached()
                 image_domain_selected = st.selectbox("Image domain", image_domain_options, index=0)
                 image_domain = None if image_domain_selected == "(Tat ca)" else image_domain_selected
                 image_status_options = ["(Tat ca)", "PENDING", "FAILED", "DOWNLOADED"]
@@ -5845,7 +6181,12 @@ with tab5:
 
     st.markdown("---")
     st.subheader("Running tasks")
-    tasks_running = st.session_state.db_scheduler.list_scheduler_tasks(active_only=False)
+    
+    @st.cache_data(ttl=5)
+    def _get_tasks_cached():
+        return st.session_state.db_scheduler.list_scheduler_tasks(active_only=False)
+
+    tasks_running = _get_tasks_cached()
     running_only = [t for t in tasks_running if t.get('is_running')]
     if running_only:
         df_running = pd.DataFrame(running_only)
@@ -5854,7 +6195,7 @@ with tab5:
         st.info("No running tasks.")
 
     st.subheader("Tasks")
-    tasks = st.session_state.db_scheduler.list_scheduler_tasks(active_only=False)
+    tasks = _get_tasks_cached()
     if tasks:
         df_tasks = pd.DataFrame(tasks)
         st.dataframe(df_tasks, use_container_width=True, hide_index=True)
@@ -5929,7 +6270,11 @@ with tab5:
                 st.success("Cancel requested - Task đã được TẮT để không tự chạy lại. Bật lại bằng Toggle active.")
                 st.rerun()
 
-        logs = st.session_state.db_scheduler.get_scheduler_logs(task_id, limit=200)
+        @st.cache_data(ttl=5)
+        def _get_logs_cached(tid):
+            return st.session_state.db_scheduler.get_scheduler_logs(tid, limit=200)
+
+        logs = _get_logs_cached(task_id)
         if logs:
             df_logs = pd.DataFrame(logs)
             st.dataframe(
