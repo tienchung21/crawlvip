@@ -1,8 +1,12 @@
 import pymysql
 from pathlib import Path
 
-in_file = Path('/home/chungnt/crawlvip/uploaded_by_ward_full_no_full_pretty.txt')
-out_file = Path('/home/chungnt/crawlvip/uploaded_by_ward_full_no_full_updated.txt')
+ROOT = Path(__file__).resolve().parents[2]
+REPORT_DIR = ROOT / 'report_data'
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
+
+in_file = ROOT / 'uploaded_by_ward_full_no_full_pretty.txt'
+out_file = REPORT_DIR / 'uploaded_by_ward_full_no_full_updated.txt'
 
 ordered_wards = []
 stats = {}

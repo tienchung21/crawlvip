@@ -2,8 +2,12 @@ import csv
 from pathlib import Path
 import pymysql
 
+ROOT = Path(__file__).resolve().parents[2]
+REPORT_DIR = ROOT / 'report_data'
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
+
 # Load in the exact order the user requested
-order_file = Path('/home/chungnt/crawlvip/uploaded_listing_province_all_time.tsv')
+order_file = ROOT / 'uploaded_listing_province_all_time.tsv'
 
 provinces_dict = {}
 ordered_pids = []
@@ -51,8 +55,8 @@ finally:
     conn.close()
 
 # Xuất ra file trả kết quả
-out_file = '/home/chungnt/crawlvip/uploaded_listing_province_all_time_updated.tsv'
-with open(out_file, 'w', encoding='utf-8') as f:
+out_file = REPORT_DIR / 'uploaded_listing_province_all_time_updated.tsv'
+with out_file.open('w', encoding='utf-8') as f:
     f.write("province_id\tprovince_name\tdata_full_uploaded\tdata_no_full_uploaded\ttotal_uploaded\n")
     for pid in ordered_pids:
         s = stats[pid]

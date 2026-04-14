@@ -3,8 +3,12 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 import pymysql
 
+ROOT = Path(__file__).resolve().parents[2]
+REPORT_DIR = ROOT / 'report_data'
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
+
 # Load danh sách tỉnh thành chuẩn
-order_file = Path('/home/chungnt/crawlvip/uploaded_listing_province_2026-03-15_to_now.tsv')
+order_file = ROOT / 'uploaded_listing_province_2026-03-15_to_now.tsv'
 today = date.today()
 days_back = (today.weekday() + 1) % 7
 if days_back == 0 and today.weekday() == 6:
@@ -44,8 +48,8 @@ finally:
     conn.close()
 
 # Xuất kết quả đầy đủ
-out_file = 'uploaded_stats_weekly_total.tsv'
-with open(out_file, 'w') as f:
+out_file = REPORT_DIR / 'uploaded_stats_weekly_total.tsv'
+with out_file.open('w', encoding='utf-8') as f:
     f.write("province_id\tprovince_name\ttotal_uploaded\n")
     for pid, s in stats.items():
         f.write(f"{pid}\t{s['name']}\t{s['total']}\n")
