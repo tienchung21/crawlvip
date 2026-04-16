@@ -82,6 +82,8 @@ source venv/bin/activate
 python craw/auto/convert_guland_to_data_full.py --preview-limit 500 --insert
 ```
 
+
+
 ### 3.5 (Optional) Start upload services
 
 ```bash

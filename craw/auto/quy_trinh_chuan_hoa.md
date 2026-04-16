@@ -57,3 +57,5 @@ Dữ liệu từ `detail flat` sẽ được chuyển sang `data_clean` và đi 
 - luôn phải kèm domain trong điều kiện để ko thay đổi những domain đã tính toán trước đó rồi  
 ---
 *File created automatically based on user requirements.*
+
+nếu ở step đó tách ko được , bị null thì ko cho qua step đó 

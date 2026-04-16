@@ -20,6 +20,13 @@ DB_CONFIG = {
 
 
 DOMAIN_RULES: Dict[str, Dict[str, Any]] = {
+    "homedy.com": {
+        "domain_value": "homedy.com",
+        "land": {"58", "79"},
+        "house": {"56", "62", "63", "66"}
+    },
+
+
     "batdongsan": {
         "domain_value": "batdongsan.com.vn",
         "land": {"Đất", "Đất nền dự án"},
@@ -49,6 +56,19 @@ DOMAIN_RULES: Dict[str, Dict[str, Any]] = {
         "land": {"1040"},
         "house": {"1020"},
     },
+    "meeyland": {
+        "domain_value": "meeyland.com",
+        "land": {"dat_tho_cu", "dat_nen_du_an"},
+        "house": {
+            "nha_rieng",
+            "nha_mat_pho",
+            "biet_thu_lien_ke",
+            "kho_xuong_ben_bai",
+            "shophouse",
+            "trang_trai_khu_nghi_duong",
+        },
+    },
+
     "nhadat": {
         "domain_value": "nhadat",
         "land": {"8", "10", "11", "57"},
@@ -112,11 +132,10 @@ def fetch_batch(cur, domain_value: str, batch_size: int) -> Iterable[Dict[str, A
     cur.execute(
         """
         SELECT id, std_category, std_trans_type, price_vnd
-        FROM data_clean_v1
+        FROM data_clean_v1 FORCE INDEX (idx_dm_land_street)
         WHERE domain = %s
-          AND COALESCE(process_status, 0) >= 6
+          AND process_status = 6
           AND land_price_status IS NULL
-        ORDER BY id
         LIMIT %s
         """,
         (domain_value, batch_size),

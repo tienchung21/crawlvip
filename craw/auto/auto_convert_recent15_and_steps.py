@@ -65,6 +65,8 @@ DOMAIN_VALUE_MAP = {
     "mogi": "mogi",
     "nhatot": "nhatot",
     "nhadat": "nhadat",
+    "meeyland": "meeyland",
+    "homedy": "homedy.com",
 }
 
 
@@ -590,6 +592,18 @@ def run_once(days: int, batch_size: int, domains: List[str], skip_steps: bool, r
                     summary[d] = convert_nhatot_recent(conn, cutoff, batch_size)
                 elif d == "nhadat":
                     summary[d] = convert_nhadat_recent(conn, cutoff, batch_size)
+                elif d == "meeyland":
+                    import subprocess
+                    res = subprocess.run(["/home/chungnt/crawlvip/venv/bin/python", "/home/chungnt/crawlvip/craw/auto/run_meeyland_etl_linear.py"], capture_output=True, text=True)
+                    print(f"[MEEYLAND ETL Linear output]: \n{res.stdout}")
+                    if res.stderr: print(f"[MEEYLAND ETL Error]: \n{res.stderr}")
+                    summary[d] = {"batches": 1, "selected": 0, "inserted": 0, "updated": 0, "marked": 0}
+                elif d == "homedy":
+                    import subprocess
+                    res = subprocess.run(["/home/chungnt/crawlvip/venv/bin/python", "/home/chungnt/crawlvip/craw/auto/run_homedy_etl_linear.py"], capture_output=True, text=True)
+                    print(f"[HOMEDY ETL Linear output]: \n{res.stdout}")
+                    if res.stderr: print(f"[HOMEDY ETL Error]: \n{res.stderr}")
+                    summary[d] = {"batches": 1, "selected": 0, "inserted": 0, "updated": 0, "marked": 0}
             except pymysql.err.OperationalError as e:
                 conn.rollback()
                 msg = str(e)
@@ -649,8 +663,8 @@ def main():
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE_DEFAULT, help="Batch size (default 5000)")
     parser.add_argument(
         "--domains",
-        default="batdongsan,mogi,nhatot,nhadat",
-        help="Comma list: batdongsan,mogi,nhatot,nhadat (default all)",
+        default="batdongsan,mogi,nhatot,nhadat,meeyland,homedy",
+        help="Comma list: batdongsan,mogi,nhatot,nhadat,meeyland,homedy (default all)",
     )
     parser.add_argument(
         "--skip-steps",
@@ -675,11 +689,11 @@ def main():
     )
     args = parser.parse_args()
 
-    allowed = {"batdongsan", "mogi", "nhatot", "nhadat"}
+    allowed = {"batdongsan", "mogi", "nhatot", "nhadat", "meeyland", "homedy"}
     domains = [d.strip().lower() for d in args.domains.split(",") if d.strip()]
     domains = [d for d in domains if d in allowed]
     if not domains:
-        raise SystemExit("No valid domains selected. Use --domains batdongsan,mogi,nhatot,nhadat")
+        raise SystemExit("No valid domains selected. Use --domains batdongsan,mogi,nhatot,nhadat,meeyland,homedy")
 
     if not args.loop:
         run_once(
