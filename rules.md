@@ -14,7 +14,7 @@
 - When testing:
   - SQL -> /test/sql/
   - API -> /test/api/
-  - scraping ? /test/crawl/
+  - scraping -> /test/crawl/
 
 - If a new test file is needed:
   - reuse existing file if possible
