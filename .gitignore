@@ -13,6 +13,7 @@ tmp/
 downloads/
 downloaded_files/
 output/
+price_street_guland/
 
 # Browser cache / profiles
 craw/playwright_profile*/

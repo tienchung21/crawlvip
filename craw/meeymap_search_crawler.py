@@ -80,6 +80,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--start-page", type=int, default=1, help="Start from this page inside start-part")
     parser.add_argument("--max-parts", type=int, default=0, help="Optional cap on root parts for testing")
     parser.add_argument("--max-pages-per-part", type=int, default=0, help="Optional cap on pages per leaf part")
+    parser.add_argument(
+        "--dup-stop-threshold",
+        type=int,
+        default=120,
+        help="Stop current leaf-part when duplicate items (already in DB / same run) exceed this threshold; 0 disables",
+    )
     parser.add_argument("--category", type=str, default="", help="Optional category _id filter (e.g. cho_thue)")
     parser.add_argument("--zoom", type=str, default="", help="Optional zoom value to pass to API")
     parser.add_argument("--fake-coordinates", action="store_true", help="Send fakeCoordinates=true in payload")
@@ -290,6 +296,55 @@ def map_search_item(item: Dict[str, Any], domain: str) -> Dict[str, Any]:
     }
 
 
+def load_existing_keys(db: Database, domain: str, matins: List[str], urls: List[str]) -> Tuple[set, set]:
+    existing_matins: set = set()
+    existing_urls: set = set()
+    if not matins and not urls:
+        return existing_matins, existing_urls
+
+    conn = db.get_connection()
+    cur = conn.cursor()
+    try:
+        if matins:
+            uniq_matins = list(dict.fromkeys([m for m in matins if m]))
+            if uniq_matins:
+                placeholders = ",".join(["%s"] * len(uniq_matins))
+                cur.execute(
+                    f"""
+                    SELECT matin
+                    FROM scraped_details_flat
+                    WHERE domain = %s AND matin IN ({placeholders})
+                    """,
+                    [domain] + uniq_matins,
+                )
+                for row in cur.fetchall():
+                    val = row.get("matin") if isinstance(row, dict) else row[0]
+                    if val is not None:
+                        existing_matins.add(str(val))
+
+        if urls:
+            uniq_urls = list(dict.fromkeys([u for u in urls if u]))
+            if uniq_urls:
+                placeholders = ",".join(["%s"] * len(uniq_urls))
+                cur.execute(
+                    f"""
+                    SELECT url
+                    FROM scraped_details_flat
+                    WHERE domain = %s AND url IN ({placeholders})
+                    """,
+                    [domain] + uniq_urls,
+                )
+                for row in cur.fetchall():
+                    val = row.get("url") if isinstance(row, dict) else row[0]
+                    if val:
+                        existing_urls.add(val)
+    finally:
+        cur.close()
+        conn.close()
+
+    return existing_matins, existing_urls
+
+
 def extract_page_data(obj: Dict[str, Any]) -> Tuple[int, int, List[Dict[str, Any]]]:
     data = obj.get("data")
     if isinstance(data, list):
@@ -400,6 +455,9 @@ def crawl_leaf_part(
     total_seen_saved: Tuple[int, int],
 ) -> Tuple[int, int]:
     total_seen, total_saved = total_seen_saved
+    part_dup_hits = 0
+    run_seen_matins: set = set()
+    run_seen_urls: set = set()
 
     save_checkpoint(
         args,
@@ -510,13 +568,48 @@ def crawl_leaf_part(
             empty_page_streak = 0
 
         page_saved = 0
-        for idx, item in enumerate(page_items, 1):
-            total_seen += 1
+        page_dup_hits = 0
+        page_matins: List[str] = []
+        page_urls: List[str] = []
+        mapped_items: List[Dict[str, Any]] = []
+        for item in page_items:
             mapped = map_search_item(item, args.domain)
+            mapped_items.append(mapped)
+            matin = mapped.get("matin")
+            if matin:
+                page_matins.append(str(matin))
+            url = mapped.get("url")
+            if url:
+                page_urls.append(url)
+        existing_matins, existing_urls = load_existing_keys(db, args.domain, page_matins, page_urls)
+
+        for idx, mapped in enumerate(mapped_items, 1):
+            total_seen += 1
+            matin = str(mapped.get("matin")) if mapped.get("matin") else None
+            url = mapped.get("url")
+            is_dup = False
+            if matin and (matin in existing_matins or matin in run_seen_matins):
+                is_dup = True
+            elif url and (url in existing_urls or url in run_seen_urls):
+                is_dup = True
+
+            if is_dup:
+                page_dup_hits += 1
+                part_dup_hits += 1
+                log_both(
+                    args,
+                    f"  [DUP] part={part_label} page={page} idx={idx} code={mapped.get('matin')} url={url}",
+                )
+                continue
+
             if args.dry_run:
                 page_saved += 1
                 total_saved += 1
                 log_both(args, f"  [DRY] part={part_label} page={page} idx={idx} code={mapped['matin']} title={mapped['title']}")
+                if matin:
+                    run_seen_matins.add(matin)
+                if url:
+                    run_seen_urls.add(url)
                 continue
 
             row_id = db.add_scraped_detail_flat(
@@ -531,6 +624,10 @@ def crawl_leaf_part(
                 page_saved += 1
                 total_saved += 1
                 log_both(args, f"  [SAVE] part={part_label} page={page} idx={idx} code={mapped['matin']} row_id={row_id}")
+                if matin:
+                    run_seen_matins.add(matin)
+                if url:
+                    run_seen_urls.add(url)
             else:
                 log_both(args, f"  [SKIP] part={part_label} page={page} idx={idx} code={mapped['matin']} reason=save_failed")
 
@@ -547,8 +644,14 @@ def crawl_leaf_part(
                 "total_pages": total_pages,
                 "items": len(page_items),
                 "saved": page_saved,
+                "duplicate_items": page_dup_hits,
+                "duplicate_total_part": part_dup_hits,
                 "updated_at": utc_now(),
             },
+        )
+        log_both(
+            args,
+            f"[PAGE_SUMMARY] part={part_label} page={page} saved={page_saved} dup={page_dup_hits} dup_total_part={part_dup_hits}",
         )
         log_event(
             args,
@@ -562,11 +665,35 @@ def crawl_leaf_part(
                 "total_pages": total_pages,
                 "items": len(page_items),
                 "saved": page_saved,
+                "duplicate_items": page_dup_hits,
+                "duplicate_total_part": part_dup_hits,
                 "updated_at": utc_now(),
             },
         )
 
-    log_both(args, f"[DONE_PART] part={part_label} seen={total_seen} saved={total_saved}")
+        if args.dup_stop_threshold > 0 and part_dup_hits > args.dup_stop_threshold:
+            log_both(
+                args,
+                f"[STOP_DUP_THRESHOLD] part={part_label} page={page} dup_total_part={part_dup_hits} "
+                f"threshold={args.dup_stop_threshold}",
+            )
+            save_checkpoint(
+                args,
+                {
+                    "status": "stop_duplicate_threshold",
+                    "part": part_label,
+                    "page": page,
+                    "next_page": next_page,
+                    "bounds": bounds,
+                    "total_results": total_results,
+                    "total_pages": total_pages,
+                    "duplicate_total_part": part_dup_hits,
+                    "updated_at": utc_now(),
+                },
+            )
+            break
+
+    log_both(args, f"[DONE_PART] part={part_label} seen={total_seen} saved={total_saved} dup_total_part={part_dup_hits}")
     return total_seen, total_saved
 
 

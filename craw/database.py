@@ -436,27 +436,27 @@ class Database:
         except Exception:
             pass
         try:
-            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN city_code VARCHAR(10) NULL")
+            pass # cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN city_code VARCHAR(10) NULL")
         except Exception:
             pass
         try:
-            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN district_id INT NULL")
+            pass # cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN district_id INT NULL")
         except Exception:
             pass
         try:
-            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN ward_id INT NULL")
+            pass # cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN ward_id INT NULL")
         except Exception:
             pass
         try:
-            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN street_id INT NULL")
+            pass # cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN street_id INT NULL")
         except Exception:
             pass
         try:
-            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN lat VARCHAR(150) NULL")
+            pass # cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN lat VARCHAR(150) NULL")
         except Exception:
             pass
         try:
-            cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN lng VARCHAR(150) NULL")
+            pass # cursor.execute("ALTER TABLE scraped_details_flat MODIFY COLUMN lng VARCHAR(150) NULL")
         except Exception:
             pass
 

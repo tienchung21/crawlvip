@@ -5,6 +5,7 @@ import time
 import random
 import os
 import sys
+from typing import Any
 
 # Disable Env Proxy (Crucial for bypassing Cloudflare on this Server)
 os.environ.pop("http_proxy", None)
@@ -86,6 +87,90 @@ def _normalize_trade_type(raw_trade_type, url: str | None = None) -> str | None:
             return "s"
 
     return None
+
+
+def _extract_balanced_json_object(text: str) -> str | None:
+    """
+    Try to extract the first balanced JSON object from a noisy/truncated text.
+    """
+    if not text:
+        return None
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_str = False
+    escaped = False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if in_str:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == "\"":
+                in_str = False
+            continue
+        if ch == "\"":
+            in_str = True
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : i + 1]
+    return None
+
+
+def _safe_parse_json_response(resp: Any) -> dict:
+    """
+    Parse JSON more defensively for occasional malformed/truncated bodies.
+    """
+    # Fast path
+    try:
+        obj = resp.json()
+        if isinstance(obj, dict):
+            return obj
+    except Exception:
+        pass
+
+    text = ""
+    try:
+        text = resp.text or ""
+    except Exception:
+        text = ""
+    if not text:
+        try:
+            raw = resp.content or b""
+            text = raw.decode("utf-8", errors="ignore")
+        except Exception:
+            text = ""
+    if text:
+        # Remove NUL which can break json parser
+        text = text.replace("\x00", "")
+        # Try normal json decode first
+        try:
+            obj = json.loads(text)
+            if isinstance(obj, dict):
+                return obj
+        except Exception:
+            pass
+        # Try non-strict parser for control chars
+        try:
+            obj = json.loads(text, strict=False)
+            if isinstance(obj, dict):
+                return obj
+        except Exception:
+            pass
+        # Last chance: extract balanced object from noisy payload
+        extracted = _extract_balanced_json_object(text)
+        if extracted:
+            obj = json.loads(extracted, strict=False)
+            if isinstance(obj, dict):
+                return obj
+
+    raise ValueError("invalid_json_payload")
 
 def main():
     print("Starting BDS Detail Crawler (API)...")
@@ -262,7 +347,7 @@ def main():
                         i += 1
                         continue
                     try:
-                        data = resp.json()
+                        data = _safe_parse_json_response(resp)
                         # Save to DB
                         save_to_db(cur, conn, data, c_id, url, batch_date, loaihinh, trade_type, crawl_bo_sung)
                         # Reset counter on success
@@ -270,7 +355,30 @@ def main():
                             print(f"  -> Success. Resetting 500 counter (was {consecutive_500}).")
                         consecutive_500 = 0
                     except Exception as e:
-                        print(f"  JSON Error: {e} | Content: {resp.text[:100]}")
+                        # Retry once using HTTP/1.1 when body is malformed/truncated.
+                        print(f"  JSON Error: {e} | First Content: {(resp.text or '')[:140]}")
+                        try:
+                            resp_retry = requests.get(
+                                target_url,
+                                headers=HEADERS,
+                                impersonate="chrome124",
+                                timeout=30,
+                                http_version="v1",
+                            )
+                            if resp_retry.status_code == 200:
+                                data_retry = _safe_parse_json_response(resp_retry)
+                                save_to_db(cur, conn, data_retry, c_id, url, batch_date, loaihinh, trade_type, crawl_bo_sung)
+                                if consecutive_500 > 0:
+                                    print(f"  -> Success after JSON retry. Resetting 500 counter (was {consecutive_500}).")
+                                consecutive_500 = 0
+                            else:
+                                print(f"  JSON Retry failed status={resp_retry.status_code}. Marking net_error.")
+                                cur.execute("UPDATE collected_links SET status = 'net_error' WHERE id = %s", (c_id,))
+                                conn.commit()
+                        except Exception as e2:
+                            print(f"  JSON Retry Error: {e2}. Marking net_error.")
+                            cur.execute("UPDATE collected_links SET status = 'net_error' WHERE id = %s", (c_id,))
+                            conn.commit()
                 else:
                     print(f"  Status {resp.status_code}. Content Preview: {resp.text[:200]}")
                     print("  Skipping.")

@@ -116,6 +116,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-pages-per-city", type=int, default=0, help="Optional cap for testing")
     parser.add_argument("--start-page", type=int, default=1, help="Start from this page index")
     parser.add_argument("--max-items", type=int, default=0, help="Optional total item cap for testing")
+    parser.add_argument(
+        "--dup-stop-threshold",
+        type=int,
+        default=0,
+        help="Stop current city when consecutive duplicated link_id reaches this threshold (0=off)",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Fetch and print stats without writing DB")
     return parser.parse_args()
 
@@ -379,7 +385,11 @@ def main() -> int:
     for city in iter_cities(args.city_id, args.skip_city_id):
         city_id = city["Id"]
         city_name = city["Name"]
+        city_dup_consecutive = 0
+        stop_current_city = False
         for sell_type in sell_types:
+            if stop_current_city:
+                break
             trade_type = SELL_TYPE_TO_TRADE_TYPE.get(sell_type, str(sell_type))
             log(f"[START] city_id={city_id} city={city_name} sell_type={sell_type} trade_type={trade_type}")
             first_page = fetch_page(
@@ -440,6 +450,32 @@ def main() -> int:
                     total_seen += 1
                     product_id = product.get("Id")
                     product_name = str(product.get("Name") or "").strip().replace("\n", " ")[:90]
+
+                    if (
+                        not args.dry_run
+                        and args.dup_stop_threshold > 0
+                        and product_id not in (None, "")
+                    ):
+                        try:
+                            existing_id = get_existing_detail_id(db, int(product_id))
+                        except Exception:
+                            existing_id = None
+                        if existing_id:
+                            city_dup_consecutive += 1
+                            log(
+                                f"    [DUP] city_id={city_id} sell_type={sell_type} "
+                                f"product_id={product_id} consecutive={city_dup_consecutive}/{args.dup_stop_threshold}"
+                            )
+                            if city_dup_consecutive >= args.dup_stop_threshold:
+                                stop_current_city = True
+                                log(
+                                    f"[STOP_CITY_DUP] city_id={city_id} city={city_name} "
+                                    f"sell_type={sell_type} threshold={args.dup_stop_threshold}"
+                                )
+                                break
+                            continue
+                        city_dup_consecutive = 0
+
                     if args.dry_run:
                         log(f"    [DRY] product_id={product_id} title={product_name}")
                         continue
@@ -454,7 +490,13 @@ def main() -> int:
                     log(f"  [SLEEP] {args.delay}s")
                     time.sleep(args.delay)
 
+                if stop_current_city:
+                    break
+
             log(f"[DONE_TYPE] city_id={city_id} city={city_name} sell_type={sell_type}")
+
+        if stop_current_city:
+            log(f"[DONE_CITY_EARLY] city_id={city_id} city={city_name} reason=dup_threshold")
 
     log(f"DONE seen={total_seen} saved={total_saved} dry_run={args.dry_run}")
     return 0

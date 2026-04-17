@@ -472,6 +472,42 @@ def reset_processing_status(args: argparse.Namespace, claim_status: str, batch_s
             conn.close()
 
 
+def reset_claimed_ids(ids: List[int], claim_status: str) -> int:
+    if not ids:
+        return 0
+    db = Database()
+    conn = db.get_connection()
+    cur = conn.cursor()
+    try:
+        placeholders = ",".join(["%s"] * len(ids))
+        cur.execute(
+            f"UPDATE scraped_details_flat SET status = NULL WHERE id IN ({placeholders}) AND status = %s",
+            ids + [claim_status],
+        )
+        conn.commit()
+        return int(cur.rowcount or 0)
+    finally:
+        cur.close()
+        conn.close()
+
+
+def drain_queue_ids(task_queue: Queue) -> List[int]:
+    drained_ids: List[int] = []
+    while True:
+        try:
+            item = task_queue.get_nowait()
+        except Empty:
+            break
+        try:
+            if isinstance(item, dict):
+                sdf_id = item.get("id")
+                if sdf_id is not None:
+                    drained_ids.append(int(sdf_id))
+        finally:
+            task_queue.task_done()
+    return drained_ids
+
+
 def worker_loop(
     worker_id: int,
     args: argparse.Namespace,
@@ -659,7 +695,16 @@ def main() -> int:
                 if stop_event.is_set():
                     break
 
-        task_queue.join()
+        if stop_event.is_set():
+            drained_ids = drain_queue_ids(task_queue)
+            if drained_ids:
+                reset_n = reset_claimed_ids(drained_ids, claim_status)
+                log_both(
+                    args,
+                    f"[RESET_UNPROCESSED] drained={len(drained_ids)} reset_to_null={reset_n} status={claim_status}",
+                )
+        else:
+            task_queue.join()
     finally:
         stop_event.set()
         for _ in workers:
