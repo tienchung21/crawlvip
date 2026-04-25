@@ -1,0 +1,47 @@
+{
+  "base": "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-toan-quoc",
+  "tested_pages": [
+    40,
+    41,
+    42
+  ],
+  "results": [
+    {
+      "page": 40,
+      "url": "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-toan-quoc?trang=40",
+      "status_code": 200,
+      "detail_link_count": 15,
+      "no_data_marker": true,
+      "sample_links": [
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-03/cho-thue-mat-bang-kinh-doanh-rong-175m2-mat-tien-duong-pham-ngu-lao-quan-go-vap-voi-gia-chi-35-trieu-pst3346.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-an-dong/cho-thue-mat-bang-kinh-doanh-118m2-tren-duong-truong-chinh-tp-hue-voi-muc-gia-cuc-uu-dai-chi-32-trieu-thang-pst2173.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-truong-an/cho-thue-khach-san-hoat-dong-tot-4-tang-dien-tich-100m2-tai-duong-10-quan-truong-an-gia-chi-30-trieu-thang-pst2215.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-mo-lao/cho-thue-toa-nha-130m&#178;-tai-phuong-mo-lao-ha-dong-voi-mat-tien-rong-vi-tri-vang-kinh-doanh-pst2344.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-15/cho-thue-15-san-pickleball-dang-cap-3000m2-tai-duong-pham-van-bach-quan-tan-binh-ho-chi-minh-duong-di-lai-thuan-tien-pst2373.html"
+      ]
+    },
+    {
+      "page": 41,
+      "url": "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-toan-quoc?trang=41",
+      "status_code": 200,
+      "detail_link_count": 15,
+      "no_data_marker": true,
+      "sample_links": [
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-tan-quy/cho-thue-mat-bang-rong-184m2-tai-duong-so-43-tan-quy-quan-7-voi-gia-chi-28-trieu-thang-pst2007.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-xa-lac-luong/cho-thue-dat-2000m2-tai-duong-lac-luong-yen-thuy-hoa-binh-du-an-thuan-tien-cho-homestay-va-nghi-duong-pst2009.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-khuong-trung/cho-thue-mat-bang-130m&#178;-tai-toa-nha-mat-pho-vu-tong-phan-thanh-xuan-voi-gia-chi-19-5-trieu-thang-pst2034.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-khuong-trung/cho-thue-bat-dong-san-130m2-tai-duong-vu-tong-phan-thanh-xuan-gia-19-5-trieu-tien-ich-hoan-hao-pst2035.html",
+        "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-phuong-dai-kim/cho-thue-mat-bang-van-phong-35m2-tai-kdt-the-manor-nguyen-xien-hoang-mai-tien-ich-day-du-chi-8-5-trieu-thang-pst2040.html"
+      ]
+    },
+    {
+      "page": 42,
+      "url": "https://thuviennhadat.vn/cho-thue-bat-dong-san-khac-toan-quoc?trang=42",
+      "status_code": 200,
+      "detail_link_count": 0,
+      "no_data_marker": false,
+      "sample_links": []
+    }
+  ],
+  "stop_recommendation": "STOP at page 42"
+}

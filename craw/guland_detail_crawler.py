@@ -243,12 +243,91 @@ def normalize_images(v: Any) -> List[str]:
     return _unique_keep_order(out)
 
 
+def claim_pending_links_shard(
+    db: Database,
+    batch_limit: int,
+    worker_index: int,
+    worker_count: int,
+) -> List[Dict[str, Any]]:
+    claim_status = f"IN_PROGRESS_GULAND_{os.getpid()}_{worker_index}"
+    conn = db.get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT id
+            FROM collected_links
+            WHERE domain = %s
+              AND status = 'PENDING'
+              AND MOD(id, %s) = %s
+            ORDER BY id DESC
+            LIMIT %s
+            """,
+            (DOMAIN, worker_count, worker_index, batch_limit),
+        )
+        id_rows = cursor.fetchall()
+        ids: List[int] = []
+        for row in id_rows:
+            ids.append(int(row[0] if isinstance(row, tuple) else row.get("id")))
+        if not ids:
+            return []
+
+        placeholders = ",".join(["%s"] * len(ids))
+        cursor.execute(
+            f"""
+            UPDATE collected_links
+            SET status = %s
+            WHERE status = 'PENDING'
+              AND id IN ({placeholders})
+            """,
+            [claim_status] + ids,
+        )
+        claimed = cursor.rowcount
+        conn.commit()
+        if claimed <= 0:
+            return []
+
+        cursor.execute(
+            f"""
+            SELECT id, url, status, domain, loaihinh, trade_type, created_at
+            FROM collected_links
+            WHERE status = %s
+              AND id IN ({placeholders})
+            ORDER BY id DESC
+            """,
+            [claim_status] + ids,
+        )
+        rows = cursor.fetchall()
+        result: List[Dict[str, Any]] = []
+        for row in rows:
+            if isinstance(row, tuple):
+                result.append(
+                    {
+                        "id": row[0],
+                        "url": row[1],
+                        "status": row[2],
+                        "domain": row[3],
+                        "loaihinh": row[4],
+                        "trade_type": row[5],
+                        "created_at": row[6],
+                    }
+                )
+            else:
+                result.append(row)
+        return result
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def run_full(
     template_path: str,
     batch_limit: int,
     delay_min: float,
     delay_max: float,
     max_consecutive_block: int,
+    worker_index: int = 0,
+    worker_count: int = 1,
 ) -> None:
     if not os.path.isfile(template_path):
         raise SystemExit(f"Template not found: {template_path}")
@@ -264,8 +343,19 @@ def run_full(
 
     while True:
         cycle += 1
-        rows = db.get_pending_links(limit=batch_limit, domain=DOMAIN)
-        print(f"[BATCH] cycle={cycle} pending_fetch={len(rows)}")
+        if worker_count > 1:
+            rows = claim_pending_links_shard(
+                db=db,
+                batch_limit=batch_limit,
+                worker_index=worker_index,
+                worker_count=worker_count,
+            )
+        else:
+            rows = db.get_pending_links(limit=batch_limit, domain=DOMAIN)
+        print(
+            f"[BATCH] worker={worker_index}/{worker_count} "
+            f"cycle={cycle} pending_fetch={len(rows)}"
+        )
         if not rows:
             break
 
@@ -363,6 +453,8 @@ def main() -> int:
     parser.add_argument("--batch-limit", type=int, default=100, help="Batch size")
     parser.add_argument("--delay-min-seconds", type=float, default=0.5)
     parser.add_argument("--delay-max-seconds", type=float, default=1.5)
+    parser.add_argument("--worker-index", type=int, default=0, help="0-based worker shard index")
+    parser.add_argument("--worker-count", type=int, default=1, help="Total worker shards")
     parser.add_argument(
         "--max-consecutive-block",
         type=int,
@@ -381,6 +473,8 @@ def main() -> int:
             delay_min=args.delay_min_seconds,
             delay_max=args.delay_max_seconds,
             max_consecutive_block=args.max_consecutive_block,
+            worker_index=args.worker_index,
+            worker_count=args.worker_count,
         )
         return 0
     parser.print_help()

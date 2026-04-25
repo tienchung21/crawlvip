@@ -1100,7 +1100,17 @@ class Database:
                 is_full
             ))
             conn.commit()
-            return cursor.lastrowid
+            # With ON DUPLICATE KEY UPDATE, lastrowid can be 0 even when update succeeds.
+            # Return existing row id by URL so callers can treat this as success.
+            if cursor.lastrowid:
+                return cursor.lastrowid
+            cursor.execute("SELECT id FROM scraped_details_flat WHERE url=%s LIMIT 1", (url,))
+            row = cursor.fetchone()
+            if isinstance(row, dict):
+                return row.get("id")
+            if isinstance(row, (list, tuple)) and row:
+                return row[0]
+            return None
         except Exception as e:
             print(f"Error adding scraped_detail_flat {url[:80]}: {e}")
             return None
@@ -1687,7 +1697,7 @@ class Database:
             cursor.execute('''
                 UPDATE collected_links
                 SET status = 'PENDING'
-                WHERE status = 'IN_PROGRESS'
+                WHERE status LIKE 'IN_PROGRESS%%'
                   AND updated_at < DATE_SUB(NOW(), INTERVAL %s MINUTE)
             ''', (timeout_minutes,))
             affected = cursor.rowcount
@@ -2256,7 +2266,10 @@ class Database:
                 conn.commit()
             except Exception:
                 conn.rollback()
-                # Fallback for older MySQL versions (no SKIP LOCKED)
+                # Fallback for older MySQL versions (no SKIP LOCKED).
+                # Important: still claim rows with a process-specific status,
+                # otherwise parallel crawlers will all read the same PENDING batch.
+                claim_status = f"IN_PROGRESS_{os.getpid()}"
                 if domain or loaihinh:
                     cursor.execute('''
                         SELECT id, url, status, domain, loaihinh, trade_type, created_at
@@ -2276,6 +2289,31 @@ class Database:
                         LIMIT %s
                     ''', (trade_type, trade_type, limit))
                 rows = cursor.fetchall()
+                ids = []
+                for row in rows:
+                    if isinstance(row, tuple):
+                        ids.append(row[0])
+                    else:
+                        ids.append(row.get('id'))
+                if ids:
+                    placeholders = ','.join(['%s'] * len(ids))
+                    cursor.execute(
+                        f"UPDATE collected_links SET status=%s WHERE status='PENDING' AND id IN ({placeholders})",
+                        [claim_status] + ids
+                    )
+                    conn.commit()
+                    cursor.execute(
+                        f'''
+                        SELECT id, url, status, domain, loaihinh, trade_type, created_at
+                        FROM collected_links
+                        WHERE status = %s AND id IN ({placeholders})
+                        ORDER BY id DESC
+                        ''',
+                        [claim_status] + ids
+                    )
+                    rows = cursor.fetchall()
+                else:
+                    conn.commit()
             result = []
             for row in rows:
                 if isinstance(row, tuple):

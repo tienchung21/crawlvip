@@ -17,13 +17,22 @@ REFERER="${REFERER:-https://meeyland.com/}"
 X_TENANT="${X_TENANT:-bWVleWxhbmQ=}"
 LIMIT="${LIMIT:-200}"
 DELAY="${DELAY:-3}"
-SPLIT_THRESHOLD="${SPLIT_THRESHOLD:-5000}"
-DUP_STOP_THRESHOLD="${DUP_STOP_THRESHOLD:-700}"
+SPLIT_THRESHOLD="${SPLIT_THRESHOLD:-20000}"
+DUP_STOP_THRESHOLD="${DUP_STOP_THRESHOLD:-300}"
+CITY_SPLIT_THRESHOLD="${CITY_SPLIT_THRESHOLD:-5000}"
+DISTRICT_SPLIT_THRESHOLD="${DISTRICT_SPLIT_THRESHOLD:-5000}"
+AUTO_SPLIT_THRESHOLD="${AUTO_SPLIT_THRESHOLD:-20000}"
 MAX_RETRIES="${MAX_RETRIES:-4}"
 START_PART="${START_PART:-1}"
+LOCATION_START_PART="${LOCATION_START_PART:-L1}"
 SALE_CATEGORY="${SALE_CATEGORY:-5deb722db4367252525c1d00}"
 RENT_CATEGORY="${RENT_CATEGORY:-5deb722db4367252525c1d11}"
 FAKE_COORDINATES="${FAKE_COORDINATES:-1}" # 1=true,0=false
+USE_LOCATION_TABLE="${USE_LOCATION_TABLE:-1}" # 1=true,0=false
+LOCATION_TABLE="${LOCATION_TABLE:-location_meeland}"
+LOCATION_LEVEL="${LOCATION_LEVEL:-district}" # district|ward
+LOCATION_CITY_MEEY_ID="${LOCATION_CITY_MEEY_ID:-}"
+LOCATION_DISTRICT_MEEY_ID="${LOCATION_DISTRICT_MEEY_ID:-}"
 
 # Detail config (can override by env)
 DETAIL_URL_TEMPLATE="${DETAIL_URL_TEMPLATE:-https://api5.meeyland.com/v1/articles/{code}}"
@@ -50,6 +59,10 @@ run_step() {
 }
 
 build_common_search_args() {
+  local start_part_value="$START_PART"
+  if [[ "${USE_LOCATION_TABLE}" == "1" ]]; then
+    start_part_value="$LOCATION_START_PART"
+  fi
   local arr=(
     --api-url "$API_URL"
     --domain "$DOMAIN"
@@ -59,9 +72,12 @@ build_common_search_args() {
     --limit "$LIMIT"
     --delay "$DELAY"
     --split-threshold "$SPLIT_THRESHOLD"
+    --city-split-threshold "$CITY_SPLIT_THRESHOLD"
+    --district-split-threshold "$DISTRICT_SPLIT_THRESHOLD"
+    --auto-split-threshold "$AUTO_SPLIT_THRESHOLD"
     --dup-stop-threshold "$DUP_STOP_THRESHOLD"
     --max-retries "$MAX_RETRIES"
-    --start-part "$START_PART"
+    --start-part "$start_part_value"
     --resume
   )
   if [[ "${FAKE_COORDINATES}" == "1" ]]; then
@@ -73,11 +89,20 @@ build_common_search_args() {
   if [[ -n "$EXPIRE_TOKEN" ]]; then
     arr+=(--expire-token "$EXPIRE_TOKEN")
   fi
+  if [[ "${USE_LOCATION_TABLE}" == "1" ]]; then
+    arr+=(--use-location-table --location-table "$LOCATION_TABLE" --location-level "$LOCATION_LEVEL")
+    if [[ -n "$LOCATION_CITY_MEEY_ID" ]]; then
+      arr+=(--location-city-meey-id "$LOCATION_CITY_MEEY_ID")
+    fi
+    if [[ -n "$LOCATION_DISTRICT_MEEY_ID" ]]; then
+      arr+=(--location-district-meey-id "$LOCATION_DISTRICT_MEEY_ID")
+    fi
+  fi
   printf '%s\0' "${arr[@]}"
 }
 
 log "=== MEEYLAND DAILY 13H PIPELINE START (run=$RUN_TS) ==="
-log "[CONFIG] domain=$DOMAIN api=$API_URL limit=$LIMIT delay=$DELAY split_threshold=$SPLIT_THRESHOLD dup_stop_threshold=$DUP_STOP_THRESHOLD"
+log "[CONFIG] domain=$DOMAIN api=$API_URL limit=$LIMIT delay=$DELAY split_threshold=$SPLIT_THRESHOLD city_split_threshold=$CITY_SPLIT_THRESHOLD district_split_threshold=$DISTRICT_SPLIT_THRESHOLD auto_split_threshold=$AUTO_SPLIT_THRESHOLD dup_stop_threshold=$DUP_STOP_THRESHOLD use_location_table=$USE_LOCATION_TABLE location_table=$LOCATION_TABLE location_level=$LOCATION_LEVEL"
 
 mapfile -d '' COMMON_SEARCH_ARGS < <(build_common_search_args)
 

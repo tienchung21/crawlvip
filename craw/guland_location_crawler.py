@@ -149,7 +149,9 @@ def parse_districts(html_text: str):
 
 
 def fetch_districts(province_id: int):
-    params = {"id": province_id, "is_bds": 1}
+    # Guland expects zero-padded ids for single-digit provinces (e.g. "01", "02").
+    province_id_param = f"{province_id:02d}" if province_id < 10 else str(province_id)
+    params = {"id": province_id_param, "is_bds": 1}
     resp = requests.get(API_URL, params=params, headers=HEADERS, impersonate="chrome124", timeout=40)
     if resp.status_code != 200:
         raise RuntimeError(f"HTTP {resp.status_code} for province_id={province_id}")

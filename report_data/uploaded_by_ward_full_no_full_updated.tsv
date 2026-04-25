@@ -1,0 +1,3322 @@
+province_id	province_name	ward_id	ward_name	data_full_uploaded	data_no_full_uploaded	total_uploaded
+1	TP. Hà Nội	903	An Khánh	10	622	632
+1	TP. Hà Nội	759	Ba Đình	149	972	1121
+1	TP. Hà Nội	807	Ba Vì	1	10	11
+1	TP. Hà Nội	709	Bạch Mai	275	1290	1565
+1	TP. Hà Nội	829	Bất Bạt	3	36	39
+1	TP. Hà Nội	20363	Bát Tràng	156	771	927
+1	TP. Hà Nội	1027	Bình Minh	6	163	169
+1	TP. Hà Nội	647	Bồ Đề	236	1365	1601
+1	TP. Hà Nội	680	Cầu Giấy	327	2210	2537
+1	TP. Hà Nội	1047	Chương Dương	1	29	30
+1	TP. Hà Nội	838	Chương Mỹ	4	209	213
+1	TP. Hà Nội	20374	Chuyên Mỹ	0	4	4
+1	TP. Hà Nội	812	Cổ Đô	0	0	0
+1	TP. Hà Nội	769	Cửa Nam	51	261	312
+1	TP. Hà Nội	1031	Dân Hòa	0	12	12
+1	TP. Hà Nội	905	Dương Hòa	0	11	11
+1	TP. Hà Nội	888	Dương Nội	84	1016	1100
+1	TP. Hà Nội	20401	Đa Phúc	0	6	6
+1	TP. Hà Nội	514	Đại Mỗ	111	884	995
+1	TP. Hà Nội	554	Đại Thanh	33	349	382
+1	TP. Hà Nội	20037	Đại Xuyên	0	10	10
+1	TP. Hà Nội	870	Đan Phượng	1	24	25
+1	TP. Hà Nội	665	Định Công	344	1755	2099
+1	TP. Hà Nội	990	Đoài Phương	8	226	234
+1	TP. Hà Nội	624	Đông Anh	14	615	629
+1	TP. Hà Nội	742	Đống Đa	276	1120	1396
+1	TP. Hà Nội	515	Đông Ngạc	46	686	732
+1	TP. Hà Nội	20357	Gia Lâm	15	68	83
+1	TP. Hà Nội	752	Giảng Võ	87	425	512
+1	TP. Hà Nội	1012	Hạ Bằng	29	191	220
+1	TP. Hà Nội	897	Hà Đông	217	1304	1521
+1	TP. Hà Nội	714	Hai Bà Trưng	39	139	178
+1	TP. Hà Nội	946	Hát Môn	0	13	13
+1	TP. Hà Nội	1022	Hòa Lạc	3	75	78
+1	TP. Hà Nội	839	Hòa Phú	0	3	3
+1	TP. Hà Nội	1084	Hòa Xá	0	3	3
+1	TP. Hà Nội	919	Hoài Đức	20	659	679
+1	TP. Hà Nội	768	Hoàn Kiếm	41	100	141
+1	TP. Hà Nội	557	Hoàng Liệt	61	294	355
+1	TP. Hà Nội	670	Hoàng Mai	111	1164	1275
+1	TP. Hà Nội	763	Hồng Hà	165	1004	1169
+1	TP. Hà Nội	931	Hồng Sơn	1	17	18
+1	TP. Hà Nội	1053	Hồng Vân	0	39	39
+1	TP. Hà Nội	969	Hưng Đạo	0	5	5
+1	TP. Hà Nội	935	Hương Sơn	0	5	5
+1	TP. Hà Nội	697	Khương Đình	192	1116	1308
+1	TP. Hà Nội	890	Kiến Hưng	4	369	373
+1	TP. Hà Nội	968	Kiều Phú	0	4	4
+1	TP. Hà Nội	580	Kim Anh	1	95	96
+1	TP. Hà Nội	731	Kim Liên	54	321	375
+1	TP. Hà Nội	733	Láng	30	195	225
+1	TP. Hà Nội	878	Liên Minh	1	30	31
+1	TP. Hà Nội	674	Lĩnh Nam	2	59	61
+1	TP. Hà Nội	658	Long Biên	15	126	141
+1	TP. Hà Nội	788	Mê Linh	0	213	213
+1	TP. Hà Nội	816	Minh Châu	0	2	2
+1	TP. Hà Nội	928	Mỹ Đức	0	31	31
+1	TP. Hà Nội	559	Nam Phù	5	94	99
+1	TP. Hà Nội	683	Nghĩa Đô	120	551	671
+1	TP. Hà Nội	762	Ngọc Hà	59	304	363
+1	TP. Hà Nội	545	Ngọc Hồi	1	91	92
+1	TP. Hà Nội	575	Nội Bài	1	103	104
+1	TP. Hà Nội	727	Ô Chợ Dừa	74	256	330
+1	TP. Hà Nội	872	Ô Diên	4	18	22
+1	TP. Hà Nội	979	Phú Cát	11	252	263
+1	TP. Hà Nội	521	Phú Diễn	80	673	753
+1	TP. Hà Nội	20354	Phù Đổng	3	48	51
+1	TP. Hà Nội	895	Phú Lương	7	20	27
+1	TP. Hà Nội	855	Phú Nghĩa	0	40	40
+1	TP. Hà Nội	527	Phú Thượng	2	26	28
+1	TP. Hà Nội	20370	Phú Xuyên	0	12	12
+1	TP. Hà Nội	20397	Phúc Lộc	0	9	9
+1	TP. Hà Nội	657	Phúc Lợi	81	674	755
+1	TP. Hà Nội	939	Phúc Sơn	0	20	20
+1	TP. Hà Nội	623	Phúc Thịnh	4	196	200
+1	TP. Hà Nội	20396	Phúc Thọ	2	23	25
+1	TP. Hà Nội	20387	Phượng Dực	0	14	14
+1	TP. Hà Nội	698	Phương Liệt	32	185	217
+1	TP. Hà Nội	857	Quảng Bị	0	15	15
+1	TP. Hà Nội	793	Quang Minh	2	84	86
+1	TP. Hà Nội	809	Quảng Oai	0	9	9
+1	TP. Hà Nội	20399	Quốc Oai	1	28	29
+1	TP. Hà Nội	20400	Sóc Sơn	0	68	68
+1	TP. Hà Nội	916	Sơn Đồng	3	209	212
+1	TP. Hà Nội	992	Sơn Tây	1	28	29
+1	TP. Hà Nội	806	Suối Hai	0	37	37
+1	TP. Hà Nội	1039	Tam Hưng	0	22	22
+1	TP. Hà Nội	688	Tây Hồ	72	567	639
+1	TP. Hà Nội	524	Tây Mỗ	7	549	556
+1	TP. Hà Nội	1018	Tây Phương	0	8	8
+1	TP. Hà Nội	516	Tây Tựu	4	51	55
+1	TP. Hà Nội	20402	Thạch Thất	0	16	16
+1	TP. Hà Nội	704	Thanh Liệt	9	46	55
+1	TP. Hà Nội	1045	Thanh Oai	0	51	51
+1	TP. Hà Nội	21540	Thanh Trì	0	0	0
+1	TP. Hà Nội	703	Thanh Xuân	61	662	723
+1	TP. Hà Nội	644	Thiên Lộc	0	55	55
+1	TP. Hà Nội	637	Thư Lâm	0	30	30
+1	TP. Hà Nội	20359	Thuận An	11	11	22
+1	TP. Hà Nội	787	Thượng Cát	0	0	0
+1	TP. Hà Nội	1063	Thượng Phúc	1	7	8
+1	TP. Hà Nội	20403	Thường Tín	0	44	44
+1	TP. Hà Nội	799	Tiến Thắng	1	9	10
+1	TP. Hà Nội	865	Trần Phú	4	54	58
+1	TP. Hà Nội	585	Trung Giã	3	41	44
+1	TP. Hà Nội	512	Từ Liêm	11	477	488
+1	TP. Hà Nội	1001	Tùng Thiện	1	42	43
+1	TP. Hà Nội	672	Tương Mai	4	93	97
+1	TP. Hà Nội	1076	Ứng Hòa	0	8	8
+1	TP. Hà Nội	1089	Ứng Thiên	0	10	10
+1	TP. Hà Nội	1097	Vân Đình	0	7	7
+1	TP. Hà Nội	729	Văn Miếu - Quốc Tử Giám	51	213	264
+1	TP. Hà Nội	835	Vật Lại	0	4	4
+1	TP. Hà Nội	21541	Việt Hưng	0	0	0
+1	TP. Hà Nội	21526	Vĩnh Hưng	0	0	0
+1	TP. Hà Nội	629	Vĩnh Thanh	1	97	98
+1	TP. Hà Nội	726	Vĩnh Tuy	30	312	342
+1	TP. Hà Nội	20029	Xuân Đỉnh	2	58	60
+1	TP. Hà Nội	869	Xuân Mai	3	120	123
+1	TP. Hà Nội	532	Xuân Phương	6	234	240
+1	TP. Hà Nội	836	Yên Bài	0	91	91
+1	TP. Hà Nội	686	Yên Hòa	112	344	456
+1	TP. Hà Nội	783	Yên Lãng	0	2	2
+1	TP. Hà Nội	893	Yên Nghĩa	33	15	48
+1	TP. Hà Nội	21504	Yên Sở	0	0	0
+1	TP. Hà Nội	972	Yên Xuân	2	39	41
+4	Vĩnh Long	2865	An Bình	10	8	18
+4	Vĩnh Long	10942	An Định	2	1	3
+4	Vĩnh Long	2867	An Hiệp	0	1	1
+4	Vĩnh Long	2969	An Hội	49	18	67
+4	Vĩnh Long	2870	An Ngãi Trung	1	0	1
+4	Vĩnh Long	10431	An Phú Tân	2	0	2
+4	Vĩnh Long	2977	An Qui	2	1	3
+4	Vĩnh Long	10417	An Trường	0	1	1
+4	Vĩnh Long	20673	Ba Tri	0	1	1
+4	Vĩnh Long	2873	Bảo Thạnh	1	0	1
+4	Vĩnh Long	10937	Bến Tre	55	22	77
+4	Vĩnh Long	20675	Bình Đại	2	3	5
+4	Vĩnh Long	1781	Bình Minh	24	11	35
+4	Vĩnh Long	10419	Bình Phú	1	5	6
+4	Vĩnh Long	1797	Bình Phước	13	7	20
+4	Vĩnh Long	1816	Cái Ngang	20	2	22
+4	Vĩnh Long	1798	Cái Nhum	12	14	26
+4	Vĩnh Long	1780	Cái Vồn	358	16	374
+4	Vĩnh Long	10420	Càng Long	2	2	4
+4	Vĩnh Long	20712	Cầu Kè	2	3	5
+4	Vĩnh Long	20713	Cầu Ngang	2	0	2
+4	Vĩnh Long	2957	Châu Hòa	0	4	4
+4	Vĩnh Long	2905	Châu Hưng	5	5	10
+4	Vĩnh Long	10454	Châu Thành	0	7	7
+4	Vĩnh Long	20677	Chợ Lách	1	11	12
+4	Vĩnh Long	20709	Duyên Hải	3	3	6
+4	Vĩnh Long	10486	Đại An	0	1	1
+4	Vĩnh Long	2981	Đại Điền	9	0	9
+4	Vĩnh Long	10488	Đôn Châu	0	2	2
+4	Vĩnh Long	10467	Đông Hải	0	1	1
+4	Vĩnh Long	10953	Đồng Khởi	1	3	4
+4	Vĩnh Long	1779	Đông Thành	31	28	59
+4	Vĩnh Long	2927	Giao Long	21	16	37
+4	Vĩnh Long	20679	Giồng Trôm	1	1	2
+4	Vĩnh Long	10490	Hàm Giang	0	0	0
+4	Vĩnh Long	20714	Hiệp Mỹ	1	0	1
+4	Vĩnh Long	1851	Hiếu Phụng	3	1	4
+4	Vĩnh Long	1852	Hiếu Thành	6	1	7
+4	Vĩnh Long	1825	Hòa Bình	10	1	11
+4	Vĩnh Long	1811	Hòa Hiệp	16	7	23
+4	Vĩnh Long	10456	Hòa Minh	1	0	1
+4	Vĩnh Long	10457	Hoà Thuận	4	4	8
+4	Vĩnh Long	10478	Hùng Hoà	1	3	4
+4	Vĩnh Long	2944	Hưng Khánh Trung	0	3	3
+4	Vĩnh Long	10458	Hưng Mỹ	2	2	4
+4	Vĩnh Long	2960	Hưng Nhượng	1	1	2
+4	Vĩnh Long	10955	Hương Mỹ	4	1	5
+4	Vĩnh Long	2908	Lộc Thuận	0	3	3
+4	Vĩnh Long	1841	Long Châu	162	52	214
+4	Vĩnh Long	20698	Long Đức	25	6	31
+4	Vĩnh Long	10491	Long Hiệp	1	0	1
+4	Vĩnh Long	1789	Long Hồ	52	23	75
+4	Vĩnh Long	10459	Long Hòa	0	0	0
+4	Vĩnh Long	10469	Long Hữu	0	0	0
+4	Vĩnh Long	10470	Long Thành	0	0	0
+4	Vĩnh Long	10472	Long Vĩnh	0	0	0
+4	Vĩnh Long	1827	Lục Sĩ Thành	1	1	2
+4	Vĩnh Long	2962	Lương Hòa	1	1	2
+4	Vĩnh Long	2963	Lương Phú	2	0	2
+4	Vĩnh Long	10492	Lưu Nghiệp Anh	0	0	0
+4	Vĩnh Long	20682	Mỏ Cày	3	13	16
+4	Vĩnh Long	2876	Mỹ Chánh Hòa	0	0	0
+4	Vĩnh Long	10446	Mỹ Long	0	0	0
+4	Vĩnh Long	10891	Mỹ Thuận	8	6	14
+4	Vĩnh Long	1814	Ngãi Tứ	15	5	20
+4	Vĩnh Long	10473	Ngũ Lạc	0	0	0
+4	Vĩnh Long	10462	Nguyệt Hoá	12	22	34
+4	Vĩnh Long	10426	Nhị Long	0	1	1
+4	Vĩnh Long	10449	Nhị Trường	1	0	1
+4	Vĩnh Long	1805	Nhơn Phú	13	2	15
+4	Vĩnh Long	10928	Nhuận Phú Tân	1	7	8
+4	Vĩnh Long	10437	Phong Thạnh	1	2	3
+4	Vĩnh Long	2892	Phú Khương	86	46	132
+4	Vĩnh Long	2946	Phú Phụng	2	3	5
+4	Vĩnh Long	1791	Phú Quới	81	16	97
+4	Vĩnh Long	2894	Phú Tân	80	53	133
+4	Vĩnh Long	2912	Phú Thuận	1	6	7
+4	Vĩnh Long	20716	Phú Túc	16	4	20
+4	Vĩnh Long	1792	Phước Hậu	164	55	219
+4	Vĩnh Long	2968	Phước Long	3	6	9
+4	Vĩnh Long	10930	Phước Mỹ Trung	8	6	14
+4	Vĩnh Long	1854	Quới An	4	0	4
+4	Vĩnh Long	2987	Quới Điền	3	0	3
+4	Vĩnh Long	1855	Quới Thiện	0	0	0
+4	Vĩnh Long	2895	Sơn Đông	30	17	47
+4	Vĩnh Long	10464	Song Lộc	6	2	8
+4	Vĩnh Long	1821	Song Phú	31	5	36
+4	Vĩnh Long	20727	Tam Bình	5	1	6
+4	Vĩnh Long	10438	Tam Ngãi	1	0	1
+4	Vĩnh Long	10429	Tân An	0	2	2
+4	Vĩnh Long	1793	Tân Hạnh	93	31	124
+4	Vĩnh Long	2970	Tân Hào	1	0	1
+4	Vĩnh Long	10482	Tân Hoà	3	1	4
+4	Vĩnh Long	1808	Tân Long Hội	9	3	12
+4	Vĩnh Long	10896	Tân Lược	8	4	12
+4	Vĩnh Long	1840	Tân Ngãi	119	23	142
+4	Vĩnh Long	2937	Tân Phú	7	2	9
+4	Vĩnh Long	10897	Tân Quới	13	7	20
+4	Vĩnh Long	10933	Tân Thành Bình	4	1	5
+4	Vĩnh Long	2884	Tân Thủy	1	0	1
+4	Vĩnh Long	2885	Tân Xuân	0	1	1
+4	Vĩnh Long	10484	Tập Ngãi	0	0	0
+4	Vĩnh Long	10497	Tập Sơn	0	0	0
+4	Vĩnh Long	1794	Thanh Đức	111	31	142
+4	Vĩnh Long	2989	Thạnh Hải	3	0	3
+4	Vĩnh Long	2991	Thạnh Phong	0	0	0
+4	Vĩnh Long	20680	Thạnh Phú	9	7	16
+4	Vĩnh Long	2915	Thạnh Phước	3	0	3
+4	Vĩnh Long	10965	Thành Thới	0	3	3
+4	Vĩnh Long	2916	Thạnh Trị	3	2	5
+4	Vĩnh Long	2918	Thới Thuận	0	1	1
+4	Vĩnh Long	2941	Tiên Thủy	4	5	9
+4	Vĩnh Long	20718	Tiểu Cần	3	1	4
+4	Vĩnh Long	1835	Trà Côn	11	2	13
+4	Vĩnh Long	20722	Trà Cú	1	3	4
+4	Vĩnh Long	1834	Trà Ôn	8	0	8
+4	Vĩnh Long	20699	Trà Vinh	5	13	18
+4	Vĩnh Long	1861	Trung Hiệp	2	1	3
+4	Vĩnh Long	1863	Trung Ngãi	7	3	10
+4	Vĩnh Long	1865	Trung Thành	13	2	15
+4	Vĩnh Long	10474	Trường Long Hoà	4	1	5
+4	Vĩnh Long	10453	Vinh Kim	0	1	1
+4	Vĩnh Long	2952	Vĩnh Thành	0	5	5
+4	Vĩnh Long	1836	Vĩnh Xuân	2	0	2
+5	Tuyên Quang	20789	An Tường	1	4	5
+5	Tuyên Quang	3722	Bắc Mê	0	0	0
+5	Tuyên Quang	3740	Bắc Quang	1	0	1
+5	Tuyên Quang	3868	Bạch Đích	0	0	0
+5	Tuyên Quang	3827	Bạch Ngọc	0	0	0
+5	Tuyên Quang	10534	Bạch Xa	0	0	0
+5	Tuyên Quang	3773	Bản Máy	0	0	0
+5	Tuyên Quang	3723	Bằng Hành	0	0	0
+5	Tuyên Quang	21072	Bằng Lang	0	0	0
+5	Tuyên Quang	10505	Bình An	0	0	0
+5	Tuyên Quang	10598	Bình Ca	0	0	0
+5	Tuyên Quang	20793	Bình Thuận	3	0	3
+5	Tuyên Quang	10536	Bình Xa	0	0	0
+5	Tuyên Quang	3815	Cán Tỷ	0	0	0
+5	Tuyên Quang	3828	Cao Bồ	0	0	0
+5	Tuyên Quang	10529	Chiêm Hóa	0	0	0
+5	Tuyên Quang	10552	Côn Lôn	0	0	0
+5	Tuyên Quang	3870	Du Già	0	0	0
+5	Tuyên Quang	3724	Đồng Tâm	0	0	0
+5	Tuyên Quang	10579	Đông Thọ	0	0	0
+5	Tuyên Quang	21064	Đồng Văn	0	1	1
+5	Tuyên Quang	3727	Đồng Yên	0	0	0
+5	Tuyên Quang	3711	Đường Hồng	0	0	0
+5	Tuyên Quang	3872	Đường Thượng	0	0	0
+5	Tuyên Quang	3712	Giáp Trung	0	0	0
+5	Tuyên Quang	3767	Hà Giang 1	0	0	0
+5	Tuyên Quang	3766	Hà Giang 2	2	0	2
+5	Tuyên Quang	10545	Hàm Yên	1	0	1
+5	Tuyên Quang	3779	Hồ Thầu	1	0	1
+5	Tuyên Quang	10524	Hòa An	0	0	0
+5	Tuyên Quang	3796	Hoàng Su Phì	2	0	2
+5	Tuyên Quang	10575	Hồng Sơn	1	0	1
+5	Tuyên Quang	10554	Hồng Thái	0	0	0
+5	Tuyên Quang	3729	Hùng An	0	0	0
+5	Tuyên Quang	10538	Hùng Đức	0	0	0
+5	Tuyên Quang	10621	Hùng Lợi	0	0	0
+5	Tuyên Quang	3799	Khâu Vai	0	0	0
+5	Tuyên Quang	3856	Khuôn Lùng	0	0	0
+5	Tuyên Quang	10513	Kiên Đài	0	0	0
+5	Tuyên Quang	10622	Kiến Thiết	0	0	0
+5	Tuyên Quang	10514	Kim Bình	0	0	0
+5	Tuyên Quang	20835	Lâm Bình	0	0	0
+5	Tuyên Quang	3832	Lao Chải	0	0	0
+5	Tuyên Quang	3732	Liên Hiệp	0	0	0
+5	Tuyên Quang	3833	Linh Hồ	0	0	0
+5	Tuyên Quang	10626	Lực Hành	0	0	0
+5	Tuyên Quang	3747	Lũng Cú	2	0	2
+5	Tuyên Quang	3748	Lũng Phìn	0	0	0
+5	Tuyên Quang	3818	Lùng Tám	0	0	0
+5	Tuyên Quang	3876	Mậu Duệ	0	0	0
+5	Tuyên Quang	21068	Mèo Vạc	0	0	0
+5	Tuyên Quang	3714	Minh Ngọc	0	0	0
+5	Tuyên Quang	10516	Minh Quang	0	0	0
+5	Tuyên Quang	3715	Minh Sơn	0	0	0
+5	Tuyên Quang	3834	Minh Tân	0	0	0
+5	Tuyên Quang	10587	Minh Thanh	0	0	0
+5	Tuyên Quang	10606	Minh Xuân	9	6	15
+5	Tuyên Quang	20825	Mỹ Lâm	5	0	5
+5	Tuyên Quang	20842	Nà Hang	0	0	0
+5	Tuyên Quang	3858	Nấm Dẩn	0	0	0
+5	Tuyên Quang	3780	Nậm Dịch	0	0	0
+5	Tuyên Quang	3819	Nghĩa Thuận	0	0	0
+5	Tuyên Quang	3765	Ngọc Đường	0	1	1
+5	Tuyên Quang	3880	Ngọc Long	0	0	0
+5	Tuyên Quang	10630	Nhữ Khê	0	0	0
+5	Tuyên Quang	3803	Niêm Sơn	0	0	0
+5	Tuyên Quang	10607	Nông Tiến	2	0	2
+5	Tuyên Quang	3862	Pà Vầy Sủ	0	0	0
+5	Tuyên Quang	3752	Phố Bảng	0	0	0
+5	Tuyên Quang	3839	Phú Linh	0	0	0
+5	Tuyên Quang	10589	Phú Lương	1	0	1
+5	Tuyên Quang	10543	Phù Lưu	3	0	3
+5	Tuyên Quang	3787	Pờ Ly Ngài	0	0	0
+5	Tuyên Quang	3820	Quản Bạ	0	0	0
+5	Tuyên Quang	21070	Quang Bình	0	0	0
+5	Tuyên Quang	3863	Quảng Nguyên	0	0	0
+5	Tuyên Quang	3755	Sà Phìn	0	0	0
+5	Tuyên Quang	20849	Sơn Dương	3	0	3
+5	Tuyên Quang	10588	Sơn Thủy	0	0	0
+5	Tuyên Quang	3807	Sơn Vĩ	0	0	0
+5	Tuyên Quang	3808	Sủng Máng	0	0	0
+5	Tuyên Quang	10522	Tân An	0	0	0
+5	Tuyên Quang	10636	Tân Long	0	0	0
+5	Tuyên Quang	10523	Tân Mỹ	0	0	0
+5	Tuyên Quang	3735	Tân Quang	0	1	1
+5	Tuyên Quang	20847	Tân Thanh	1	0	1
+5	Tuyên Quang	3790	Tân Tiến	0	0	0
+5	Tuyên Quang	10595	Tân Trào	1	0	1
+5	Tuyên Quang	21077	Tân Trịnh	0	0	0
+5	Tuyên Quang	3811	Tát Ngà	0	0	0
+5	Tuyên Quang	10632	Thái Bình	0	0	0
+5	Tuyên Quang	10537	Thái Hòa	0	0	0
+5	Tuyên Quang	10547	Thái Sơn	0	0	0
+5	Tuyên Quang	3884	Thắng Mố	0	0	0
+5	Tuyên Quang	3791	Thàng Tín	0	0	0
+5	Tuyên Quang	3843	Thanh Thủy	0	0	0
+5	Tuyên Quang	3793	Thông Nguyên	0	0	0
+5	Tuyên Quang	3844	Thuận Hòa	0	0	0
+5	Tuyên Quang	20838	Thượng Lâm	0	0	0
+5	Tuyên Quang	10565	Thượng Nông	0	0	0
+5	Tuyên Quang	3845	Thượng Sơn	0	0	0
+5	Tuyên Quang	21078	Tiên Nguyên	0	0	0
+5	Tuyên Quang	21079	Tiên Yên	0	0	0
+5	Tuyên Quang	10526	Tri Phú	0	0	0
+5	Tuyên Quang	10527	Trung Hà	2	0	2
+5	Tuyên Quang	10645	Trung Sơn	0	0	0
+5	Tuyên Quang	3867	Trung Thịnh	0	0	0
+5	Tuyên Quang	20848	Trường Sinh	0	0	0
+5	Tuyên Quang	3847	Tùng Bá	0	0	0
+5	Tuyên Quang	3826	Tùng Vài	0	0	0
+5	Tuyên Quang	21085	Vị Xuyên	0	0	0
+5	Tuyên Quang	3841	Việt Lâm	0	0	0
+5	Tuyên Quang	3744	Vĩnh Tuy	0	0	0
+5	Tuyên Quang	21086	Xín Mần	0	0	0
+5	Tuyên Quang	21081	Xuân Giang	0	0	0
+5	Tuyên Quang	10648	Xuân Vân	0	0	0
+5	Tuyên Quang	3719	Yên Cường	0	0	0
+5	Tuyên Quang	10572	Yên Hoa	0	0	0
+5	Tuyên Quang	10532	Yên Lập	0	0	0
+5	Tuyên Quang	21087	Yên Minh	0	0	0
+5	Tuyên Quang	10533	Yên Nguyên	0	0	0
+5	Tuyên Quang	10550	Yên Phú	1	0	1
+5	Tuyên Quang	20857	Yên Sơn	1	0	1
+5	Tuyên Quang	21084	Yên Thành	0	0	0
+8	TP Huế	10110	A Lưới 1	1	0	1
+8	TP Huế	21293	A Lưới 2	3	1	4
+8	TP Huế	10118	A Lưới 3	0	0	0
+8	TP Huế	10100	A Lưới 4	0	0	0
+8	TP Huế	10114	A Lưới 5	0	0	0
+8	TP Huế	10119	An Cựu	932	100	1032
+8	TP Huế	10162	Bình Điền	5	0	5
+8	TP Huế	10198	Chân Mây - Lăng Cô	63	6	69
+8	TP Huế	10217	Dương Nỗ	4	0	4
+8	TP Huế	21375	Đan Điền	1	2	3
+8	TP Huế	10115	Hóa Châu	11	4	15
+8	TP Huế	10203	Hưng Lộc	0	0	0
+8	TP Huế	10161	Hương An	104	15	119
+8	TP Huế	10151	Hương Thủy	46	4	50
+8	TP Huế	10171	Hương Trà	30	10	40
+8	TP Huế	10178	Khe Tre	1	0	1
+8	TP Huế	21290	Kim Long	68	14	82
+8	TP Huế	10170	Kim Trà	45	15	60
+8	TP Huế	21328	Lộc An	4	1	5
+8	TP Huế	10182	Long Quảng	0	0	0
+8	TP Huế	10223	Mỹ Thượng	154	12	166
+8	TP Huế	21300	Nam Đông	0	1	1
+8	TP Huế	10193	Phong Dinh	0	1	1
+8	TP Huế	10196	Phong Điền	7	3	10
+8	TP Huế	10221	Phong Phú	2	0	2
+8	TP Huế	10191	Phong Quảng	3	1	4
+8	TP Huế	10188	Phong Thái	6	2	8
+8	TP Huế	10146	Phú Bài	38	14	52
+8	TP Huế	10224	Phú Hồ	18	3	21
+8	TP Huế	21331	Phú Lộc	11	2	13
+8	TP Huế	10215	Phú Vang	35	4	39
+8	TP Huế	10216	Phú Vinh	33	0	33
+8	TP Huế	21289	Phú Xuân	160	14	174
+8	TP Huế	10240	Quảng Điền	8	5	13
+8	TP Huế	10150	Thanh Thủy	370	27	397
+8	TP Huế	10225	Thuận An	9	1	10
+8	TP Huế	10130	Thuận Hóa	559	119	678
+8	TP Huế	10140	Thủy Xuân	315	55	370
+8	TP Huế	10211	Vinh Lộc	1	1	2
+8	TP Huế	10143	Vỹ Dạ	627	38	665
+9	Thanh Hóa	9530	An Nông	1	0	1
+9	Thanh Hóa	9173	Ba Đình	8	0	8
+9	Thanh Hóa	8990	Bá Thước	1	1	2
+9	Thanh Hóa	9447	Bát Mọt	0	0	0
+9	Thanh Hóa	9568	Biện Thượng	0	0	0
+9	Thanh Hóa	9015	Bỉm Sơn	3	0	3
+9	Thanh Hóa	9468	Các Sơn	0	0	0
+9	Thanh Hóa	9030	Cẩm Tân	1	1	2
+9	Thanh Hóa	9031	Cẩm Thạch	2	1	3
+9	Thanh Hóa	21007	Cẩm Thủy	0	0	0
+9	Thanh Hóa	9033	Cẩm Tú	3	0	3
+9	Thanh Hóa	9034	Cẩm Vân	1	1	2
+9	Thanh Hóa	8991	Cổ Lũng	1	0	1
+9	Thanh Hóa	9256	Công Chính	6	0	6
+9	Thanh Hóa	9485	Đào Duy Từ	0	1	1
+9	Thanh Hóa	8993	Điền Lư	5	0	5
+9	Thanh Hóa	8994	Điền Quang	1	0	1
+9	Thanh Hóa	9581	Định Hòa	0	1	1
+9	Thanh Hóa	9588	Định Tân	4	0	4
+9	Thanh Hóa	9155	Đồng Lương	0	0	0
+9	Thanh Hóa	9403	Đông Quang	69	22	91
+9	Thanh Hóa	9056	Đông Sơn	87	13	100
+9	Thanh Hóa	9085	Đông Thành	0	1	1
+9	Thanh Hóa	9051	Đông Tiến	11	5	16
+9	Thanh Hóa	9537	Đồng Tiến	1	2	3
+9	Thanh Hóa	9156	Giao An	0	0	0
+9	Thanh Hóa	9067	Hà Long	3	0	3
+9	Thanh Hóa	21023	Hà Trung	5	0	5
+9	Thanh Hóa	9401	Hạc Thành	299	104	403
+9	Thanh Hóa	9471	Hải Bình	0	0	0
+9	Thanh Hóa	9469	Hải Lĩnh	0	0	0
+9	Thanh Hóa	9397	Hàm Rồng	14	32	46
+9	Thanh Hóa	21031	Hậu Lộc	1	0	1
+9	Thanh Hóa	9288	Hiền Kiệt	0	0	0
+9	Thanh Hóa	9178	Hồ Vương	2	0	2
+9	Thanh Hóa	9088	Hoa Lộc	3	0	3
+9	Thanh Hóa	9241	Hóa Quỳ	0	0	0
+9	Thanh Hóa	9109	Hoằng Châu	2	0	2
+9	Thanh Hóa	9116	Hoằng Giang	0	0	0
+9	Thanh Hóa	9106	Hoằng Hóa	7	0	7
+9	Thanh Hóa	9123	Hoằng Lộc	5	1	6
+9	Thanh Hóa	9132	Hoằng Phú	2	0	2
+9	Thanh Hóa	9138	Hoằng Sơn	1	3	4
+9	Thanh Hóa	9143	Hoằng Thanh	9	1	10
+9	Thanh Hóa	9145	Hoằng Tiến	18	4	22
+9	Thanh Hóa	21027	Hoạt Giang	3	0	3
+9	Thanh Hóa	9289	Hồi Xuân	0	0	0
+9	Thanh Hóa	9542	Hợp Tiến	23	3	26
+9	Thanh Hóa	9202	Kiên Thọ	4	0	4
+9	Thanh Hóa	9361	Kim Tân	5	5	10
+9	Thanh Hóa	9409	Lam Sơn	1	0	1
+9	Thanh Hóa	9159	Linh Sơn	0	0	0
+9	Thanh Hóa	21026	Lĩnh Toại	1	0	1
+9	Thanh Hóa	9449	Luận Thành	0	0	0
+9	Thanh Hóa	9450	Lương Sơn	2	0	2
+9	Thanh Hóa	21041	Lưu Vệ	13	5	18
+9	Thanh Hóa	9224	Mậu Lâm	1	0	1
+9	Thanh Hóa	9205	Minh Sơn	6	1	7
+9	Thanh Hóa	9165	Mường Chanh	0	0	0
+9	Thanh Hóa	9171	Mường Lát	0	0	0
+9	Thanh Hóa	9166	Mường Lý	0	0	0
+9	Thanh Hóa	9304	Mường Mìn	0	0	0
+9	Thanh Hóa	9305	Na Mèo	0	0	0
+9	Thanh Hóa	9353	Nam Sầm Sơn	23	3	26
+9	Thanh Hóa	9292	Nam Xuân	0	0	0
+9	Thanh Hóa	9174	Nga An	5	3	8
+9	Thanh Hóa	21035	Nga Sơn	21	0	21
+9	Thanh Hóa	9188	Nga Thắng	0	1	1
+9	Thanh Hóa	9483	Nghi Sơn	3	1	4
+9	Thanh Hóa	9208	Ngọc Lặc	17	1	18
+9	Thanh Hóa	9209	Ngọc Liên	5	2	7
+9	Thanh Hóa	9491	Ngọc Sơn	1	1	2
+9	Thanh Hóa	9362	Ngọc Trạo	5	1	6
+9	Thanh Hóa	9212	Nguyệt Ấn	10	0	10
+9	Thanh Hóa	9154	Nguyệt Viên	15	2	17
+9	Thanh Hóa	9167	Nhi Sơn	0	0	0
+9	Thanh Hóa	9220	Như Thanh	1	0	1
+9	Thanh Hóa	9253	Như Xuân	2	0	2
+9	Thanh Hóa	21039	Nông Cống	4	1	5
+9	Thanh Hóa	9293	Phú Lệ	0	0	0
+9	Thanh Hóa	9297	Phú Xuân	0	0	0
+9	Thanh Hóa	9007	Pù Luông	3	0	3
+9	Thanh Hóa	9168	Pù Nhi	0	0	0
+9	Thanh Hóa	9313	Quan Sơn	0	0	0
+9	Thanh Hóa	9316	Quảng Bình	6	3	9
+9	Thanh Hóa	9169	Quang Chiểu	0	0	0
+9	Thanh Hóa	9319	Quảng Chính	2	0	2
+9	Thanh Hóa	9336	Quảng Ngọc	2	3	5
+9	Thanh Hóa	9339	Quảng Ninh	5	1	6
+9	Thanh Hóa	9341	Quảng Phú	69	19	88
+9	Thanh Hóa	9017	Quang Trung	10	2	12
+9	Thanh Hóa	9355	Quảng Yên	7	2	9
+9	Thanh Hóa	9595	Quý Lộc	2	0	2
+9	Thanh Hóa	9003	Quý Lương	0	0	0
+9	Thanh Hóa	9356	Sầm Sơn	78	25	103
+9	Thanh Hóa	9413	Sao Vàng	23	3	26
+9	Thanh Hóa	9306	Sơn Điện	0	0	0
+9	Thanh Hóa	9309	Sơn Thủy	0	0	0
+9	Thanh Hóa	9170	Tam Chung	0	0	0
+9	Thanh Hóa	9310	Tam Lư	0	0	0
+9	Thanh Hóa	9311	Tam Thanh	0	0	0
+9	Thanh Hóa	9489	Tân Dân	0	0	0
+9	Thanh Hóa	21063	Tân Ninh	7	2	9
+9	Thanh Hóa	9452	Tân Thành	0	0	0
+9	Thanh Hóa	9193	Tân Tiến	4	6	10
+9	Thanh Hóa	9575	Tây Đô	2	0	2
+9	Thanh Hóa	9363	Thạch Bình	12	3	15
+9	Thanh Hóa	9217	Thạch Lập	11	8	19
+9	Thanh Hóa	9369	Thạch Quảng	46	10	56
+9	Thanh Hóa	9270	Thăng Bình	2	2	4
+9	Thanh Hóa	9462	Thắng Lộc	0	0	0
+9	Thanh Hóa	9274	Thắng Lợi	1	0	1
+9	Thanh Hóa	9228	Thanh Kỳ	2	0	2
+9	Thanh Hóa	9245	Thanh Phong	0	0	0
+9	Thanh Hóa	9246	Thanh Quân	0	0	0
+9	Thanh Hóa	9386	Thành Vinh	21	7	28
+9	Thanh Hóa	9300	Thiên Phủ	0	0	0
+9	Thanh Hóa	9009	Thiết Ống	2	0	2
+9	Thanh Hóa	9516	Thiệu Hóa	3	0	3
+9	Thanh Hóa	9517	Thiệu Quang	0	0	0
+9	Thanh Hóa	9522	Thiệu Tiến	2	2	4
+9	Thanh Hóa	9523	Thiệu Toán	1	0	1
+9	Thanh Hóa	9524	Thiệu Trung	0	0	0
+9	Thanh Hóa	9550	Thọ Bình	10	1	11
+9	Thanh Hóa	9418	Thọ Lập	1	0	1
+9	Thanh Hóa	9419	Thọ Long	3	0	3
+9	Thanh Hóa	9553	Thọ Ngọc	14	3	17
+9	Thanh Hóa	9554	Thọ Phú	31	4	35
+9	Thanh Hóa	21052	Thọ Xuân	15	3	18
+9	Thanh Hóa	9249	Thượng Ninh	0	0	0
+9	Thanh Hóa	21060	Thường Xuân	0	0	0
+9	Thanh Hóa	21042	Tiên Trang	2	0	2
+9	Thanh Hóa	9474	Tĩnh Gia	1	3	4
+9	Thanh Hóa	9066	Tống Sơn	4	1	5
+9	Thanh Hóa	9102	Triệu Lộc	4	0	4
+9	Thanh Hóa	21062	Triệu Sơn	19	4	23
+9	Thanh Hóa	9495	Trúc Lâm	1	1	2
+9	Thanh Hóa	9273	Trung Chính	2	1	3
+9	Thanh Hóa	9312	Trung Hạ	0	0	0
+9	Thanh Hóa	9172	Trung Lý	0	0	0
+9	Thanh Hóa	9301	Trung Sơn	12	0	12
+9	Thanh Hóa	9302	Trung Thành	0	0	0
+9	Thanh Hóa	9496	Trường Lâm	0	0	0
+9	Thanh Hóa	9277	Trường Văn	10	0	10
+9	Thanh Hóa	9280	Tượng Lĩnh	6	0	6
+9	Thanh Hóa	9388	Vân Du	2	2	4
+9	Thanh Hóa	9092	Vạn Lộc	0	1	1
+9	Thanh Hóa	9010	Văn Nho	1	0	1
+9	Thanh Hóa	9160	Văn Phú	0	0	0
+9	Thanh Hóa	9454	Vạn Xuân	0	0	0
+9	Thanh Hóa	21065	Vĩnh Lộc	0	2	2
+9	Thanh Hóa	9250	Xuân Bình	1	0	1
+9	Thanh Hóa	9457	Xuân Chinh	0	0	0
+9	Thanh Hóa	9230	Xuân Du	1	0	1
+9	Thanh Hóa	9428	Xuân Hòa	6	1	7
+9	Thanh Hóa	9433	Xuân Lập	11	0	11
+9	Thanh Hóa	9233	Xuân Thái	0	0	0
+9	Thanh Hóa	9443	Xuân Tín	1	0	1
+9	Thanh Hóa	9594	Yên Định	4	1	5
+9	Thanh Hóa	9163	Yên Khương	0	0	0
+9	Thanh Hóa	9465	Yên Nhân	0	0	0
+9	Thanh Hóa	9601	Yên Ninh	3	0	3
+9	Thanh Hóa	9603	Yên Phú	0	0	0
+9	Thanh Hóa	9164	Yên Thắng	0	0	0
+9	Thanh Hóa	9236	Yên Thọ	1	0	1
+9	Thanh Hóa	9609	Yên Trường	1	0	1
+10	Thái Nguyên	9909	An Khánh	4	0	4
+10	Thái Nguyên	2614	Ba Bể	0	0	0
+10	Thái Nguyên	10037	Bá Xuyên	16	2	18
+10	Thái Nguyên	2634	Bắc Kạn	1	0	1
+10	Thái Nguyên	10040	Bách Quang	97	3	100
+10	Thái Nguyên	2639	Bạch Thông	0	0	0
+10	Thái Nguyên	21093	Bằng Thành	0	0	0
+10	Thái Nguyên	2711	Bằng Vân	0	0	0
+10	Thái Nguyên	9940	Bình Thành	0	0	0
+10	Thái Nguyên	9941	Bình Yên	0	0	0
+10	Thái Nguyên	2636	Cẩm Giàng	2	0	2
+10	Thái Nguyên	7688	Cao Minh	0	0	0
+10	Thái Nguyên	2655	Chợ Đồn	0	1	1
+10	Thái Nguyên	21089	Chợ Mới	0	0	0
+10	Thái Nguyên	2616	Chợ Rã	0	0	0
+10	Thái Nguyên	2690	Côn Minh	0	0	0
+10	Thái Nguyên	2692	Cường Lợi	0	0	0
+10	Thái Nguyên	10076	Dân Tiến	0	0	0
+10	Thái Nguyên	9917	Đại Phúc	57	4	61
+10	Thái Nguyên	9911	Đại Từ	4	0	4
+10	Thái Nguyên	10003	Điềm Thụy	19	2	21
+10	Thái Nguyên	9943	Định Hóa	0	0	0
+10	Thái Nguyên	9966	Đồng Hỷ	19	0	19
+10	Thái Nguyên	2619	Đồng Phúc	0	0	0
+10	Thái Nguyên	9914	Đức Lương	0	0	0
+10	Thái Nguyên	21088	Đức Xuân	0	0	0
+10	Thái Nguyên	10050	Gia Sàng	35	2	37
+10	Thái Nguyên	2714	Hiệp Lực	0	0	0
+10	Thái Nguyên	10025	Hợp Thành	1	0	1
+10	Thái Nguyên	10008	Kha Sơn	15	16	31
+10	Thái Nguyên	9947	Kim Phượng	0	0	0
+10	Thái Nguyên	9920	La Bằng	4	1	5
+10	Thái Nguyên	10078	La Hiên	0	0	0
+10	Thái Nguyên	9949	Lam Vỹ	0	0	0
+10	Thái Nguyên	21179	Linh Sơn	50	11	61
+10	Thái Nguyên	21091	Nà Phặc	0	0	0
+10	Thái Nguyên	2710	Na Rì	0	0	0
+10	Thái Nguyên	2662	Nam Cường	0	0	0
+10	Thái Nguyên	9974	Nam Hòa	2	0	2
+10	Thái Nguyên	2720	Ngân Sơn	0	0	0
+10	Thái Nguyên	2663	Nghĩa Tá	0	0	0
+10	Thái Nguyên	7699	Nghiên Loan	0	0	0
+10	Thái Nguyên	10081	Nghinh Tường	0	0	0
+10	Thái Nguyên	10054	Phan Đình Phùng	112	44	156
+10	Thái Nguyên	9982	Phổ Yên	188	15	203
+10	Thái Nguyên	2629	Phong Quang	0	0	0
+10	Thái Nguyên	10007	Phú Bình	6	0	6
+10	Thái Nguyên	9951	Phú Đình	0	0	0
+10	Thái Nguyên	9926	Phú Lạc	4	0	4
+10	Thái Nguyên	10023	Phú Lương	4	0	4
+10	Thái Nguyên	9927	Phú Thịnh	0	0	0
+10	Thái Nguyên	2644	Phủ Thông	0	0	0
+10	Thái Nguyên	9928	Phú Xuyên	2	0	2
+10	Thái Nguyên	2625	Phúc Lộc	0	0	0
+10	Thái Nguyên	9992	Phúc Thuận	21	1	22
+10	Thái Nguyên	9954	Phượng Tiến	1	0	1
+10	Thái Nguyên	9931	Quân Chu	2	0	2
+10	Thái Nguyên	10059	Quan Triều	27	2	29
+10	Thái Nguyên	2667	Quảng Bạch	1	0	1
+10	Thái Nguyên	9975	Quang Sơn	0	0	0
+10	Thái Nguyên	10062	Quyết Thắng	256	60	316
+10	Thái Nguyên	10084	Sảng Mộc	0	0	0
+10	Thái Nguyên	10044	Sông Công	35	1	36
+10	Thái Nguyên	10063	Tân Cương	33	3	36
+10	Thái Nguyên	10014	Tân Khánh	2	0	2
+10	Thái Nguyên	2682	Tân Kỳ	0	0	0
+10	Thái Nguyên	10016	Tân Thành	9	0	9
+10	Thái Nguyên	10085	Thần Sa	0	0	0
+10	Thái Nguyên	9995	Thành Công	41	0	41
+10	Thái Nguyên	2684	Thanh Mai	0	0	0
+10	Thái Nguyên	21090	Thanh Thịnh	0	0	0
+10	Thái Nguyên	2628	Thượng Minh	0	0	0
+10	Thái Nguyên	2718	Thượng Quan	0	0	0
+10	Thái Nguyên	10070	Tích Lương	103	6	109
+10	Thái Nguyên	9979	Trại Cau	0	0	0
+10	Thái Nguyên	2696	Trần Phú	0	0	0
+10	Thái Nguyên	10087	Tràng Xá	0	0	0
+10	Thái Nguyên	9960	Trung Hội	0	0	0
+10	Thái Nguyên	9998	Trung Thành	26	2	28
+10	Thái Nguyên	9980	Văn Hán	1	0	1
+10	Thái Nguyên	9981	Văn Lăng	0	0	0
+10	Thái Nguyên	2689	Văn Lang	0	0	0
+10	Thái Nguyên	9936	Vạn Phú	2	0	2
+10	Thái Nguyên	9989	Vạn Xuân	258	84	342
+10	Thái Nguyên	2648	Vĩnh Thông	0	0	0
+10	Thái Nguyên	10077	Võ Nhai	1	0	1
+10	Thái Nguyên	10032	Vô Tranh	8	1	9
+10	Thái Nguyên	2709	Xuân Dương	0	0	0
+10	Thái Nguyên	2686	Yên Bình	0	0	0
+10	Thái Nguyên	2671	Yên Phong	0	0	0
+10	Thái Nguyên	2672	Yên Thịnh	0	0	0
+10	Thái Nguyên	10036	Yên Trạch	0	0	0
+12	Tây Ninh	6184	An Lục Long	12	19	31
+12	Tây Ninh	6197	An Ninh	64	27	91
+12	Tây Ninh	8953	An Tịnh	720	95	815
+12	Tây Ninh	20736	Bến Cầu	55	13	68
+12	Tây Ninh	20480	Bến Lức	301	54	355
+12	Tây Ninh	6139	Bình Đức	159	90	249
+12	Tây Ninh	6226	Bình Hiệp	11	11	22
+12	Tây Ninh	6232	Bình Hòa	6	0	6
+12	Tây Ninh	8943	Bình Minh	157	35	192
+12	Tây Ninh	6284	Bình Thành	6	4	10
+12	Tây Ninh	20482	Cần Đước	125	27	152
+12	Tây Ninh	20481	Cần Giuộc	179	200	379
+12	Tây Ninh	8901	Cầu Khởi	116	13	129
+12	Tây Ninh	20737	Châu Thành	53	12	65
+12	Tây Ninh	20738	Dương Minh Châu	168	10	178
+12	Tây Ninh	6219	Đông Thành	33	15	48
+12	Tây Ninh	20485	Đức Hòa	567	249	816
+12	Tây Ninh	6215	Đức Huệ	47	16	63
+12	Tây Ninh	6202	Đức Lập	221	221	442
+12	Tây Ninh	8957	Gia Lộc	328	52	380
+12	Tây Ninh	20739	Gò Dầu	374	37	411
+12	Tây Ninh	8889	Hảo Đước	56	18	74
+12	Tây Ninh	6204	Hậu Nghĩa	172	90	262
+12	Tây Ninh	6262	Hậu Thạnh	0	0	0
+12	Tây Ninh	6205	Hiệp Hòa	24	27	51
+12	Tây Ninh	8890	Hòa Hội	34	7	41
+12	Tây Ninh	6208	Hòa Khánh	192	88	280
+12	Tây Ninh	8919	Hòa Thành	59	24	83
+12	Tây Ninh	6251	Hưng Điền	1	2	3
+12	Tây Ninh	20735	Hưng Thuận	223	27	250
+12	Tây Ninh	6241	Khánh Hậu	12	28	40
+12	Tây Ninh	6305	Khánh Hưng	0	2	2
+12	Tây Ninh	20477	Kiến Tường	11	0	11
+12	Tây Ninh	8903	Lộc Ninh	54	14	68
+12	Tây Ninh	20475	Long An	88	127	215
+12	Tây Ninh	6152	Long Cang	177	56	233
+12	Tây Ninh	8879	Long Chữ	33	6	39
+12	Tây Ninh	20731	Long Hoa	124	48	172
+12	Tây Ninh	6156	Long Hựu	9	3	12
+12	Tây Ninh	8883	Long Thuận	31	6	37
+12	Tây Ninh	6142	Lương Hòa	260	113	373
+12	Tây Ninh	6234	Mộc Hóa	7	5	12
+12	Tây Ninh	6297	Mỹ An	5	5	10
+12	Tây Ninh	6212	Mỹ Hạnh	652	560	1212
+12	Tây Ninh	6160	Mỹ Lệ	108	39	147
+12	Tây Ninh	6173	Mỹ Lộc	68	125	193
+12	Tây Ninh	6221	Mỹ Quý	4	8	12
+12	Tây Ninh	6300	Mỹ Thạnh	22	51	73
+12	Tây Ninh	6143	Mỹ Yên	269	107	376
+12	Tây Ninh	6266	Nhơn Hòa Lập	1	1	2
+12	Tây Ninh	6267	Nhơn Ninh	2	4	6
+12	Tây Ninh	20484	Nhựt Tảo	76	73	149
+12	Tây Ninh	8893	Ninh Điền	37	4	41
+12	Tây Ninh	8946	Ninh Thạnh	89	16	105
+12	Tây Ninh	8959	Phước Chỉ	8	2	10
+12	Tây Ninh	6177	Phước Lý	81	162	243
+12	Tây Ninh	8913	Phước Thạnh	963	60	1023
+12	Tây Ninh	8894	Phước Vinh	51	7	58
+12	Tây Ninh	6179	Phước Vĩnh Tây	114	10	124
+12	Tây Ninh	6159	Rạch Kiến	382	111	493
+12	Tây Ninh	6192	Tầm Vu	39	28	67
+12	Tây Ninh	6239	Tân An	26	32	58
+12	Tây Ninh	20740	Tân Biên	92	3	95
+12	Tây Ninh	20741	Tân Châu	79	7	86
+12	Tây Ninh	8934	Tân Đông	16	4	20
+12	Tây Ninh	8937	Tân Hòa	27	4	31
+12	Tây Ninh	8938	Tân Hội	67	2	69
+12	Tây Ninh	20490	Tân Hưng	1	5	6
+12	Tây Ninh	6166	Tân Lân	103	40	143
+12	Tây Ninh	8926	Tân Lập	22	2	24
+12	Tây Ninh	6302	Tân Long	4	4	8
+12	Tây Ninh	20730	Tân Ninh	244	32	276
+12	Tây Ninh	8939	Tân Phú	107	10	117
+12	Tây Ninh	6181	Tân Tập	42	22	64
+12	Tây Ninh	6285	Tân Tây	5	8	13
+12	Tây Ninh	8941	Tân Thành	25	3	28
+12	Tây Ninh	20488	Tân Thạnh	1	2	3
+12	Tây Ninh	20483	Tân Trụ	62	64	126
+12	Tây Ninh	8929	Thạnh Bình	60	3	63
+12	Tây Ninh	8896	Thanh Điền	44	12	56
+12	Tây Ninh	8915	Thạnh Đức	106	20	126
+12	Tây Ninh	20487	Thạnh Hóa	7	8	15
+12	Tây Ninh	6150	Thạnh Lợi	69	59	128
+12	Tây Ninh	6288	Thạnh Phước	26	0	26
+12	Tây Ninh	20046	Thủ Thừa	91	22	113
+12	Tây Ninh	6195	Thuận Mỹ	7	14	21
+12	Tây Ninh	8892	Trà Vong	21	2	23
+12	Tây Ninh	20734	Trảng Bàng	497	59	556
+12	Tây Ninh	8908	Truông Mít	120	18	138
+12	Tây Ninh	6308	Tuyên Bình	1	1	2
+12	Tây Ninh	6237	Tuyên Thạnh	0	0	0
+12	Tây Ninh	6282	Vàm Cỏ	63	48	111
+12	Tây Ninh	6256	Vĩnh Châu	0	0	0
+12	Tây Ninh	6196	Vĩnh Công	6	9	15
+12	Tây Ninh	20489	Vĩnh Hưng	0	0	0
+12	Tây Ninh	6255	Vĩnh Thạnh	2	2	4
+13	Sơn La	21262	Bắc Yên	1	0	1
+13	Sơn La	8832	Bình Thuận	0	0	0
+13	Sơn La	8793	Bó Sinh	0	0	0
+13	Sơn La	8781	Chiềng An	3	0	3
+13	Sơn La	8783	Chiềng Cơi	29	12	41
+13	Sơn La	8840	Chiềng Hặc	0	0	0
+13	Sơn La	8730	Chiềng Hoa	0	0	0
+13	Sơn La	8796	Chiềng Khoong	0	0	0
+13	Sơn La	8797	Chiềng Khương	0	0	0
+13	Sơn La	8815	Chiềng La	0	0	0
+13	Sơn La	8731	Chiềng Lao	0	0	0
+13	Sơn La	8685	Chiềng Mai	0	0	0
+13	Sơn La	8686	Chiềng Mung	0	0	0
+13	Sơn La	8664	Chiềng Sại	0	0	0
+13	Sơn La	8787	Chiềng Sinh	2	0	2
+13	Sơn La	8799	Chiềng Sơ	0	0	0
+13	Sơn La	8703	Chiềng Sơn	0	0	0
+13	Sơn La	8688	Chiềng Sung	0	0	0
+13	Sơn La	8820	Co Mạ	0	0	0
+13	Sơn La	8681	Đoàn Kết	0	0	0
+13	Sơn La	8746	Gia Phù	0	0	0
+13	Sơn La	8801	Huổi Một	0	0	0
+13	Sơn La	8752	Kim Bon	0	0	0
+13	Sơn La	8824	Long Hẹ	0	0	0
+13	Sơn La	8846	Lóng Phiêng	0	0	0
+13	Sơn La	8710	Lóng Sập	1	0	1
+13	Sơn La	21272	Mai Sơn	0	0	0
+13	Sơn La	8712	Mộc Châu	9	0	9
+13	Sơn La	8706	Mộc Sơn	9	0	9
+13	Sơn La	8825	Muổi Nọi	0	0	0
+13	Sơn La	8826	Mường Bám	0	0	0
+13	Sơn La	8753	Mường Bang	0	0	0
+13	Sơn La	8735	Mường Bú	0	0	0
+13	Sơn La	8694	Mường Chanh	0	0	0
+13	Sơn La	8779	Mường Chiên	0	0	0
+13	Sơn La	8754	Mường Cơi	0	0	0
+13	Sơn La	8827	Mường É	0	0	0
+13	Sơn La	8776	Mường Giôn	0	0	0
+13	Sơn La	8803	Mường Hung	0	0	0
+13	Sơn La	8828	Mường Khiêng	0	0	0
+13	Sơn La	8741	Mường La	1	0	1
+13	Sơn La	8804	Mường Lầm	0	0	0
+13	Sơn La	8858	Mường Lạn	0	0	0
+13	Sơn La	8859	Mường Lèo	0	0	0
+13	Sơn La	8777	Mường Sại	0	0	0
+13	Sơn La	8829	Nậm Lầu	0	0	0
+13	Sơn La	8808	Nậm Ty	0	0	0
+13	Sơn La	8740	Ngọc Chiến	0	0	0
+13	Sơn La	8672	Pắc Ngà	0	0	0
+13	Sơn La	8697	Phiêng Cằm	0	0	0
+13	Sơn La	8848	Phiêng Khoài	0	0	0
+13	Sơn La	8698	Phiêng Pằn	0	0	0
+13	Sơn La	8759	Phù Yên	0	0	0
+13	Sơn La	8863	Púng Bánh	0	0	0
+13	Sơn La	8775	Quỳnh Nhai	0	0	0
+13	Sơn La	8719	Song Khủa	0	0	0
+13	Sơn La	21273	Sông Mã	0	0	0
+13	Sơn La	8855	Sốp Cộp	0	0	0
+13	Sơn La	8762	Suối Tọ	0	0	0
+13	Sơn La	8699	Tà Hộc	0	0	0
+13	Sơn La	8676	Tạ Khoa	0	0	0
+13	Sơn La	8677	Tà Xùa	12	1	13
+13	Sơn La	8764	Tân Phong	0	0	0
+13	Sơn La	8722	Tân Yên	0	0	0
+13	Sơn La	8715	Thảo Nguyên	16	0	16
+13	Sơn La	21258	Thuận Châu	0	0	0
+13	Sơn La	8792	Tô Hiệu	3	0	3
+13	Sơn La	8725	Tô Múa	2	0	2
+13	Sơn La	8765	Tường Hạ	0	0	0
+13	Sơn La	8726	Vân Hồ	2	2	4
+13	Sơn La	8721	Vân Sơn	3	1	4
+13	Sơn La	8678	Xím Vàng	0	0	0
+13	Sơn La	8727	Xuân Nha	0	0	0
+13	Sơn La	21271	Yên Châu	0	0	0
+13	Sơn La	8852	Yên Sơn	0	0	0
+15	Quảng Trị	8506	A Dơi	0	0	0
+15	Quảng Trị	8529	Ái Tử	8	1	9
+15	Quảng Trị	7810	Ba Đồn	0	3	3
+15	Quảng Trị	8450	Ba Lòng	0	0	0
+15	Quảng Trị	20845	Bắc Gianh	0	1	1
+15	Quảng Trị	7729	Bắc Trạch	0	0	0
+15	Quảng Trị	8484	Bến Hải	7	0	7
+15	Quảng Trị	8547	Bến Quan	0	0	0
+15	Quảng Trị	7737	Bố Trạch	0	0	0
+15	Quảng Trị	7769	Cam Hồng	3	1	4
+15	Quảng Trị	21411	Cam Lộ	3	0	3
+15	Quảng Trị	20309	Cồn Cỏ	0	0	0
+15	Quảng Trị	8480	Cồn Tiên	4	0	4
+15	Quảng Trị	21454	Cửa Tùng	25	3	28
+15	Quảng Trị	8467	Cửa Việt	60	8	68
+15	Quảng Trị	7862	Dân Hóa	0	0	0
+15	Quảng Trị	21433	Diên Sanh	7	2	9
+15	Quảng Trị	21426	Đakrông	0	0	0
+15	Quảng Trị	21377	Đông Hà	56	7	63
+15	Quảng Trị	7759	Đồng Hới	9	10	19
+15	Quảng Trị	7839	Đồng Lê	2	0	2
+15	Quảng Trị	7757	Đồng Sơn	2	3	5
+15	Quảng Trị	7752	Đồng Thuận	1	5	6
+15	Quảng Trị	7731	Đông Trạch	1	0	1
+15	Quảng Trị	21432	Gio Linh	3	0	3
+15	Quảng Trị	8494	Hải Lăng	7	1	8
+15	Quảng Trị	8445	Hiếu Giang	12	3	15
+15	Quảng Trị	7811	Hòa Trạch	0	0	0
+15	Quảng Trị	7736	Hoàn Lão	0	1	1
+15	Quảng Trị	8454	Hướng Hiệp	0	0	0
+15	Quảng Trị	8509	Hướng Lập	0	0	0
+15	Quảng Trị	8512	Hướng Phùng	1	0	1
+15	Quảng Trị	8516	Khe Sanh	0	0	0
+15	Quảng Trị	7865	Kim Điền	0	0	0
+15	Quảng Trị	7776	Kim Ngân	0	0	0
+15	Quảng Trị	7880	Kim Phú	1	0	1
+15	Quảng Trị	8447	La Lay	0	0	0
+15	Quảng Trị	8523	Lao Bảo	0	0	0
+15	Quảng Trị	7784	Lệ Ninh	0	0	0
+15	Quảng Trị	7775	Lệ Thủy	4	0	4
+15	Quảng Trị	21444	Lìa	1	0	1
+15	Quảng Trị	7874	Minh Hóa	0	0	0
+15	Quảng Trị	8490	Mỹ Thủy	3	0	3
+15	Quảng Trị	7825	Nam Ba Đồn	3	0	3
+15	Quảng Trị	8544	Nam Cửa Việt	21	0	21
+15	Quảng Trị	8463	Nam Đông Hà	112	13	125
+15	Quảng Trị	7814	Nam Gianh	0	0	0
+15	Quảng Trị	8497	Nam Hải Lăng	0	0	0
+15	Quảng Trị	20858	Nam Trạch	0	0	0
+15	Quảng Trị	7803	Ninh Châu	4	7	11
+15	Quảng Trị	20853	Phong Nha	0	3	3
+15	Quảng Trị	7812	Phú Trạch	0	0	0
+15	Quảng Trị	7802	Quảng Ninh	0	4	4
+15	Quảng Trị	20926	Quảng Trạch	1	0	1
+15	Quảng Trị	21381	Quảng Trị	6	3	9
+15	Quảng Trị	7774	Sen Ngư	1	0	1
+15	Quảng Trị	8457	Tà Rụt	0	0	0
+15	Quảng Trị	20922	Tân Gianh	0	0	0
+15	Quảng Trị	8520	Tân Lập	0	0	0
+15	Quảng Trị	7789	Tân Mỹ	1	0	1
+15	Quảng Trị	8481	Tân Thành	0	0	0
+15	Quảng Trị	7748	Thượng Trạch	0	0	0
+15	Quảng Trị	8532	Triệu Bình	0	0	0
+15	Quảng Trị	8545	Triệu Cơ	2	0	2
+15	Quảng Trị	8528	Triệu Phong	7	1	8
+15	Quảng Trị	7820	Trung Thuần	3	0	3
+15	Quảng Trị	7806	Trường Ninh	0	1	1
+15	Quảng Trị	7792	Trường Phú	1	0	1
+15	Quảng Trị	7804	Trường Sơn	0	0	0
+15	Quảng Trị	7848	Tuyên Bình	0	0	0
+15	Quảng Trị	7854	Tuyên Hóa	1	0	1
+15	Quảng Trị	7843	Tuyên Lâm	0	0	0
+15	Quảng Trị	7838	Tuyên Phú	0	0	0
+15	Quảng Trị	7852	Tuyên Sơn	0	0	0
+15	Quảng Trị	8496	Vĩnh Định	0	0	0
+15	Quảng Trị	21455	Vĩnh Hoàng	6	2	8
+15	Quảng Trị	8548	Vĩnh Linh	5	4	9
+15	Quảng Trị	8565	Vĩnh Thủy	1	0	1
+16	Quảng Ninh	8305	An Sinh	12	0	12
+16	Quảng Ninh	21221	Ba Chẽ	5	0	5
+16	Quảng Ninh	8326	Bãi Cháy	1085	142	1227
+16	Quảng Ninh	8307	Bình Khê	4	0	4
+16	Quảng Ninh	21222	Bình Liêu	0	0	0
+16	Quảng Ninh	21238	Cái Chiên	1	0	1
+16	Quảng Ninh	8297	Cẩm Phả	38	11	49
+16	Quảng Ninh	8328	Cao Xanh	241	52	293
+16	Quảng Ninh	21223	Cô Tô	19	0	19
+16	Quảng Ninh	8299	Cửa Ông	22	4	26
+16	Quảng Ninh	21225	Đầm Hà	1	0	1
+16	Quảng Ninh	8379	Điền Xá	0	0	0
+16	Quảng Ninh	8413	Đông Mai	19	2	21
+16	Quảng Ninh	8381	Đông Ngũ	0	1	1
+16	Quảng Ninh	8318	Đông Triều	11	1	12
+16	Quảng Ninh	21239	Đường Hoa	2	0	2
+16	Quảng Ninh	8414	Hà An	111	30	141
+16	Quảng Ninh	8333	Hà Lầm	175	26	201
+16	Quảng Ninh	8338	Hạ Long	326	14	340
+16	Quảng Ninh	8336	Hà Tu	75	8	83
+16	Quảng Ninh	8363	Hải Hòa	20	8	28
+16	Quảng Ninh	8382	Hải Lạng	0	0	0
+16	Quảng Ninh	8371	Hải Ninh	1	0	1
+16	Quảng Ninh	8364	Hải Sơn	2	0	2
+16	Quảng Ninh	8415	Hiệp Hòa	21	0	21
+16	Quảng Ninh	8309	Hoàng Quế	4	1	5
+16	Quảng Ninh	21204	Hoành Bồ	467	6	473
+16	Quảng Ninh	8281	Hoành Mô	0	0	0
+16	Quảng Ninh	8337	Hồng Gai	259	28	287
+16	Quảng Ninh	8351	Kỳ Thượng	2	0	2
+16	Quảng Ninh	8422	Liên Hòa	10	0	10
+16	Quảng Ninh	8284	Lục Hồn	0	0	0
+16	Quảng Ninh	8349	Lương Minh	2	0	2
+16	Quảng Ninh	8315	Mạo Khê	169	8	177
+16	Quảng Ninh	8373	Móng Cái 1	24	0	24
+16	Quảng Ninh	8370	Móng Cái 2	3	0	3
+16	Quảng Ninh	8367	Móng Cái 3	9	3	12
+16	Quảng Ninh	8301	Mông Dương	1	1	2
+16	Quảng Ninh	8421	Phong Cốc	7	0	7
+16	Quảng Ninh	21248	Quảng Đức	0	0	0
+16	Quảng Ninh	21233	Quảng Hà	13	1	14
+16	Quảng Ninh	8302	Quang Hanh	13	11	24
+16	Quảng Ninh	8353	Quảng La	6	0	6
+16	Quảng Ninh	21230	Quảng Tân	0	0	0
+16	Quảng Ninh	8423	Quảng Yên	31	3	34
+16	Quảng Ninh	8356	Thống Nhất	54	13	67
+16	Quảng Ninh	8378	Tiên Yên	3	1	4
+16	Quảng Ninh	8342	Tuần Châu	139	25	164
+16	Quảng Ninh	8393	Uông Bí	23	6	29
+16	Quảng Ninh	8401	Vân Đồn	54	17	71
+16	Quảng Ninh	8397	Vàng Danh	8	3	11
+16	Quảng Ninh	8343	Việt Hưng	132	6	138
+16	Quảng Ninh	8375	Vĩnh Thực	1	0	1
+16	Quảng Ninh	8391	Yên Tử	10	3	13
+17	Quảng Ngãi	8244	An Phú	46	2	48
+17	Quảng Ngãi	8095	Ba Dinh	0	0	0
+17	Quảng Ngãi	8096	Ba Động	1	0	1
+17	Quảng Ngãi	8214	Ba Gia	4	3	7
+17	Quảng Ngãi	8105	Ba Tô	0	0	0
+17	Quảng Ngãi	21482	Ba Tơ	0	0	0
+17	Quảng Ngãi	8107	Ba Vì	0	0	0
+17	Quảng Ngãi	8108	Ba Vinh	0	0	0
+17	Quảng Ngãi	8109	Ba Xa	0	0	0
+17	Quảng Ngãi	8113	Bình Chương	0	0	0
+17	Quảng Ngãi	8120	Bình Minh	0	0	0
+17	Quảng Ngãi	21481	Bình Sơn	20	1	21
+17	Quảng Ngãi	5579	Bờ Y	5	2	7
+17	Quảng Ngãi	8238	Cà Đam	0	0	0
+17	Quảng Ngãi	8184	Cẩm Thành	175	16	191
+17	Quảng Ngãi	5580	Dục Nông	0	0	0
+17	Quảng Ngãi	5576	Đăk Bla	5	4	9
+17	Quảng Ngãi	5560	Đăk Cấm	3	5	8
+17	Quảng Ngãi	20850	Đăk Hà	6	2	8
+17	Quảng Ngãi	20866	Đăk Kôi	0	0	0
+17	Quảng Ngãi	5525	Đăk Long	0	0	0
+17	Quảng Ngãi	5535	Đăk Mar	3	1	4
+17	Quảng Ngãi	5527	Đăk Môn	0	0	0
+17	Quảng Ngãi	5529	Đăk Pék	0	0	0
+17	Quảng Ngãi	5522	Đăk Plô	1	0	1
+17	Quảng Ngãi	5536	Đăk Pxi	0	0	0
+17	Quảng Ngãi	5562	Đăk Rơ Wa	2	1	3
+17	Quảng Ngãi	20865	Đăk Rve	0	0	0
+17	Quảng Ngãi	20877	Đăk Sao	0	0	0
+17	Quảng Ngãi	20852	Đăk Tô	1	1	2
+17	Quảng Ngãi	20878	Đăk Tờ Kan	0	0	0
+17	Quảng Ngãi	5537	Đăk Ui	1	0	1
+17	Quảng Ngãi	8106	Đặng Thùy Trâm	0	0	0
+17	Quảng Ngãi	8167	Đình Cương	3	0	3
+17	Quảng Ngãi	8117	Đông Sơn	23	1	24
+17	Quảng Ngãi	8231	Đông Trà Bồng	0	0	0
+17	Quảng Ngãi	21479	Đức Phổ	19	1	20
+17	Quảng Ngãi	5565	Ia Chim	0	1	1
+17	Quảng Ngãi	20855	Ia Đal	0	0	0
+17	Quảng Ngãi	20856	Ia Tơi	0	0	0
+17	Quảng Ngãi	8137	Khánh Cường	3	1	4
+17	Quảng Ngãi	20870	Kon Braih	0	0	0
+17	Quảng Ngãi	5544	Kon Đào	0	0	0
+17	Quảng Ngãi	5557	Kon Plông	2	0	2
+17	Quảng Ngãi	5572	Kon Tum	5	2	7
+17	Quảng Ngãi	8161	Lân Phong	7	1	8
+17	Quảng Ngãi	8160	Long Phụng	3	0	3
+17	Quảng Ngãi	8081	Lý Sơn	0	0	0
+17	Quảng Ngãi	5553	Măng Bút	0	0	0
+17	Quảng Ngãi	20860	Măng Đen	4	6	10
+17	Quảng Ngãi	20879	Măng Ri	0	0	0
+17	Quảng Ngãi	8149	Minh Long	0	1	1
+17	Quảng Ngãi	8154	Mỏ Cày	3	1	4
+17	Quảng Ngãi	21480	Mộ Đức	16	8	24
+17	Quảng Ngãi	5588	Mô Rai	0	0	0
+17	Quảng Ngãi	8255	Nghĩa Giang	26	4	30
+17	Quảng Ngãi	8166	Nghĩa Hành	7	5	12
+17	Quảng Ngãi	8183	Nghĩa Lộ	160	17	177
+17	Quảng Ngãi	5531	Ngọc Linh	0	0	0
+17	Quảng Ngãi	5570	Ngọk Bay	1	0	1
+17	Quảng Ngãi	5539	Ngọk Réo	1	0	1
+17	Quảng Ngãi	5545	Ngọk Tụ	0	0	0
+17	Quảng Ngãi	8139	Nguyễn Nghiêm	2	2	4
+17	Quảng Ngãi	8168	Phước Giang	6	0	6
+17	Quảng Ngãi	5589	Rờ Kơi	0	0	0
+17	Quảng Ngãi	5590	Sa Bình	2	0	2
+17	Quảng Ngãi	8143	Sa Huỳnh	1	0	1
+17	Quảng Ngãi	5586	Sa Loong	0	2	2
+17	Quảng Ngãi	20872	Sa Thầy	0	0	0
+17	Quảng Ngãi	8188	Sơn Hà	0	0	0
+17	Quảng Ngãi	8193	Sơn Hạ	0	0	0
+17	Quảng Ngãi	8195	Sơn Kỳ	0	0	0
+17	Quảng Ngãi	8196	Sơn Linh	0	0	0
+17	Quảng Ngãi	8150	Sơn Mai	0	0	0
+17	Quảng Ngãi	8206	Sơn Tây	0	0	0
+17	Quảng Ngãi	8210	Sơn Tây Hạ	0	0	0
+17	Quảng Ngãi	8208	Sơn Tây Thượng	0	0	0
+17	Quảng Ngãi	8200	Sơn Thủy	0	0	0
+17	Quảng Ngãi	8219	Sơn Tịnh	7	5	12
+17	Quảng Ngãi	21474	Tây Trà	0	1	1
+17	Quảng Ngãi	21473	Tây Trà Bồng	0	0	0
+17	Quảng Ngãi	8235	Thanh Bồng	0	0	0
+17	Quảng Ngãi	8172	Thiện Tín	0	0	0
+17	Quảng Ngãi	8226	Thọ Phong	42	24	66
+17	Quảng Ngãi	8222	Tịnh Khê	53	4	57
+17	Quảng Ngãi	8240	Trà Bồng	0	0	0
+17	Quảng Ngãi	8145	Trà Câu	19	0	19
+17	Quảng Ngãi	8252	Trà Giang	12	5	17
+17	Quảng Ngãi	8218	Trường Giang	1	0	1
+17	Quảng Ngãi	21471	Trương Quang Trọng	83	8	91
+17	Quảng Ngãi	20883	Tu Mơ Rông	1	0	1
+17	Quảng Ngãi	8241	Tư Nghĩa	61	15	76
+17	Quảng Ngãi	8130	Vạn Tường	30	2	32
+17	Quảng Ngãi	8258	Vệ Giang	7	0	7
+17	Quảng Ngãi	5532	Xốp	0	0	0
+17	Quảng Ngãi	5595	Ya Ly	0	0	0
+21	Phú Thọ	4283	An Bình	115	3	118
+21	Phú Thọ	4284	An Nghĩa	411	16	427
+21	Phú Thọ	7374	Âu Cơ	41	28	69
+21	Phú Thọ	7342	Bản Nguyên	5	0	5
+21	Phú Thọ	7284	Bằng Luân	0	0	0
+21	Phú Thọ	4310	Bao La	0	0	0
+21	Phú Thọ	1657	Bình Nguyên	36	6	42
+21	Phú Thọ	7357	Bình Phú	1	0	1
+21	Phú Thọ	1654	Bình Tuyền	39	5	44
+21	Phú Thọ	1656	Bình Xuyên	81	20	101
+21	Phú Thọ	21186	Cẩm Khê	18	2	20
+21	Phú Thọ	4212	Cao Dương	226	31	257
+21	Phú Thọ	4378	Cao Phong	8	2	10
+21	Phú Thọ	4178	Cao Sơn	1	0	1
+21	Phú Thọ	7286	Chân Mộng	2	0	2
+21	Phú Thọ	7287	Chí Đám	0	0	0
+21	Phú Thọ	7404	Chí Tiên	0	0	0
+21	Phú Thọ	7430	Cự Đồng	8	3	11
+21	Phú Thọ	7356	Dân Chủ	2	0	2
+21	Phú Thọ	4214	Dũng Tiến	12	1	13
+21	Phú Thọ	21237	Đà Bắc	6	4	10
+21	Phú Thọ	1762	Đại Đình	12	4	16
+21	Phú Thọ	4254	Đại Đồng	0	4	4
+21	Phú Thọ	7321	Đan Thượng	30	0	30
+21	Phú Thọ	1763	Đạo Trù	1	1	2
+21	Phú Thọ	7453	Đào Xá	9	3	12
+21	Phú Thọ	21187	Đoan Hùng	2	1	3
+21	Phú Thọ	7511	Đồng Lương	6	0	6
+21	Phú Thọ	7409	Đông Thành	5	0	5
+21	Phú Thọ	21234	Đức Nhàn	0	0	0
+21	Phú Thọ	21188	Hạ Hòa	59	1	60
+21	Phú Thọ	20994	Hải Lựu	0	0	0
+21	Phú Thọ	7322	Hiền Lương	18	0	18
+21	Phú Thọ	7387	Hiền Quan	24	1	25
+21	Phú Thọ	4198	Hòa Bình	6	14	20
+21	Phú Thọ	1689	Hoàng An	5	0	5
+21	Phú Thọ	7412	Hoàng Cương	7	1	8
+21	Phú Thọ	1688	Hội Thịnh	15	6	21
+21	Phú Thọ	21270	Hợp Kim	125	7	132
+21	Phú Thọ	1672	Hợp Lý	4	2	6
+21	Phú Thọ	7513	Hùng Việt	0	0	0
+21	Phú Thọ	7435	Hương Cần	4	0	4
+21	Phú Thọ	7473	Hy Cương	76	6	82
+21	Phú Thọ	7436	Khả Cửu	1	0	1
+21	Phú Thọ	21269	Kim Bôi	24	5	29
+21	Phú Thọ	4196	Kỳ Sơn	64	0	64
+21	Phú Thọ	4360	Lạc Lương	25	7	32
+21	Phú Thọ	4278	Lạc Sơn	5	1	6
+21	Phú Thọ	4285	Lạc Thủy	19	6	25
+21	Phú Thọ	7553	Lai Đồng	4	0	4
+21	Phú Thọ	21190	Lâm Thao	14	1	15
+21	Phú Thọ	20980	Lập Thạch	7	5	12
+21	Phú Thọ	1741	Liên Châu	2	3	5
+21	Phú Thọ	1673	Liên Hòa	0	2	2
+21	Phú Thọ	7406	Liên Minh	0	0	0
+21	Phú Thọ	4301	Liên Sơn	143	48	191
+21	Phú Thọ	7554	Long Cốc	0	0	0
+21	Phú Thọ	4218	Lương Sơn	144	59	203
+21	Phú Thọ	4309	Mai Châu	2	1	3
+21	Phú Thọ	4315	Mai Hạ	0	1	1
+21	Phú Thọ	7556	Minh Đài	1	0	1
+21	Phú Thọ	7494	Minh Hòa	2	1	3
+21	Phú Thọ	4339	Mường Bi	7	1	8
+21	Phú Thọ	4215	Mường Động	29	6	35
+21	Phú Thọ	4346	Mường Hoa	5	0	5
+21	Phú Thọ	4371	Mường Thàng	5	3	8
+21	Phú Thọ	4271	Mường Vang	0	0	0
+21	Phú Thọ	4234	Nật Sơn	20	3	23
+21	Phú Thọ	4266	Ngọc Sơn	0	0	0
+21	Phú Thọ	1742	Nguyệt Đức	2	0	2
+21	Phú Thọ	4267	Nhân Nghĩa	0	0	0
+21	Phú Thọ	7477	Nông Trang	81	6	87
+21	Phú Thọ	4320	Pà Cò	0	0	0
+21	Phú Thọ	7378	Phong Châu	19	0	19
+21	Phú Thọ	7519	Phú Khê	2	0	2
+21	Phú Thọ	7364	Phú Mỹ	1	0	1
+21	Phú Thọ	7366	Phù Ninh	5	0	5
+21	Phú Thọ	7377	Phú Thọ	18	0	18
+21	Phú Thọ	1754	Phúc Yên	74	7	81
+21	Phú Thọ	7344	Phùng Nguyên	7	0	7
+21	Phú Thọ	7416	Quảng Yên	2	0	2
+21	Phú Thọ	4179	Quy Đức	1	0	1
+21	Phú Thọ	4255	Quyết Thắng	0	0	0
+21	Phú Thọ	1677	Sơn Đông	0	0	0
+21	Phú Thọ	7493	Sơn Lương	8	0	8
+21	Phú Thọ	20992	Sông Lô	5	0	5
+21	Phú Thọ	1692	Tam Dương	67	28	95
+21	Phú Thọ	1687	Tam Dương Bắc	33	8	41
+21	Phú Thọ	20983	Tam Đảo	42	24	66
+21	Phú Thọ	1743	Tam Hồng	3	2	5
+21	Phú Thọ	7390	Tam Nông	31	5	36
+21	Phú Thọ	20987	Tam Sơn	1	1	2
+21	Phú Thọ	4202	Tân Hòa	2	2	4
+21	Phú Thọ	4337	Tân Lạc	20	3	23
+21	Phú Thọ	4326	Tân Mai	0	0	0
+21	Phú Thọ	4189	Tân Pheo	2	0	2
+21	Phú Thọ	7565	Tân Sơn	0	1	1
+21	Phú Thọ	7304	Tây Cốc	4	0	4
+21	Phú Thọ	1744	Tề Lỗ	0	0	0
+21	Phú Thọ	1678	Thái Hòa	1	3	4
+21	Phú Thọ	21193	Thanh Ba	14	1	15
+21	Phú Thọ	7483	Thanh Miếu	91	10	101
+21	Phú Thọ	21201	Thanh Sơn	12	1	13
+21	Phú Thọ	21202	Thanh Thủy	223	8	231
+21	Phú Thọ	21412	Thịnh Minh	89	4	93
+21	Phú Thọ	1714	Thổ Tang	0	0	0
+21	Phú Thọ	7398	Thọ Văn	18	0	18
+21	Phú Thọ	4207	Thống Nhất	5	4	9
+21	Phú Thọ	7564	Thu Cúc	3	0	3
+21	Phú Thọ	4381	Thung Nai	3	4	7
+21	Phú Thọ	4273	Thượng Cốc	2	1	3
+21	Phú Thọ	7501	Thượng Long	7	0	7
+21	Phú Thọ	1679	Tiên Lữ	3	0	3
+21	Phú Thọ	7535	Tiên Lương	4	0	4
+21	Phú Thọ	4190	Tiền Phong	1	0	1
+21	Phú Thọ	4334	Toàn Thắng	1	0	1
+21	Phú Thọ	7369	Trạm Thản	3	1	4
+21	Phú Thọ	7502	Trung Sơn	0	0	0
+21	Phú Thọ	7464	Tu Vũ	107	16	123
+21	Phú Thọ	7539	Vân Bán	1	0	1
+21	Phú Thọ	7334	Văn Lang	6	0	6
+21	Phú Thọ	7447	Văn Miếu	1	0	1
+21	Phú Thọ	7489	Vân Phú	77	12	89
+21	Phú Thọ	4353	Vân Sơn	1	0	1
+21	Phú Thọ	7384	Vạn Xuân	45	0	45
+21	Phú Thọ	7480	Việt Trì	150	8	158
+21	Phú Thọ	1704	Vĩnh An	0	0	0
+21	Phú Thọ	7335	Vĩnh Chân	32	0	32
+21	Phú Thọ	1707	Vĩnh Hưng	0	1	1
+21	Phú Thọ	1722	Vĩnh Phú	0	0	0
+21	Phú Thọ	1726	Vĩnh Phúc	95	51	146
+21	Phú Thọ	1705	Vĩnh Thành	2	0	2
+21	Phú Thọ	1712	Vĩnh Tường	0	0	0
+21	Phú Thọ	1734	Vĩnh Yên	55	18	73
+21	Phú Thọ	7448	Võ Miếu	1	0	1
+21	Phú Thọ	7570	Xuân Đài	1	0	1
+21	Phú Thọ	1760	Xuân Hòa	198	113	311
+21	Phú Thọ	1664	Xuân Lãng	8	1	9
+21	Phú Thọ	7354	Xuân Lũng	18	1	19
+21	Phú Thọ	7505	Xuân Viên	3	0	3
+21	Phú Thọ	7340	Yên Kỳ	5	0	5
+21	Phú Thọ	20986	Yên Lạc	1	7	8
+21	Phú Thọ	21000	Yên Lãng	0	0	0
+21	Phú Thọ	21203	Yên Lập	15	2	17
+21	Phú Thọ	4282	Yên Phú	1	2	3
+21	Phú Thọ	7451	Yên Sơn	5	1	6
+21	Phú Thọ	4357	Yên Thủy	5	13	18
+21	Phú Thọ	4366	Yên Trị	5	9	14
+23	Ninh Bình	3643	Bắc Lý	2	3	5
+23	Ninh Bình	3599	Bình An	1	0	1
+23	Ninh Bình	3587	Bình Giang	1	3	4
+23	Ninh Bình	3586	Bình Lục	0	1	1
+23	Ninh Bình	7069	Bình Minh	2	2	4
+23	Ninh Bình	3585	Bình Mỹ	1	1	2
+23	Ninh Bình	3596	Bình Sơn	0	0	0
+23	Ninh Bình	6461	Cát Thành	1	1	2
+23	Ninh Bình	7070	Chất Bình	0	0	0
+23	Ninh Bình	3699	Châu Sơn	13	5	18
+23	Ninh Bình	6462	Cổ Lễ	1	1	2
+23	Ninh Bình	7095	Cúc Phương	5	0	5
+23	Ninh Bình	3610	Duy Hà	7	3	10
+23	Ninh Bình	3602	Duy Tân	5	0	5
+23	Ninh Bình	3604	Duy Tiên	11	10	21
+23	Ninh Bình	7192	Đại Hoàng	0	0	0
+23	Ninh Bình	7073	Định Hóa	15	0	15
+23	Ninh Bình	6396	Đông A	3	4	7
+23	Ninh Bình	7128	Đông Hoa Lư	9	1	10
+23	Ninh Bình	7168	Đồng Thái	0	0	0
+23	Ninh Bình	6436	Đồng Thịnh	0	0	0
+23	Ninh Bình	3606	Đồng Văn	8	4	12
+23	Ninh Bình	7186	Gia Hưng	7	0	7
+23	Ninh Bình	7098	Gia Lâm	1	0	1
+23	Ninh Bình	7190	Gia Phong	1	0	1
+23	Ninh Bình	7199	Gia Trấn	3	0	3
+23	Ninh Bình	7101	Gia Tường	1	0	1
+23	Ninh Bình	7201	Gia Vân	7	1	8
+23	Ninh Bình	7185	Gia Viễn	18	0	18
+23	Ninh Bình	6340	Giao Bình	78	6	84
+23	Ninh Bình	6342	Giao Hòa	0	0	0
+23	Ninh Bình	6332	Giao Hưng	4	3	7
+23	Ninh Bình	6336	Giao Minh	0	0	0
+23	Ninh Bình	6344	Giao Ninh	111	33	144
+23	Ninh Bình	6339	Giao Phúc	0	0	0
+23	Ninh Bình	6324	Giao Thủy	1	0	1
+23	Ninh Bình	3670	Hà Nam	68	94	162
+23	Ninh Bình	6346	Hải An	0	2	2
+23	Ninh Bình	6347	Hải Anh	2	0	2
+23	Ninh Bình	6379	Hải Hậu	5	3	8
+23	Ninh Bình	6357	Hải Hưng	3	2	5
+23	Ninh Bình	6368	Hải Quang	5	0	5
+23	Ninh Bình	6378	Hải Thịnh	39	21	60
+23	Ninh Bình	6345	Hải Tiến	16	2	18
+23	Ninh Bình	6377	Hải Xuân	35	36	71
+23	Ninh Bình	6486	Hiển Khánh	0	0	0
+23	Ninh Bình	7062	Hoa Lư	32	16	48
+23	Ninh Bình	6443	Hồng Phong	1	1	2
+23	Ninh Bình	6419	Hồng Quang	4	3	7
+23	Ninh Bình	7150	Khánh Hội	1	1	2
+23	Ninh Bình	7154	Khánh Nhạc	2	1	3
+23	Ninh Bình	7158	Khánh Thiện	3	0	3
+23	Ninh Bình	7161	Khánh Trung	1	1	2
+23	Ninh Bình	3631	Kim Bảng	1	1	2
+23	Ninh Bình	7079	Kim Đông	2	0	2
+23	Ninh Bình	7078	Kim Sơn	0	1	1
+23	Ninh Bình	3626	Kim Thanh	1	1	2
+23	Ninh Bình	7084	Lai Thành	9	0	9
+23	Ninh Bình	3629	Lê Hồ	4	4	8
+23	Ninh Bình	3682	Liêm Hà	7	2	9
+23	Ninh Bình	3589	Liêm Tuyền	9	0	9
+23	Ninh Bình	6490	Liên Minh	0	0	0
+23	Ninh Bình	3645	Lý Nhân	1	2	3
+23	Ninh Bình	3630	Lý Thường Kiệt	3	2	5
+23	Ninh Bình	6491	Minh Tân	0	1	1
+23	Ninh Bình	6467	Minh Thái	2	2	4
+23	Ninh Bình	21029	Mỹ Lộc	2	0	2
+23	Ninh Bình	6405	Nam Định	14	29	43
+23	Ninh Bình	6418	Nam Đồng	1	0	1
+23	Ninh Bình	7127	Nam Hoa Lư	22	12	34
+23	Ninh Bình	6425	Nam Hồng	0	0	0
+23	Ninh Bình	21006	Nam Lý	1	0	1
+23	Ninh Bình	6421	Nam Minh	0	1	1
+23	Ninh Bình	6424	Nam Ninh	0	0	0
+23	Ninh Bình	6422	Nam Trực	0	0	0
+23	Ninh Bình	3646	Nam Xang	3	3	6
+23	Ninh Bình	6437	Nghĩa Hưng	0	1	1
+23	Ninh Bình	6446	Nghĩa Lâm	0	0	0
+23	Ninh Bình	6452	Nghĩa Sơn	0	0	0
+23	Ninh Bình	3632	Nguyễn Úy	0	0	0
+23	Ninh Bình	3662	Nhân Hà	0	0	0
+23	Ninh Bình	21038	Nho Quan	7	0	7
+23	Ninh Bình	21033	Ninh Cường	0	0	0
+23	Ninh Bình	6465	Ninh Giang	1	0	1
+23	Ninh Bình	7087	Phát Diệm	2	0	2
+23	Ninh Bình	6545	Phong Doanh	1	0	1
+23	Ninh Bình	7106	Phú Long	11	0	11
+23	Ninh Bình	3678	Phủ Lý	29	5	34
+23	Ninh Bình	7107	Phú Sơn	0	0	0
+23	Ninh Bình	3676	Phù Vân	7	10	17
+23	Ninh Bình	6471	Quang Hưng	0	0	0
+23	Ninh Bình	7088	Quang Thiện	1	1	2
+23	Ninh Bình	6459	Quỹ Nhất	0	0	0
+23	Ninh Bình	7109	Quỳnh Lưu	2	1	3
+23	Ninh Bình	6460	Rạng Đông	1	0	1
+23	Ninh Bình	3622	Tam Chúc	4	4	8
+23	Ninh Bình	7135	Tam Điệp	15	0	15
+23	Ninh Bình	6520	Tân Minh	0	0	0
+23	Ninh Bình	21016	Tân Thanh	11	12	23
+23	Ninh Bình	7058	Tây Hoa Lư	6	1	7
+23	Ninh Bình	3683	Thanh Bình	2	1	3
+23	Ninh Bình	3693	Thanh Lâm	4	3	7
+23	Ninh Bình	3691	Thanh Liêm	3	1	4
+23	Ninh Bình	6398	Thành Nam	4	3	7
+23	Ninh Bình	7115	Thanh Sơn	1	0	1
+23	Ninh Bình	6395	Thiên Trường	2	2	4
+23	Ninh Bình	3617	Tiên Sơn	2	0	2
+23	Ninh Bình	3660	Trần Thương	2	0	2
+23	Ninh Bình	6477	Trực Ninh	0	0	0
+23	Ninh Bình	7141	Trung Sơn	3	1	4
+23	Ninh Bình	6412	Trường Thi	4	4	8
+23	Ninh Bình	6543	Vạn Thắng	2	0	2
+23	Ninh Bình	6399	Vị Khê	3	2	5
+23	Ninh Bình	3666	Vĩnh Trụ	1	2	3
+23	Ninh Bình	6485	Vụ Bản	0	1	1
+23	Ninh Bình	6533	Vũ Dương	2	1	3
+23	Ninh Bình	6512	Xuân Giang	0	0	0
+23	Ninh Bình	6505	Xuân Hồng	0	0	0
+23	Ninh Bình	6518	Xuân Hưng	0	0	0
+23	Ninh Bình	21034	Xuân Trường	1	0	1
+23	Ninh Bình	6537	Ý Yên	10	0	10
+23	Ninh Bình	6523	Yên Cường	2	0	2
+23	Ninh Bình	6524	Yên Đồng	3	0	3
+23	Ninh Bình	7163	Yên Khánh	2	0	2
+23	Ninh Bình	7172	Yên Mạc	0	0	0
+23	Ninh Bình	7180	Yên Mô	2	0	2
+23	Ninh Bình	7143	Yên Sơn	4	4	8
+23	Ninh Bình	7178	Yên Thắng	3	0	3
+23	Ninh Bình	7181	Yên Từ	0	0	0
+24	Nghệ An	6609	An Châu	0	0	0
+24	Nghệ An	6574	Anh Sơn	0	0	0
+24	Nghệ An	6579	Anh Sơn Đông	0	0	0
+24	Nghệ An	6701	Bắc Lý	0	0	0
+24	Nghệ An	6651	Bạch Hà	2	0	2
+24	Nghệ An	6655	Bạch Ngọc	0	1	1
+24	Nghệ An	6944	Bích Hào	0	0	0
+24	Nghệ An	6590	Bình Chuẩn	0	0	0
+24	Nghệ An	7027	Bình Minh	2	1	3
+24	Nghệ An	6592	Cam Phục	0	0	0
+24	Nghệ An	6908	Cát Ngạn	0	0	0
+24	Nghệ An	6814	Châu Bình	0	0	0
+24	Nghệ An	6827	Châu Hồng	0	0	0
+24	Nghệ An	6593	Châu Khê	0	0	0
+24	Nghệ An	6828	Châu Lộc	0	0	0
+24	Nghệ An	6822	Châu Tiến	0	0	0
+24	Nghệ An	6704	Chiêu Lưu	0	0	0
+24	Nghệ An	6594	Con Cuông	0	0	0
+24	Nghệ An	6602	Cửa Lò	80	12	92
+24	Nghệ An	6638	Diễn Châu	1	0	1
+24	Nghệ An	21175	Đại Đồng	0	0	0
+24	Nghệ An	6726	Đại Huệ	0	0	0
+24	Nghệ An	21110	Đô Lương	6	0	6
+24	Nghệ An	7034	Đông Hiếu	2	1	3
+24	Nghệ An	21133	Đông Lộc	35	0	35
+24	Nghệ An	6999	Đông Thành	1	0	1
+24	Nghệ An	6619	Đức Châu	0	8	8
+24	Nghệ An	7002	Giai Lạc	0	0	0
+24	Nghệ An	6888	Giai Xuân	0	0	0
+24	Nghệ An	6618	Hải Châu	0	0	0
+24	Nghệ An	6762	Hải Lộc	5	0	5
+24	Nghệ An	6911	Hạnh Lâm	0	0	0
+24	Nghệ An	6915	Hoa Quân	0	0	0
+24	Nghệ An	21095	Hoàng Mai	1	0	1
+24	Nghệ An	6996	Hợp Minh	1	1	2
+24	Nghệ An	6816	Hùng Chân	0	0	0
+24	Nghệ An	6613	Hùng Châu	7	0	7
+24	Nghệ An	21121	Hưng Nguyên	11	6	17
+24	Nghệ An	6683	Hưng Nguyên Nam	0	0	0
+24	Nghệ An	6706	Huồi Tụ	0	0	0
+24	Nghệ An	6950	Hữu Khuông	0	0	0
+24	Nghệ An	6707	Hữu Kiệm	0	0	0
+24	Nghệ An	6709	Keng Đu	0	0	0
+24	Nghệ An	6921	Kim Bảng	0	0	0
+24	Nghệ An	6725	Kim Liên	2	0	2
+24	Nghệ An	21119	Lam Thành	0	0	0
+24	Nghệ An	6954	Lượng Minh	0	0	0
+24	Nghệ An	6648	Lương Sơn	3	0	3
+24	Nghệ An	6598	Mậu Thạch	1	0	1
+24	Nghệ An	21107	Minh Châu	0	0	0
+24	Nghệ An	6837	Minh Hợp	0	0	0
+24	Nghệ An	6599	Môn Sơn	0	0	0
+24	Nghệ An	6824	Mường Chọng	0	0	0
+24	Nghệ An	6825	Mường Ham	0	0	0
+24	Nghệ An	6711	Mường Lống	0	0	0
+24	Nghệ An	6799	Mường Quàng	1	0	1
+24	Nghệ An	6712	Mường Típ	0	0	0
+24	Nghệ An	6713	Mường Xén	0	0	0
+24	Nghệ An	6714	Mỹ Lý	0	0	0
+24	Nghệ An	6715	Na Loi	0	0	0
+24	Nghệ An	6716	Na Ngoi	0	0	0
+24	Nghệ An	6718	Nậm Cắn	0	0	0
+24	Nghệ An	6738	Nam Đàn	1	0	1
+24	Nghệ An	6957	Nga My	0	0	0
+24	Nghệ An	6774	Nghi Lộc	20	2	22
+24	Nghệ An	21137	Nghĩa Đàn	4	1	5
+24	Nghệ An	6893	Nghĩa Đồng	0	0	0
+24	Nghệ An	6895	Nghĩa Hành	0	0	0
+24	Nghệ An	6781	Nghĩa Hưng	1	0	1
+24	Nghệ An	6782	Nghĩa Khánh	0	0	0
+24	Nghệ An	6784	Nghĩa Lâm	0	0	0
+24	Nghệ An	6786	Nghĩa Lộc	0	0	0
+24	Nghệ An	6789	Nghĩa Mai	0	0	0
+24	Nghệ An	6796	Nghĩa Thọ	2	0	2
+24	Nghệ An	6571	Nhân Hòa	3	0	3
+24	Nghệ An	6958	Nhôn Mai	0	0	0
+24	Nghệ An	6745	Phúc Lộc	0	0	0
+24	Nghệ An	6995	Quan Thành	0	0	0
+24	Nghệ An	6614	Quảng Châu	0	0	0
+24	Nghệ An	7000	Quang Đồng	1	0	1
+24	Nghệ An	6804	Quế Phong	0	0	0
+24	Nghệ An	21144	Quỳ Châu	1	0	1
+24	Nghệ An	21146	Quỳ Hợp	1	0	1
+24	Nghệ An	6882	Quỳnh Anh	0	1	1
+24	Nghệ An	6845	Quỳnh Lưu	4	0	4
+24	Nghệ An	6847	Quỳnh Mai	1	2	3
+24	Nghệ An	6844	Quỳnh Phú	1	0	1
+24	Nghệ An	6848	Quỳnh Sơn	1	0	1
+24	Nghệ An	6871	Quỳnh Tam	0	1	1
+24	Nghệ An	6874	Quỳnh Thắng	1	0	1
+24	Nghệ An	6879	Quỳnh Văn	0	0	0
+24	Nghệ An	6912	Sơn Lâm	0	0	0
+24	Nghệ An	6928	Tam Đồng	0	0	0
+24	Nghệ An	6840	Tam Hợp	1	0	1
+24	Nghệ An	6961	Tam Quang	0	0	0
+24	Nghệ An	6962	Tam Thái	0	0	0
+24	Nghệ An	6901	Tân An	0	0	0
+24	Nghệ An	6625	Tân Châu	0	0	0
+24	Nghệ An	21147	Tân Kỳ	0	0	0
+24	Nghệ An	20091	Tân Mai	3	0	3
+24	Nghệ An	6899	Tân Phú	2	0	2
+24	Nghệ An	7048	Tây Hiếu	4	0	4
+24	Nghệ An	7037	Thái Hòa	8	0	8
+24	Nghệ An	6748	Thần Lĩnh	4	0	4
+24	Nghệ An	6570	Thành Bình Thọ	0	0	0
+24	Nghệ An	6971	Thành Vinh	163	21	184
+24	Nghệ An	6724	Thiên Nhẫn	0	0	0
+24	Nghệ An	6810	Thông Thụ	0	0	0
+24	Nghệ An	6662	Thuần Trung	0	0	0
+24	Nghệ An	6887	Tiên Đồng	0	0	0
+24	Nghệ An	6811	Tiền Phong	1	0	1
+24	Nghệ An	6812	Tri Lễ	0	0	0
+24	Nghệ An	6755	Trung Lộc	19	1	20
+24	Nghệ An	6970	Trường Vinh	265	50	315
+24	Nghệ An	6963	Tương Dương	0	0	0
+24	Nghệ An	21129	Vạn An	0	0	0
+24	Nghệ An	7014	Vân Du	2	0	2
+24	Nghệ An	6668	Văn Hiến	1	1	2
+24	Nghệ An	6753	Văn Kiều	3	0	3
+24	Nghệ An	7010	Vân Tụ	1	0	1
+24	Nghệ An	6978	Vinh Hưng	173	15	188
+24	Nghệ An	6981	Vinh Lộc	102	12	114
+24	Nghệ An	6974	Vinh Phú	149	22	171
+24	Nghệ An	6575	Vĩnh Tường	1	1	2
+24	Nghệ An	6913	Xuân Lâm	0	0	0
+24	Nghệ An	6966	Yên Hòa	0	0	0
+24	Nghệ An	6967	Yên Na	0	0	0
+24	Nghệ An	7003	Yên Thành	0	0	0
+24	Nghệ An	6699	Yên Trung	2	0	2
+24	Nghệ An	6572	Yên Xuân	4	0	4
+27	Lào Cai	5670	A Mú Sung	0	0	0
+27	Lào Cai	1604	Âu Lâu	4	2	6
+27	Lào Cai	5618	Bắc Hà	0	0	0
+27	Lào Cai	5722	Bản Hồ	2	0	2
+27	Lào Cai	5707	Bản Lầu	1	0	1
+27	Lào Cai	5619	Bản Liền	0	0	0
+27	Lào Cai	5673	Bản Xèo	0	0	0
+27	Lào Cai	1622	Bảo Ái	0	0	0
+27	Lào Cai	5651	Bảo Hà	0	1	1
+27	Lào Cai	5621	Bảo Nhai	0	0	0
+27	Lào Cai	5640	Bảo Thắng	1	0	1
+27	Lào Cai	5660	Bảo Yên	0	0	0
+27	Lào Cai	5675	Bát Xát	0	1	1
+27	Lào Cai	5694	Cam Đường	32	25	57
+27	Lào Cai	1624	Cảm Nhân	0	0	0
+27	Lào Cai	5709	Cao Sơn	0	0	0
+27	Lào Cai	1551	Cát Thịnh	0	0	0
+27	Lào Cai	20968	Cầu Thia	0	0	0
+27	Lào Cai	1552	Chấn Thịnh	0	0	0
+27	Lào Cai	1580	Châu Quế	0	0	0
+27	Lào Cai	1506	Chế Tạo	0	0	0
+27	Lào Cai	5739	Chiềng Ken	0	0	0
+27	Lào Cai	5622	Cốc Lầu	0	0	0
+27	Lào Cai	21045	Cốc San	0	0	0
+27	Lào Cai	5676	Dền Sáng	0	0	0
+27	Lào Cai	5741	Dương Quỳ	0	0	0
+27	Lào Cai	1584	Đông Cuông	0	0	0
+27	Lào Cai	1555	Gia Hội	0	0	0
+27	Lào Cai	5639	Gia Phú	13	2	15
+27	Lào Cai	20905	Hạnh Phúc	1	0	1
+27	Lào Cai	5698	Hợp Thành	0	0	0
+27	Lào Cai	1535	Hưng Khánh	0	0	0
+27	Lào Cai	1485	Khánh Hòa	0	0	0
+27	Lào Cai	5745	Khánh Yên	0	0	0
+27	Lào Cai	1509	Khao Mang	0	0	0
+27	Lào Cai	1586	Lâm Giang	0	0	0
+27	Lào Cai	1487	Lâm Thượng	0	0	0
+27	Lào Cai	5701	Lào Cai	22	3	25
+27	Lào Cai	1512	Lao Chải	0	0	0
+27	Lào Cai	1563	Liên Sơn	0	1	1
+27	Lào Cai	1503	Lục Yên	0	0	0
+27	Lào Cai	5627	Lùng Phình	0	0	0
+27	Lào Cai	1538	Lương Thịnh	0	0	0
+27	Lào Cai	1588	Mậu A	1	0	1
+27	Lào Cai	5748	Minh Lương	0	0	0
+27	Lào Cai	1590	Mỏ Vàng	0	0	0
+27	Lào Cai	20902	Mù Cang Chải	0	0	0
+27	Lào Cai	5737	Mường Bo	0	0	0
+27	Lào Cai	5678	Mường Hum	0	0	0
+27	Lào Cai	21069	Mường Khương	0	0	0
+27	Lào Cai	1492	Mường Lai	0	0	0
+27	Lào Cai	5749	Nậm Chày	0	0	0
+27	Lào Cai	1514	Nậm Có	0	0	0
+27	Lào Cai	1611	Nam Cường	2	0	2
+27	Lào Cai	5754	Nậm Xé	0	0	0
+27	Lào Cai	5659	Nghĩa Đô	0	0	0
+27	Lào Cai	20970	Nghĩa Lộ	0	0	0
+27	Lào Cai	1562	Nghĩa Tâm	0	0	0
+27	Lào Cai	5723	Ngũ Chỉ Sơn	1	0	1
+27	Lào Cai	5716	Pha Long	0	0	0
+27	Lào Cai	1523	Phình Hồ	0	0	0
+27	Lào Cai	1593	Phong Dụ Hạ	0	0	0
+27	Lào Cai	1594	Phong Dụ Thượng	0	0	0
+27	Lào Cai	5641	Phong Hải	0	0	0
+27	Lào Cai	5655	Phúc Khánh	0	0	0
+27	Lào Cai	1494	Phúc Lợi	0	0	0
+27	Lào Cai	1516	Púng Luông	0	0	0
+27	Lào Cai	20909	Quy Mông	0	0	0
+27	Lào Cai	5727	Sa Pa	101	4	105
+27	Lào Cai	5763	Si Ma Cai	2	0	2
+27	Lào Cai	5771	Sín Chéng	0	0	0
+27	Lào Cai	1569	Sơn Lương	0	0	0
+27	Lào Cai	5634	Tả Củ Tỷ	0	0	0
+27	Lào Cai	5734	Tả Phìn	14	3	17
+27	Lào Cai	5735	Tả Van	21	3	24
+27	Lào Cai	1524	Tà Xi Láng	0	0	0
+27	Lào Cai	1596	Tân Hợp	0	0	0
+27	Lào Cai	1496	Tân Lĩnh	0	0	0
+27	Lào Cai	5646	Tằng Loỏng	3	1	4
+27	Lào Cai	1636	Thác Bà	0	0	0
+27	Lào Cai	1576	Thượng Bằng La	0	0	0
+27	Lào Cai	5663	Thượng Hà	0	0	0
+27	Lào Cai	1525	Trạm Tấu	0	1	1
+27	Lào Cai	1530	Trấn Yên	0	1	1
+27	Lào Cai	5688	Trịnh Tường	0	1	1
+27	Lào Cai	20971	Trung Tâm	0	0	0
+27	Lào Cai	1577	Tú Lệ	13	0	13
+27	Lào Cai	5742	Văn Bàn	0	0	0
+27	Lào Cai	1570	Văn Chấn	0	0	0
+27	Lào Cai	1617	Văn Phú	3	0	3
+27	Lào Cai	1546	Việt Hồng	0	0	0
+27	Lào Cai	5760	Võ Lao	0	0	0
+27	Lào Cai	1598	Xuân Ái	0	1	1
+27	Lào Cai	5666	Xuân Hòa	0	0	0
+27	Lào Cai	5650	Xuân Quang	2	0	2
+27	Lào Cai	5690	Y Tý	0	0	0
+27	Lào Cai	1605	Yên Bái	14	5	19
+27	Lào Cai	20967	Yên Bình	4	0	4
+27	Lào Cai	1645	Yên Thành	1	0	1
+28	Lạng Sơn	5976	Ba Sơn	0	0	0
+28	Lạng Sơn	5927	Bắc Sơn	0	0	0
+28	Lạng Sơn	21153	Bằng Mạc	0	0	0
+28	Lạng Sơn	5962	Bình Gia	0	0	0
+28	Lạng Sơn	5996	Cai Kinh	0	0	0
+28	Lạng Sơn	5975	Cao Lộc	0	0	0
+28	Lạng Sơn	5990	Châu Sơn	0	0	0
+28	Lạng Sơn	21150	Chi Lăng	0	0	0
+28	Lạng Sơn	21155	Chiến Thắng	0	0	0
+28	Lạng Sơn	5968	Công Sơn	0	0	0
+28	Lạng Sơn	6114	Điềm He	0	0	0
+28	Lạng Sơn	21126	Đình Lập	0	0	0
+28	Lạng Sơn	6064	Đoàn Kết	0	0	0
+28	Lạng Sơn	5969	Đồng Đăng	1	0	1
+28	Lạng Sơn	6022	Đông Kinh	12	6	18
+28	Lạng Sơn	5948	Hoa Thám	0	0	0
+28	Lạng Sơn	6084	Hoàng Văn Thụ	0	0	0
+28	Lạng Sơn	6086	Hội Hoan	0	0	0
+28	Lạng Sơn	5950	Hồng Phong	0	0	0
+28	Lạng Sơn	5931	Hưng Vũ	0	0	0
+28	Lạng Sơn	6005	Hữu Liên	0	0	0
+28	Lạng Sơn	6015	Hữu Lũng	14	0	14
+28	Lạng Sơn	6068	Kháng Chiến	0	0	0
+28	Lạng Sơn	6106	Khánh Khê	0	0	0
+28	Lạng Sơn	6036	Khuất Xá	0	0	0
+28	Lạng Sơn	5988	Kiên Mộc	0	0	0
+28	Lạng Sơn	6024	Kỳ Lừa	2	4	6
+28	Lạng Sơn	6038	Lộc Bình	0	0	0
+28	Lạng Sơn	6037	Lợi Bác	0	0	0
+28	Lạng Sơn	6021	Lương Văn Tri	1	2	3
+28	Lạng Sơn	6039	Mẫu Sơn	0	0	0
+28	Lạng Sơn	6041	Na Dương	0	0	0
+28	Lạng Sơn	6090	Na Sầm	0	0	0
+28	Lạng Sơn	21162	Nhân Lý	0	0	0
+28	Lạng Sơn	5934	Nhất Hòa	0	0	0
+28	Lạng Sơn	21163	Quan Sơn	0	0	0
+28	Lạng Sơn	6071	Quốc Khánh	0	0	0
+28	Lạng Sơn	6072	Quốc Việt	0	0	0
+28	Lạng Sơn	5956	Quý Hòa	0	0	0
+28	Lạng Sơn	6027	Tam Thanh	1	6	7
+28	Lạng Sơn	6110	Tân Đoàn	0	0	0
+28	Lạng Sơn	6013	Tân Thành	0	0	0
+28	Lạng Sơn	6075	Tân Tiến	0	0	0
+28	Lạng Sơn	5940	Tân Tri	0	0	0
+28	Lạng Sơn	5958	Tân Văn	0	0	0
+28	Lạng Sơn	5995	Thái Bình	0	0	0
+28	Lạng Sơn	6077	Thất Khê	1	0	1
+28	Lạng Sơn	5959	Thiện Hòa	0	0	0
+28	Lạng Sơn	5960	Thiện Long	0	0	0
+28	Lạng Sơn	6012	Thiện Tân	1	0	1
+28	Lạng Sơn	5961	Thiện Thuật	3	1	4
+28	Lạng Sơn	6054	Thống Nhất	0	0	0
+28	Lạng Sơn	6097	Thụy Hùng	0	0	0
+28	Lạng Sơn	6063	Tràng Định	0	0	0
+28	Lạng Sơn	6115	Tri Lễ	0	0	0
+28	Lạng Sơn	6007	Tuấn Sơn	1	0	1
+28	Lạng Sơn	6094	Văn Lãng	0	0	0
+28	Lạng Sơn	21167	Vạn Linh	0	0	0
+28	Lạng Sơn	6016	Vân Nham	0	1	1
+28	Lạng Sơn	6101	Văn Quan	0	0	0
+28	Lạng Sơn	5943	Vũ Lăng	1	0	1
+28	Lạng Sơn	5944	Vũ Lễ	0	0	0
+28	Lạng Sơn	6052	Xuân Dương	0	0	0
+28	Lạng Sơn	6017	Yên Bình	0	0	0
+28	Lạng Sơn	6122	Yên Phúc	0	0	0
+29	Lâm Đồng	20038	1 Bảo Lộc	105	27	132
+29	Lâm Đồng	5806	2 Bảo Lộc	439	48	487
+29	Lâm Đồng	5805	3 Bảo Lộc	188	30	218
+29	Lâm Đồng	5797	B’Lao	34	13	47
+29	Lâm Đồng	20744	Bắc Bình	25	8	33
+29	Lâm Đồng	10850	Bắc Gia Nghĩa	23	10	33
+29	Lâm Đồng	2097	Bắc Ruộng	0	1	1
+29	Lâm Đồng	20537	Bảo Lâm 1	108	15	123
+29	Lâm Đồng	5785	Bảo Lâm 2	191	25	216
+29	Lâm Đồng	5795	Bảo Lâm 3	106	27	133
+29	Lâm Đồng	5792	Bảo Lâm 4	15	1	16
+29	Lâm Đồng	5787	Bảo Lâm 5	13	4	17
+29	Lâm Đồng	5852	Bảo Thuận	28	12	40
+29	Lâm Đồng	2086	Bình Thuận	67	14	81
+29	Lâm Đồng	5826	Cam Ly - Đà Lạt	269	87	356
+29	Lâm Đồng	20538	Cát Tiên	3	2	5
+29	Lâm Đồng	20539	Cát Tiên 2	3	2	5
+29	Lâm Đồng	5810	Cát Tiên 3	8	1	9
+29	Lâm Đồng	10867	Cư Jút	17	9	26
+29	Lâm Đồng	5871	D’Ran	16	4	20
+29	Lâm Đồng	20540	Di Linh	82	13	95
+29	Lâm Đồng	5845	Đạ Huoai	23	0	23
+29	Lâm Đồng	5844	Đạ Huoai 2	11	1	12
+29	Lâm Đồng	5848	Đạ Huoai 3	5	0	5
+29	Lâm Đồng	20542	Đạ Tẻh	50	4	54
+29	Lâm Đồng	5841	Đạ Tẻh 2	10	4	14
+29	Lâm Đồng	5842	Đạ Tẻh 3	18	3	21
+29	Lâm Đồng	10883	Đắk Mil	34	9	43
+29	Lâm Đồng	10887	Đắk Sắk	41	2	43
+29	Lâm Đồng	10921	Đắk Song	8	2	10
+29	Lâm Đồng	10863	Đắk Wil	1	2	3
+29	Lâm Đồng	20549	Đam Rông 1	0	0	0
+29	Lâm Đồng	20548	Đam Rông 2	1	0	1
+29	Lâm Đồng	20546	Đam Rông 3	0	0	0
+29	Lâm Đồng	20547	Đam Rông 4	0	2	2
+29	Lâm Đồng	5869	Đinh Trang Thượng	22	2	24
+29	Lâm Đồng	5902	Đinh Văn Lâm Hà	50	12	62
+29	Lâm Đồng	5878	Đơn Dương	59	20	79
+29	Lâm Đồng	10847	Đông Gia Nghĩa	10	5	15
+29	Lâm Đồng	2048	Đông Giang	1	0	1
+29	Lâm Đồng	2098	Đồng Kho	3	1	4
+29	Lâm Đồng	10938	Đức An	16	4	20
+29	Lâm Đồng	10902	Đức Lập	6	3	9
+29	Lâm Đồng	2036	Đức Linh	9	5	14
+29	Lâm Đồng	5886	Đức Trọng	237	37	274
+29	Lâm Đồng	5865	Gia Hiệp	10	4	14
+29	Lâm Đồng	2013	Hải Ninh	18	5	23
+29	Lâm Đồng	2065	Hàm Kiệm	42	12	54
+29	Lâm Đồng	2053	Hàm Liêm	90	14	104
+29	Lâm Đồng	2041	Hàm Tân	112	10	122
+29	Lâm Đồng	2055	Hàm Thắng	100	23	123
+29	Lâm Đồng	2068	Hàm Thạnh	16	3	19
+29	Lâm Đồng	2062	Hàm Thuận	87	10	97
+29	Lâm Đồng	2054	Hàm Thuận Bắc	54	6	60
+29	Lâm Đồng	2074	Hàm Thuận Nam	24	3	27
+29	Lâm Đồng	5884	Hiệp Thạnh	155	20	175
+29	Lâm Đồng	5859	Hòa Bắc	65	0	65
+29	Lâm Đồng	5861	Hòa Ninh	214	7	221
+29	Lâm Đồng	2014	Hòa Thắng	201	13	214
+29	Lâm Đồng	2030	Hoài Đức	11	6	17
+29	Lâm Đồng	20748	Hồng Sơn	66	6	72
+29	Lâm Đồng	2016	Hồng Thái	50	3	53
+29	Lâm Đồng	5872	Ka Đô	5	6	11
+29	Lâm Đồng	10919	Kiến Đức	5	6	11
+29	Lâm Đồng	10967	Krông Nô	10	1	11
+29	Lâm Đồng	2058	La Dạ	0	1	1
+29	Lâm Đồng	2126	La Gi	30	52	82
+29	Lâm Đồng	5895	Lạc Dương	58	6	64
+29	Lâm Đồng	5830	Lâm Viên - Đà Lạt	539	113	652
+29	Lâm Đồng	5828	Lang Biang - Đà Lạt	331	69	400
+29	Lâm Đồng	2115	Liên Hương	33	13	46
+29	Lâm Đồng	2017	Lương Sơn	64	7	71
+29	Lâm Đồng	2083	Mũi Né	309	71	380
+29	Lâm Đồng	5908	Nam Ban Lâm Hà	347	56	403
+29	Lâm Đồng	10865	Nam Dong	14	0	14
+29	Lâm Đồng	10957	Nam Đà	7	1	8
+29	Lâm Đồng	10844	Nam Gia Nghĩa	9	10	19
+29	Lâm Đồng	5909	Nam Hà Lâm Hà	54	13	67
+29	Lâm Đồng	10959	Nâm Nung	5	0	5
+29	Lâm Đồng	2027	Nam Thành	4	7	11
+29	Lâm Đồng	2109	Nghị Đức	1	1	2
+29	Lâm Đồng	10910	Nhân Cơ	18	1	19
+29	Lâm Đồng	5888	Ninh Gia	34	3	37
+29	Lâm Đồng	2117	Phan Rí Cửa	16	9	25
+29	Lâm Đồng	2022	Phan Sơn	14	0	14
+29	Lâm Đồng	2088	Phan Thiết	21	17	38
+29	Lâm Đồng	2094	Phú Quý	0	11	11
+29	Lâm Đồng	5911	Phú Sơn Lâm Hà	13	2	15
+29	Lâm Đồng	2087	Phú Thủy	120	54	174
+29	Lâm Đồng	5912	Phúc Thọ Lâm Hà	62	10	72
+29	Lâm Đồng	2125	Phước Hội	48	22	70
+29	Lâm Đồng	10877	Quảng Hòa	3	0	3
+29	Lâm Đồng	10878	Quảng Khê	2	1	3
+29	Lâm Đồng	5877	Quảng Lập	4	5	9
+29	Lâm Đồng	10962	Quảng Phú	2	0	2
+29	Lâm Đồng	10879	Quảng Sơn	3	1	4
+29	Lâm Đồng	10972	Quảng Tân	5	3	8
+29	Lâm Đồng	10915	Quảng Tín	40	3	43
+29	Lâm Đồng	10973	Quảng Trực	2	2	4
+29	Lâm Đồng	5864	Sơn Điền	0	0	0
+29	Lâm Đồng	2038	Sơn Mỹ	43	3	46
+29	Lâm Đồng	2026	Sông Lũy	69	4	73
+29	Lâm Đồng	2110	Suối Kiết	9	3	12
+29	Lâm Đồng	10872	Tà Đùng	0	0	0
+29	Lâm Đồng	5891	Tà Hine	19	3	22
+29	Lâm Đồng	5892	Tà Năng	1	0	1
+29	Lâm Đồng	5913	Tân Hà Lâm Hà	67	7	74
+29	Lâm Đồng	2127	Tân Hải	26	35	61
+29	Lâm Đồng	5893	Tân Hội	68	6	74
+29	Lâm Đồng	2071	Tân Lập	33	11	44
+29	Lâm Đồng	2042	Tân Minh	40	4	44
+29	Lâm Đồng	2072	Tân Thành	48	8	56
+29	Lâm Đồng	2107	Tánh Linh	8	2	10
+29	Lâm Đồng	10903	Thuận An	2	2	4
+29	Lâm Đồng	10940	Thuận Hạnh	6	0	6
+29	Lâm Đồng	2092	Tiến Thành	80	42	122
+29	Lâm Đồng	2035	Trà Tân	9	9	18
+29	Lâm Đồng	10941	Trường Xuân	11	9	20
+29	Lâm Đồng	10968	Tuy Đức	13	3	16
+29	Lâm Đồng	2116	Tuy Phong	7	0	7
+29	Lâm Đồng	2067	Tuyên Quang	38	8	46
+29	Lâm Đồng	2121	Vĩnh Hảo	7	4	11
+29	Lâm Đồng	20536	Xuân Hương - Đà Lạt	762	202	964
+29	Lâm Đồng	5822	Xuân Trường - Đà Lạt	268	28	296
+30	Lai Châu	21384	Bản Bo	0	0	0
+30	Lai Châu	21387	Bình Lư	1	0	1
+30	Lai Châu	21308	Bum Nưa	0	0	0
+30	Lai Châu	21309	Bum Tở	0	0	0
+30	Lai Châu	21336	Dào San	0	0	0
+30	Lai Châu	21292	Đoàn Kết	1	0	1
+30	Lai Châu	21357	Hồng Thu	0	0	0
+30	Lai Châu	21321	Hua Bum	0	0	0
+30	Lai Châu	21416	Khoen On	0	0	0
+30	Lai Châu	21339	Khổng Lào	1	0	1
+30	Lai Châu	21390	Khun Há	0	0	0
+30	Lai Châu	21322	Lê Lợi	0	0	0
+30	Lai Châu	21312	Mù Cả	0	0	0
+30	Lai Châu	21399	Mường Khoa	0	0	0
+30	Lai Châu	21418	Mường Kim	0	0	0
+30	Lai Châu	21323	Mường Mô	0	0	0
+30	Lai Châu	21307	Mường Tè	0	0	0
+30	Lai Châu	21419	Mường Than	0	0	0
+30	Lai Châu	21362	Nậm Cuổi	0	0	0
+30	Lai Châu	21327	Nậm Hàng	0	0	0
+30	Lai Châu	21364	Nậm Mạ	0	0	0
+30	Lai Châu	21401	Nậm Sỏ	0	0	0
+30	Lai Châu	21365	Nậm Tăm	0	0	0
+30	Lai Châu	21368	Pa Tần	0	0	0
+30	Lai Châu	21314	Pa Ủ	0	0	0
+30	Lai Châu	21402	Pắc Ta	0	0	0
+30	Lai Châu	21334	Phong Thổ	0	0	0
+30	Lai Châu	21371	Pu Sam Cáp	0	0	0
+30	Lai Châu	21348	Sì Lở Lầu	0	0	0
+30	Lai Châu	21354	Sìn Hồ	0	0	0
+30	Lai Châu	21349	Sin Suối Hồ	0	0	0
+30	Lai Châu	20111	Tả Lèng	0	0	0
+30	Lai Châu	21317	Tà Tổng	0	0	0
+30	Lai Châu	21302	Tân Phong	2	1	3
+30	Lai Châu	21397	Tân Uyên	1	0	1
+30	Lai Châu	21414	Than Uyên	0	0	0
+30	Lai Châu	21318	Thu Lũm	0	0	0
+30	Lai Châu	21380	Tủa Sín Chải	0	0	0
+33	Khánh Hòa	7246	Anh Dũng	0	0	0
+33	Khánh Hòa	5340	Ba Ngòi	15	7	22
+33	Khánh Hòa	20751	Bác Ái	8	10	18
+33	Khánh Hòa	20755	Bác Ái Đông	0	1	1
+33	Khánh Hòa	20750	Bác Ái Tây	8	1	9
+33	Khánh Hòa	5352	Bắc Cam Ranh	227	22	249
+33	Khánh Hòa	5286	Bắc Khánh Vĩnh	52	6	58
+33	Khánh Hòa	5276	Bắc Nha Trang	1574	471	2045
+33	Khánh Hòa	5327	Bắc Ninh Hòa	423	20	443
+33	Khánh Hòa	7254	Bảo An	11	7	18
+33	Khánh Hòa	20761	Cà Ná	2	4	6
+33	Khánh Hòa	3335	Cam An	75	13	88
+33	Khánh Hòa	3338	Cam Hiệp	191	47	238
+33	Khánh Hòa	3329	Cam Lâm	228	26	254
+33	Khánh Hòa	5344	Cam Linh	15	2	17
+33	Khánh Hòa	5350	Cam Ranh	11	1	12
+33	Khánh Hòa	7225	Công Hải	2	8	10
+33	Khánh Hòa	5297	Diên Điền	124	39	163
+33	Khánh Hòa	21464	Diên Khánh	251	57	308
+33	Khánh Hòa	21467	Diên Lạc	105	31	136
+33	Khánh Hòa	5299	Diên Lâm	39	8	47
+33	Khánh Hòa	5302	Diên Thọ	130	12	142
+33	Khánh Hòa	5358	Đại Lãnh	27	15	42
+33	Khánh Hòa	7257	Đô Vinh	2	5	7
+33	Khánh Hòa	7258	Đông Hải	44	37	81
+33	Khánh Hòa	5334	Đông Khánh Sơn	2	0	2
+33	Khánh Hòa	5320	Đông Ninh Hòa	230	8	238
+33	Khánh Hòa	5318	Hòa Thắng	191	7	198
+33	Khánh Hòa	5326	Hòa Trí	123	6	129
+33	Khánh Hòa	5339	Khánh Sơn	1	0	1
+33	Khánh Hòa	21462	Khánh Vĩnh	83	9	92
+33	Khánh Hòa	7248	Lâm Sơn	3	3	6
+33	Khánh Hòa	7250	Mỹ Sơn	6	1	7
+33	Khánh Hòa	5354	Nam Cam Ranh	38	7	45
+33	Khánh Hòa	5283	Nam Khánh Vĩnh	8	1	9
+33	Khánh Hòa	5260	Nam Nha Trang	2069	719	2788
+33	Khánh Hòa	5324	Nam Ninh Hòa	192	10	202
+33	Khánh Hòa	5261	Nha Trang	801	244	1045
+33	Khánh Hòa	7227	Ninh Chử	10	13	23
+33	Khánh Hòa	7232	Ninh Hải	7	11	18
+33	Khánh Hòa	5319	Ninh Hòa	406	12	418
+33	Khánh Hòa	7238	Ninh Phước	3	4	7
+33	Khánh Hòa	7253	Ninh Sơn	4	1	5
+33	Khánh Hòa	7259	Phan Rang	17	12	29
+33	Khánh Hòa	20764	Phước Dinh	13	10	23
+33	Khánh Hòa	20765	Phước Hà	3	1	4
+33	Khánh Hòa	7240	Phước Hậu	3	3	6
+33	Khánh Hòa	7241	Phước Hữu	3	2	5
+33	Khánh Hòa	20464	Suối Dầu	82	8	90
+33	Khánh Hòa	5305	Suối Hiệp	144	27	171
+33	Khánh Hòa	5308	Tân Định	423	15	438
+33	Khánh Hòa	5338	Tây Khánh Sơn	0	0	0
+33	Khánh Hòa	5288	Tây Khánh Vĩnh	25	4	29
+33	Khánh Hòa	5280	Tây Nha Trang	811	290	1101
+33	Khánh Hòa	5325	Tây Ninh Hòa	136	6	142
+33	Khánh Hòa	7228	Thuận Bắc	5	3	8
+33	Khánh Hòa	20767	Thuận Nam	3	7	10
+33	Khánh Hòa	5292	Trung Khánh Vĩnh	33	8	41
+33	Khánh Hòa	21461	Trường Sa	2	1	3
+33	Khánh Hòa	5362	Tu Bông	38	5	43
+33	Khánh Hòa	5361	Vạn Hưng	53	9	62
+33	Khánh Hòa	5360	Vạn Ninh	63	8	71
+33	Khánh Hòa	5267	Vạn Thắng	73	17	90
+33	Khánh Hòa	7235	Vĩnh Hải	394	10	404
+33	Khánh Hòa	7236	Xuân Hải	2	2	4
+34	Hưng Yên	9738	A Sào	1	0	1
+34	Hưng Yên	9863	Ái Quốc	7	0	7
+34	Hưng Yên	21018	Ân Thi	38	13	51
+34	Hưng Yên	9637	Bắc Đông Hưng	2	3	5
+34	Hưng Yên	9641	Bắc Đông Quan	0	0	0
+34	Hưng Yên	9794	Bắc Thái Ninh	0	0	0
+34	Hưng Yên	9835	Bắc Thụy Anh	0	2	2
+34	Hưng Yên	9658	Bắc Tiên Hưng	2	0	2
+34	Hưng Yên	9697	Bình Định	1	1	2
+34	Hưng Yên	9699	Bình Nguyên	0	0	0
+34	Hưng Yên	9700	Bình Thanh	1	0	1
+34	Hưng Yên	5131	Châu Ninh	29	6	35
+34	Hưng Yên	5143	Chí Minh	8	0	8
+34	Hưng Yên	9671	Diên Hà	0	1	1
+34	Hưng Yên	5178	Đại Đồng	34	7	41
+34	Hưng Yên	5236	Đoàn Đào	16	2	18
+34	Hưng Yên	9742	Đồng Bằng	3	0	3
+34	Hưng Yên	9844	Đồng Châu	2	1	3
+34	Hưng Yên	9630	Đông Hưng	1	2	3
+34	Hưng Yên	9635	Đông Quan	4	2	6
+34	Hưng Yên	9811	Đông Thái Ninh	0	2	2
+34	Hưng Yên	9790	Đông Thụy Anh	2	0	2
+34	Hưng Yên	9847	Đông Tiền Hải	1	0	1
+34	Hưng Yên	9657	Đông Tiên Hưng	1	1	2
+34	Hưng Yên	5206	Đức Hợp	24	0	24
+34	Hưng Yên	5230	Đường Hào	15	19	34
+34	Hưng Yên	5212	Hiệp Cường	8	2	10
+34	Hưng Yên	5188	Hoàn Long	124	15	139
+34	Hưng Yên	5146	Hoàng Hoa Thám	7	2	9
+34	Hưng Yên	5113	Hồng Châu	3	1	4
+34	Hưng Yên	9676	Hồng Minh	3	0	3
+34	Hưng Yên	5099	Hồng Quang	20	2	22
+34	Hưng Yên	9723	Hồng Vũ	1	0	1
+34	Hưng Yên	21048	Hưng Hà	2	0	2
+34	Hưng Yên	9856	Hưng Phú	3	0	3
+34	Hưng Yên	21019	Khoái Châu	19	3	22
+34	Hưng Yên	21051	Kiến Xương	3	0	3
+34	Hưng Yên	5175	Lạc Đạo	24	5	29
+34	Hưng Yên	9705	Lê Lợi	3	0	3
+34	Hưng Yên	9674	Lê Quý Đôn	1	1	2
+34	Hưng Yên	9678	Long Hưng	6	1	7
+34	Hưng Yên	21020	Lương Bằng	25	2	27
+34	Hưng Yên	5168	Mễ Sở	106	20	126
+34	Hưng Yên	9767	Minh Thọ	1	1	2
+34	Hưng Yên	5224	Mỹ Hào	44	35	79
+34	Hưng Yên	9851	Nam Cường	0	0	0
+34	Hưng Yên	9629	Nam Đông Hưng	0	0	0
+34	Hưng Yên	9805	Nam Thái Ninh	0	1	1
+34	Hưng Yên	9831	Nam Thụy Anh	0	0	0
+34	Hưng Yên	9853	Nam Tiền Hải	0	0	0
+34	Hưng Yên	9653	Nam Tiên Hưng	0	1	1
+34	Hưng Yên	5211	Nghĩa Dân	6	1	7
+34	Hưng Yên	5169	Nghĩa Trụ	2298	584	2882
+34	Hưng Yên	9764	Ngọc Lâm	0	0	0
+34	Hưng Yên	9673	Ngự Thiên	2	0	2
+34	Hưng Yên	9751	Nguyễn Du	0	1	1
+34	Hưng Yên	5101	Nguyễn Trãi	15	2	17
+34	Hưng Yên	5189	Nguyễn Văn Linh	23	11	34
+34	Hưng Yên	5182	Như Quỳnh	240	75	315
+34	Hưng Yên	5091	Phạm Ngũ Lão	17	8	25
+34	Hưng Yên	5117	Phố Hiến	21	3	24
+34	Hưng Yên	9744	Phụ Dực	0	1	1
+34	Hưng Yên	5170	Phụng Công	1272	406	1678
+34	Hưng Yên	5243	Quang Hưng	20	2	22
+34	Hưng Yên	9712	Quang Lịch	2	0	2
+34	Hưng Yên	9748	Quỳnh An	0	1	1
+34	Hưng Yên	9752	Quỳnh Phụ	4	5	9
+34	Hưng Yên	5115	Sơn Nam	27	4	31
+34	Hưng Yên	21017	Tân Hưng	2	0	2
+34	Hưng Yên	9871	Tân Thuận	0	1	1
+34	Hưng Yên	9745	Tân Tiến	0	1	1
+34	Hưng Yên	9795	Tây Thái Ninh	0	0	0
+34	Hưng Yên	9825	Tây Thụy Anh	0	0	0
+34	Hưng Yên	9838	Tây Tiền Hải	1	0	1
+34	Hưng Yên	9781	Thái Bình	7	25	32
+34	Hưng Yên	9800	Thái Ninh	1	0	1
+34	Hưng Yên	9823	Thái Thụy	3	2	5
+34	Hưng Yên	9664	Thần Khê	1	0	1
+34	Hưng Yên	9880	Thư Trì	0	1	1
+34	Hưng Yên	9897	Thư Vũ	0	0	0
+34	Hưng Yên	5227	Thượng Hồng	38	20	58
+34	Hưng Yên	9822	Thụy Anh	0	0	0
+34	Hưng Yên	9870	Tiền Hải	4	7	11
+34	Hưng Yên	5154	Tiên Hoa	4	0	4
+34	Hưng Yên	9648	Tiên Hưng	0	0	0
+34	Hưng Yên	9684	Tiên La	57	1	58
+34	Hưng Yên	5162	Tiên Lữ	4	0	4
+34	Hưng Yên	5245	Tiên Tiến	4	1	5
+34	Hưng Yên	5247	Tống Trân	10	0	10
+34	Hưng Yên	9720	Trà Giang	0	0	0
+34	Hưng Yên	9626	Trà Lý	2	10	12
+34	Hưng Yên	9779	Trần Hưng Đạo	18	19	37
+34	Hưng Yên	9728	Trần Lãm	9	21	30
+34	Hưng Yên	5122	Triệu Việt Vương	82	14	96
+34	Hưng Yên	21025	Văn Giang	428	261	689
+34	Hưng Yên	9872	Vạn Xuân	2	1	3
+34	Hưng Yên	5145	Việt Tiến	21	4	25
+34	Hưng Yên	5196	Việt Yên	78	12	90
+34	Hưng Yên	9788	Vũ Phúc	4	12	16
+34	Hưng Yên	9727	Vũ Quý	2	0	2
+34	Hưng Yên	21061	Vũ Thư	4	7	11
+34	Hưng Yên	9896	Vũ Tiên	0	0	0
+34	Hưng Yên	5109	Xuân Trúc	22	4	26
+34	Hưng Yên	5197	Yên Mỹ	28	3	31
+38	Hà Tĩnh	3990	Bắc Hồng Lĩnh	1	0	1
+38	Hà Tĩnh	3897	Cẩm Bình	1	2	3
+38	Hà Tĩnh	3898	Cẩm Duệ	0	1	1
+38	Hà Tĩnh	3902	Cẩm Hưng	0	0	0
+38	Hà Tĩnh	3904	Cẩm Lạc	1	0	1
+38	Hà Tĩnh	3919	Cẩm Trung	1	0	1
+38	Hà Tĩnh	21196	Cẩm Xuyên	6	0	6
+38	Hà Tĩnh	3942	Can Lộc	0	0	0
+38	Hà Tĩnh	4081	Cổ Đạm	4	1	5
+38	Hà Tĩnh	21250	Đan Hải	1	0	1
+38	Hà Tĩnh	4110	Đông Kinh	0	1	1
+38	Hà Tĩnh	3922	Đồng Lộc	1	0	1
+38	Hà Tĩnh	4108	Đồng Tiến	2	0	2
+38	Hà Tĩnh	3948	Đức Đồng	0	1	1
+38	Hà Tĩnh	3970	Đức Minh	0	0	0
+38	Hà Tĩnh	3973	Đức Quang	0	0	0
+38	Hà Tĩnh	21210	Đức Thịnh	1	0	1
+38	Hà Tĩnh	21213	Đức Thọ	5	5	10
+38	Hà Tĩnh	3923	Gia Hanh	2	1	3
+38	Hà Tĩnh	3975	Hà Huy Tập	4	0	4
+38	Hà Tĩnh	3997	Hà Linh	1	1	2
+38	Hà Tĩnh	4053	Hải Ninh	1	0	1
+38	Hà Tĩnh	4064	Hoành Sơn	1	0	1
+38	Hà Tĩnh	4153	Hồng Lộc	1	0	1
+38	Hà Tĩnh	3999	Hương Bình	0	0	0
+38	Hà Tĩnh	4000	Hương Đô	0	0	0
+38	Hà Tĩnh	21214	Hương Khê	3	0	3
+38	Hà Tĩnh	4001	Hương Phố	0	0	0
+38	Hà Tĩnh	4017	Hương Sơn	0	0	0
+38	Hà Tĩnh	4009	Hương Xuân	0	0	0
+38	Hà Tĩnh	21219	Kim Hoa	0	0	0
+38	Hà Tĩnh	4051	Kỳ Anh	6	3	9
+38	Hà Tĩnh	4055	Kỳ Hoa	1	0	1
+38	Hà Tĩnh	4058	Kỳ Khang	0	0	0
+38	Hà Tĩnh	4059	Kỳ Lạc	0	0	0
+38	Hà Tĩnh	4075	Kỳ Thượng	0	0	0
+38	Hà Tĩnh	4079	Kỳ Văn	2	0	2
+38	Hà Tĩnh	4080	Kỳ Xuân	3	6	9
+38	Hà Tĩnh	21244	Lộc Hà	5	2	7
+38	Hà Tĩnh	4134	Mai Hoa	0	0	0
+38	Hà Tĩnh	4156	Mai Phụ	2	0	2
+38	Hà Tĩnh	3994	Nam Hồng Lĩnh	6	0	6
+38	Hà Tĩnh	4084	Nghi Xuân	7	0	7
+38	Hà Tĩnh	4014	Phúc Trạch	0	0	0
+38	Hà Tĩnh	4023	Sơn Giang	1	0	1
+38	Hà Tĩnh	4027	Sơn Hồng	0	0	0
+38	Hà Tĩnh	4028	Sơn Kim 1	0	0	0
+38	Hà Tĩnh	4029	Sơn Kim 2	0	0	0
+38	Hà Tĩnh	4041	Sơn Tây	0	0	0
+38	Hà Tĩnh	4044	Sơn Tiến	0	0	0
+38	Hà Tĩnh	21192	Sông Trí	1	0	1
+38	Hà Tĩnh	21257	Thạch Hà	1	1	2
+38	Hà Tĩnh	4111	Thạch Khê	0	0	0
+38	Hà Tĩnh	4112	Thạch Lạc	0	0	0
+38	Hà Tĩnh	4126	Thạch Xuân	3	2	5
+38	Hà Tĩnh	3974	Thành Sen	11	4	15
+38	Hà Tĩnh	3921	Thiên Cầm	0	0	0
+38	Hà Tĩnh	4133	Thượng Đức	0	0	0
+38	Hà Tĩnh	4083	Tiên Điền	15	0	15
+38	Hà Tĩnh	21254	Toàn Lưu	2	4	6
+38	Hà Tĩnh	3987	Trần Phú	4	2	6
+38	Hà Tĩnh	3928	Trường Lưu	1	0	1
+38	Hà Tĩnh	21217	Tứ Mỹ	0	0	0
+38	Hà Tĩnh	3940	Tùng Lộc	0	0	0
+38	Hà Tĩnh	4117	Việt Xuyên	4	2	6
+38	Hà Tĩnh	21259	Vũ Quang	0	0	0
+38	Hà Tĩnh	4063	Vũng Áng	2	1	3
+38	Hà Tĩnh	3930	Xuân Lộc	0	0	0
+38	Hà Tĩnh	21198	Yên Hòa	1	0	1
+41	Gia Lai	3402	Al Bá	2	0	2
+41	Gia Lai	3357	An Bình	0	0	0
+41	Gia Lai	2167	Ân Hảo	0	0	0
+41	Gia Lai	2142	An Hòa	0	10	10
+41	Gia Lai	3363	An Khê	0	3	3
+41	Gia Lai	21428	An Lão	0	0	0
+41	Gia Lai	2217	An Lương	1	1	2
+41	Gia Lai	2154	An Nhơn	0	3	3
+41	Gia Lai	2153	An Nhơn Bắc	0	3	3
+41	Gia Lai	2152	An Nhơn Đông	1	1	2
+41	Gia Lai	2164	An Nhơn Nam	1	3	4
+41	Gia Lai	2162	An Nhơn Tây	1	3	4
+41	Gia Lai	3490	An Phú	91	10	101
+41	Gia Lai	2147	An Toàn	0	0	0
+41	Gia Lai	2178	Ân Tường	0	1	1
+41	Gia Lai	2149	An Vinh	0	0	0
+41	Gia Lai	3478	Ayun	0	0	0
+41	Gia Lai	3367	Ayun Pa	1	3	4
+41	Gia Lai	3388	Bàu Cạn	7	2	9
+41	Gia Lai	3491	Biển Hồ	73	7	80
+41	Gia Lai	2258	Bình An	0	0	0
+41	Gia Lai	2215	Bình Dương	0	0	0
+41	Gia Lai	2150	Bình Định	1	15	16
+41	Gia Lai	2261	Bình Hiệp	1	0	1
+41	Gia Lai	2265	Bình Khê	0	0	0
+41	Gia Lai	2264	Bình Phú	0	0	0
+41	Gia Lai	3404	Bờ Ngoong	8	2	10
+41	Gia Lai	2180	Bồng Sơn	4	5	9
+41	Gia Lai	2284	Canh Liên	0	0	0
+41	Gia Lai	2286	Canh Vinh	6	20	26
+41	Gia Lai	2211	Cát Tiến	10	5	15
+41	Gia Lai	3439	Chơ Long	0	0	0
+41	Gia Lai	20958	Chư A Thai	0	0	0
+41	Gia Lai	3440	Chư Krey	1	0	1
+41	Gia Lai	3387	Chư Păh	7	2	9
+41	Gia Lai	20891	Chư Prông	2	0	2
+41	Gia Lai	20898	Chư Pưh	5	4	9
+41	Gia Lai	20906	Chư Sê	12	6	18
+41	Gia Lai	3360	Cửu An	0	2	2
+41	Gia Lai	3496	Diên Hồng	112	9	121
+41	Gia Lai	20093	Đak Đoa	1	5	6
+41	Gia Lai	20935	Đak Pơ	1	0	1
+41	Gia Lai	3426	Đak Rong	0	0	0
+41	Gia Lai	20914	Đak Sơmei	0	0	0
+41	Gia Lai	3444	Đăk Song	0	1	1
+41	Gia Lai	2207	Đề Gi	0	4	4
+41	Gia Lai	3415	Đức Cơ	1	0	1
+41	Gia Lai	3498	Gào	20	4	24
+41	Gia Lai	2200	Hòa Hội	0	0	0
+41	Gia Lai	2175	Hoài Ân	0	0	0
+41	Gia Lai	2192	Hoài Nhơn	6	2	8
+41	Gia Lai	2182	Hoài Nhơn Bắc	5	0	5
+41	Gia Lai	2187	Hoài Nhơn Đông	17	1	18
+41	Gia Lai	2193	Hoài Nhơn Nam	5	3	8
+41	Gia Lai	2188	Hoài Nhơn Tây	0	0	0
+41	Gia Lai	3500	Hội Phú	139	14	153
+41	Gia Lai	2206	Hội Sơn	0	0	0
+41	Gia Lai	3485	Hra	2	0	2
+41	Gia Lai	20927	Ia Băng	9	6	15
+41	Gia Lai	3395	Ia Boòng	1	0	1
+41	Gia Lai	3466	Ia Chia	3	0	3
+41	Gia Lai	3417	Ia Dơk	0	0	0
+41	Gia Lai	3418	Ia Dom	1	0	1
+41	Gia Lai	3458	Ia Dreh	0	0	0
+41	Gia Lai	3470	Ia Grai	19	2	21
+41	Gia Lai	20960	Ia Hiao	0	1	1
+41	Gia Lai	3410	Ia Hrú	5	3	8
+41	Gia Lai	3469	Ia Hrung	55	3	58
+41	Gia Lai	3379	Ia Khươl	4	0	4
+41	Gia Lai	3411	Ia Ko	1	1	2
+41	Gia Lai	3472	Ia Krái	6	2	8
+41	Gia Lai	3420	Ia Krêl	0	0	0
+41	Gia Lai	3392	Ia Lâu	8	3	11
+41	Gia Lai	3412	Ia Le	5	2	7
+41	Gia Lai	3381	Ia Ly	0	1	1
+41	Gia Lai	3394	Ia Mơ	3	0	3
+41	Gia Lai	3423	Ia Nan	1	2	3
+41	Gia Lai	3473	Ia O	0	0	0
+41	Gia Lai	20948	Ia Pa	2	0	2
+41	Gia Lai	3384	Ia Phí	6	0	6
+41	Gia Lai	3397	Ia Pia	2	2	4
+41	Gia Lai	3424	Ia Pnôn	0	0	0
+41	Gia Lai	3398	Ia Púch	0	0	0
+41	Gia Lai	3369	Ia Rbol	0	1	1
+41	Gia Lai	3459	Ia Rsai	1	0	1
+41	Gia Lai	3371	Ia Sao	1	1	2
+41	Gia Lai	3399	Ia Tôr	4	5	9
+41	Gia Lai	20949	Ia Tul	2	1	3
+41	Gia Lai	20952	Kbang	3	1	4
+41	Gia Lai	20929	KDang	1	0	1
+41	Gia Lai	2170	Kim Sơn	0	0	0
+41	Gia Lai	3486	Kon Chiêng	1	1	2
+41	Gia Lai	20930	Kon Gang	0	1	1
+41	Gia Lai	3430	Kông Bơ La	1	0	1
+41	Gia Lai	20954	Kông Chro	1	0	1
+41	Gia Lai	3432	Krong	1	0	1
+41	Gia Lai	3489	Lơ Pang	1	0	1
+41	Gia Lai	20919	Mang Yang	3	1	4
+41	Gia Lai	2201	Ngô Mây	1	0	1
+41	Gia Lai	2243	Nhơn Châu	0	0	0
+41	Gia Lai	2208	Phù Cát	4	27	31
+41	Gia Lai	21437	Phù Mỹ	1	6	7
+41	Gia Lai	2221	Phù Mỹ Bắc	1	2	3
+41	Gia Lai	2229	Phù Mỹ Đông	7	0	7
+41	Gia Lai	2228	Phù Mỹ Nam	1	0	1
+41	Gia Lai	2223	Phù Mỹ Tây	0	3	3
+41	Gia Lai	20955	Phú Thiện	0	0	0
+41	Gia Lai	3463	Phú Túc	3	0	3
+41	Gia Lai	3501	Pleiku	181	18	199
+41	Gia Lai	20951	Pờ Tó	0	0	0
+41	Gia Lai	2252	Quy Nhơn	68	49	117
+41	Gia Lai	2247	Quy Nhơn Bắc	11	11	22
+41	Gia Lai	2244	Quy Nhơn Đông	23	48	71
+41	Gia Lai	2235	Quy Nhơn Nam	81	72	153
+41	Gia Lai	2248	Quy Nhơn Tây	4	3	7
+41	Gia Lai	3436	Sơn Lang	3	1	4
+41	Gia Lai	3447	SRó	0	0	0
+41	Gia Lai	2194	Tam Quan	1	1	2
+41	Gia Lai	2256	Tây Sơn	1	2	3
+41	Gia Lai	3507	Thống Nhất	81	13	94
+41	Gia Lai	3437	Tơ Tung	1	0	1
+41	Gia Lai	21443	Tuy Phước	23	11	34
+41	Gia Lai	2273	Tuy Phước Bắc	1	1	2
+41	Gia Lai	2272	Tuy Phước Đông	3	5	8
+41	Gia Lai	2270	Tuy Phước Tây	7	5	12
+41	Gia Lai	3464	Uar	0	0	0
+41	Gia Lai	2282	Vân Canh	0	2	2
+41	Gia Lai	2172	Vạn Đức	0	0	0
+41	Gia Lai	2291	Vĩnh Quang	0	0	0
+41	Gia Lai	2292	Vĩnh Sơn	0	0	0
+41	Gia Lai	21447	Vĩnh Thạnh	0	0	0
+41	Gia Lai	2293	Vĩnh Thịnh	0	0	0
+41	Gia Lai	2205	Xuân An	4	5	9
+41	Gia Lai	20941	Ya Hội	1	0	1
+41	Gia Lai	3448	Ya Ma	0	0	0
+42	Đồng Tháp	11019	An Bình	4	2	6
+42	Đồng Tháp	11060	An Hòa	11	0	11
+42	Đồng Tháp	10252	An Hữu	3	5	8
+42	Đồng Tháp	11061	An Long	17	0	17
+42	Đồng Tháp	11072	An Phước	3	0	3
+42	Đồng Tháp	10326	An Thạnh Thủy	6	6	12
+42	Đồng Tháp	20622	Ba Sao	8	0	8
+42	Đồng Tháp	20624	Bình Hàng Trung	36	2	38
+42	Đồng Tháp	10327	Bình Ninh	6	24	30
+42	Đồng Tháp	10275	Bình Phú	2	4	6
+42	Đồng Tháp	11082	Bình Thành	26	1	27
+42	Đồng Tháp	10304	Bình Trưng	1	2	3
+42	Đồng Tháp	10346	Bình Xuân	6	10	16
+42	Đồng Tháp	20578	Cái Bè	8	9	17
+42	Đồng Tháp	20575	Cai Lậy	7	1	8
+42	Đồng Tháp	10998	Cao Lãnh	57	14	71
+42	Đồng Tháp	10310	Châu Thành	14	9	23
+42	Đồng Tháp	20579	Chợ Gạo	5	8	13
+42	Đồng Tháp	10381	Đạo Thạnh	107	41	148
+42	Đồng Tháp	11092	Đốc Binh Kiều	3	1	4
+42	Đồng Tháp	10373	Đồng Sơn	4	6	10
+42	Đồng Tháp	10360	Gia Thuận	7	16	23
+42	Đồng Tháp	10348	Gò Công	9	4	13
+42	Đồng Tháp	10367	Gò Công Đông	20	12	32
+42	Đồng Tháp	10259	Hậu Mỹ	0	2	2
+42	Đồng Tháp	10277	Hiệp Đức	1	2	3
+42	Đồng Tháp	11038	Hòa Long	14	10	24
+42	Đồng Tháp	10265	Hội Cư	5	4	9
+42	Đồng Tháp	11030	Hồng Ngự	15	4	19
+42	Đồng Tháp	10397	Hưng Thạnh	3	4	7
+42	Đồng Tháp	10309	Kim Sơn	1	6	7
+42	Đồng Tháp	11046	Lai Vung	10	1	11
+42	Đồng Tháp	20641	Lấp Vò	62	5	67
+42	Đồng Tháp	10375	Long Bình	5	6	11
+42	Đồng Tháp	10311	Long Định	4	6	10
+42	Đồng Tháp	10312	Long Hưng	13	11	24
+42	Đồng Tháp	11026	Long Khánh	2	0	2
+42	Đồng Tháp	11027	Long Phú Thuận	0	0	0
+42	Đồng Tháp	10350	Long Thuận	8	17	25
+42	Đồng Tháp	10280	Long Tiên	3	0	3
+42	Đồng Tháp	10334	Lương Hòa Lạc	5	6	11
+42	Đồng Tháp	11055	Mỹ An Hưng	5	5	10
+42	Đồng Tháp	10264	Mỹ Đức Tây	2	2	4
+42	Đồng Tháp	20628	Mỹ Hiệp	14	5	19
+42	Đồng Tháp	10267	Mỹ Lợi	1	3	4
+42	Đồng Tháp	10994	Mỹ Ngãi	17	7	24
+42	Đồng Tháp	10382	Mỹ Phong	105	53	158
+42	Đồng Tháp	10283	Mỹ Phước Tây	8	3	11
+42	Đồng Tháp	11098	Mỹ Quí	24	3	27
+42	Đồng Tháp	10287	Mỹ Thành	0	3	3
+42	Đồng Tháp	10274	Mỹ Thiện	4	3	7
+42	Đồng Tháp	3594	Mỹ Thọ	54	2	56
+42	Đồng Tháp	10384	Mỹ Tho	0	10	10
+42	Đồng Tháp	10335	Mỹ Tịnh An	4	3	7
+42	Đồng Tháp	10997	Mỹ Trà	38	7	45
+42	Đồng Tháp	10288	Ngũ Hiệp	2	0	2
+42	Đồng Tháp	10290	Nhị Quý	2	2	4
+42	Đồng Tháp	11042	Phong Hòa	8	2	10
+42	Đồng Tháp	20634	Phong Mỹ	8	2	10
+42	Đồng Tháp	11063	Phú Cường	10	2	12
+42	Đồng Tháp	11013	Phú Hựu	14	10	24
+42	Đồng Tháp	10371	Phú Thành	5	10	15
+42	Đồng Tháp	11069	Phú Thọ	1	0	1
+42	Đồng Tháp	20635	Phương Thịnh	0	2	2
+42	Đồng Tháp	11108	Sa Đéc	66	12	78
+42	Đồng Tháp	10345	Sơn Qui	29	23	52
+42	Đồng Tháp	11065	Tam Nông	2	0	2
+42	Đồng Tháp	11043	Tân Dương	28	6	34
+42	Đồng Tháp	10363	Tân Điền	25	10	35
+42	Đồng Tháp	10364	Tân Đông	10	5	15
+42	Đồng Tháp	11076	Tân Hộ Cơ	0	0	0
+42	Đồng Tháp	20580	Tân Hòa	10	13	23
+42	Đồng Tháp	11075	Tân Hồng	5	1	6
+42	Đồng Tháp	10320	Tân Hương	11	5	16
+42	Đồng Tháp	11057	Tân Khánh Trung	6	1	7
+42	Đồng Tháp	11084	Tân Long	3	0	3
+42	Đồng Tháp	11016	Tân Nhuận Đông	15	3	18
+42	Đồng Tháp	10299	Tân Phú	3	5	8
+42	Đồng Tháp	10913	Tân Phú Đông	4	9	13
+42	Đồng Tháp	11018	Tân Phú Trung	9	8	17
+42	Đồng Tháp	10401	Tân Phước 1	23	5	28
+42	Đồng Tháp	10402	Tân Phước 2	1	2	3
+42	Đồng Tháp	10405	Tân Phước 3	5	5	10
+42	Đồng Tháp	11078	Tân Thành	1	0	1
+42	Đồng Tháp	11083	Tân Thạnh	1	0	1
+42	Đồng Tháp	10918	Tân Thới	2	21	23
+42	Đồng Tháp	10340	Tân Thuận Bình	6	6	12
+42	Đồng Tháp	20642	Thanh Bình	4	2	6
+42	Đồng Tháp	10300	Thanh Hòa	4	0	4
+42	Đồng Tháp	10254	Thanh Hưng	0	2	2
+42	Đồng Tháp	11102	Thanh Mỹ	4	0	4
+42	Đồng Tháp	10292	Thạnh Phú	0	1	1
+42	Đồng Tháp	11097	Tháp Mười	13	1	14
+42	Đồng Tháp	10386	Thới Sơn	18	14	32
+42	Đồng Tháp	11031	Thường Lạc	1	1	2
+42	Đồng Tháp	11033	Thường Phước	2	0	2
+42	Đồng Tháp	11071	Tràm Chim	6	0	6
+42	Đồng Tháp	10387	Trung An	89	52	141
+42	Đồng Tháp	11103	Trường Xuân	5	0	5
+42	Đồng Tháp	20581	Vĩnh Bình	2	12	14
+42	Đồng Tháp	10379	Vĩnh Hựu	6	8	14
+42	Đồng Tháp	10325	Vĩnh Kim	0	2	2
+43	Đồng Nai	1953	An Lộc	517	11	528
+43	Đồng Nai	1162	An Phước	840	104	944
+43	Đồng Nai	1231	An Viễn	276	109	385
+43	Đồng Nai	1149	Bảo Vinh	63	108	171
+43	Đồng Nai	20343	Bàu Hàm	70	37	107
+43	Đồng Nai	1132	Biên Hòa	829	356	1185
+43	Đồng Nai	20333	Bình An	138	31	169
+43	Đồng Nai	1152	Bình Lộc	122	144	266
+43	Đồng Nai	1942	Bình Long	100	10	110
+43	Đồng Nai	1233	Bình Minh	142	36	178
+43	Đồng Nai	20049	Bình Phước	180	40	220
+43	Đồng Nai	1955	Bình Tân	24	5	29
+43	Đồng Nai	1976	Bom Bo	3	1	4
+43	Đồng Nai	1984	Bù Đăng	9	4	13
+43	Đồng Nai	1957	Bù Gia Mập	0	0	0
+43	Đồng Nai	20318	Cẩm Mỹ	67	17	84
+43	Đồng Nai	1995	Chơn Thành	234	33	267
+43	Đồng Nai	20340	Dầu Giây	383	126	509
+43	Đồng Nai	1959	Đa Kia	1	0	1
+43	Đồng Nai	1175	Đại Phước	785	120	905
+43	Đồng Nai	1187	Đak Lua	12	0	12
+43	Đồng Nai	1977	Đak Nhau	3	4	7
+43	Đồng Nai	1960	Đăk Ơ	0	0	0
+43	Đồng Nai	20331	Định Quán	139	33	172
+43	Đồng Nai	20086	Đồng Phú	384	26	410
+43	Đồng Nai	20513	Đồng Tâm	190	50	240
+43	Đồng Nai	20061	Đồng Xoài	41	6	47
+43	Đồng Nai	1200	Gia Kiệm	41	12	53
+43	Đồng Nai	1153	Hàng Gòn	57	51	108
+43	Đồng Nai	1238	Hố Nai	158	53	211
+43	Đồng Nai	20509	Hưng Phước	2	2	4
+43	Đồng Nai	1239	Hưng Thịnh	110	45	155
+43	Đồng Nai	1137	La Ngà	115	54	169
+43	Đồng Nai	20525	Lộc Hưng	21	12	33
+43	Đồng Nai	20521	Lộc Ninh	5	10	15
+43	Đồng Nai	20528	Lộc Quang	14	5	19
+43	Đồng Nai	20529	Lộc Tấn	9	6	15
+43	Đồng Nai	20532	Lộc Thành	0	6	6
+43	Đồng Nai	20531	Lộc Thạnh	13	5	18
+43	Đồng Nai	1120	Long Bình	330	190	520
+43	Đồng Nai	1963	Long Hà	78	12	90
+43	Đồng Nai	20065	Long Hưng	460	173	633
+43	Đồng Nai	1155	Long Khánh	71	75	146
+43	Đồng Nai	20002	Long Phước	426	26	452
+43	Đồng Nai	20332	Long Thành	588	128	716
+43	Đồng Nai	1945	Minh Đức	277	0	277
+43	Đồng Nai	1991	Minh Hưng	298	128	426
+43	Đồng Nai	1188	Nam Cát Tiên	11	4	15
+43	Đồng Nai	1986	Nghĩa Trung	5	5	10
+43	Đồng Nai	1996	Nha Bích	439	41	480
+43	Đồng Nai	1185	Nhơn Trạch	488	70	558
+43	Đồng Nai	1140	Phú Hòa	36	14	50
+43	Đồng Nai	1191	Phú Lâm	3	3	6
+43	Đồng Nai	1212	Phú Lý	15	13	28
+43	Đồng Nai	1966	Phú Nghĩa	6	4	10
+43	Đồng Nai	1967	Phú Riềng	12	8	20
+43	Đồng Nai	1968	Phú Trung	5	18	23
+43	Đồng Nai	20330	Phú Vinh	24	13	37
+43	Đồng Nai	1183	Phước An	684	112	796
+43	Đồng Nai	1970	Phước Bình	99	7	106
+43	Đồng Nai	20501	Phước Long	11	2	13
+43	Đồng Nai	1988	Phước Sơn	10	4	14
+43	Đồng Nai	20040	Phước Tân	204	104	308
+43	Đồng Nai	1170	Phước Thái	153	22	175
+43	Đồng Nai	20322	Sông Ray	67	26	93
+43	Đồng Nai	1196	Tà Lài	14	4	18
+43	Đồng Nai	1124	Tam Hiệp	571	173	744
+43	Đồng Nai	20036	Tam Phước	236	43	279
+43	Đồng Nai	1213	Tân An	78	21	99
+43	Đồng Nai	1947	Tân Hưng	296	11	307
+43	Đồng Nai	1948	Tân Khai	47	9	56
+43	Đồng Nai	20517	Tân Lợi	479	39	518
+43	Đồng Nai	20334	Tân Phú	24	7	31
+43	Đồng Nai	1998	Tân Quan	201	7	208
+43	Đồng Nai	20508	Tân Tiến	34	2	36
+43	Đồng Nai	20344	Tân Triều	1455	433	1888
+43	Đồng Nai	1146	Thanh Sơn	8	7	15
+43	Đồng Nai	20510	Thiện Hưng	4	7	11
+43	Đồng Nai	1989	Thọ Sơn	7	3	10
+43	Đồng Nai	1144	Thống Nhất	50	8	58
+43	Đồng Nai	20519	Thuận Lợi	13	3	16
+43	Đồng Nai	1116	Trấn Biên	2311	600	2911
+43	Đồng Nai	20059	Trảng Bom	229	103	332
+43	Đồng Nai	1134	Trảng Dài	563	202	765
+43	Đồng Nai	1216	Trị An	50	32	82
+43	Đồng Nai	1223	Xuân Bắc	26	8	34
+43	Đồng Nai	1224	Xuân Định	23	17	40
+43	Đồng Nai	1227	Xuân Đông	139	46	185
+43	Đồng Nai	20326	Xuân Đường	55	3	58
+43	Đồng Nai	20347	Xuân Hòa	67	3	70
+43	Đồng Nai	1158	Xuân Lập	38	28	66
+43	Đồng Nai	1220	Xuân Lộc	145	54	199
+43	Đồng Nai	20345	Xuân Phú	24	23	47
+43	Đồng Nai	20328	Xuân Quế	74	12	86
+43	Đồng Nai	1228	Xuân Thành	83	12	95
+44	Điện Biên	20163	Búng Lao	0	0	0
+44	Điện Biên	20194	Chà Tở	0	0	0
+44	Điện Biên	20221	Chiềng Sinh	2	0	2
+44	Điện Biên	20112	Điện Biên Phủ	146	1	147
+44	Điện Biên	20159	Mường Ảng	5	0	5
+44	Điện Biên	20203	Mường Chà	0	0	0
+44	Điện Biên	20165	Mường Lạn	0	0	0
+44	Điện Biên	20180	Mường Lay	0	0	0
+44	Điện Biên	21279	Mường Luân	0	0	0
+44	Điện Biên	20224	Mường Mùn	0	0	0
+44	Điện Biên	20115	Mường Nhà	0	0	0
+44	Điện Biên	20184	Mường Nhé	0	0	0
+44	Điện Biên	20116	Mường Phăng	13	0	13
+44	Điện Biên	20117	Mường Pồn	0	0	0
+44	Điện Biên	20135	Mường Thanh	6	2	8
+44	Điện Biên	20185	Mường Toong	0	0	0
+44	Điện Biên	20175	Mường Tùng	0	0	0
+44	Điện Biên	20195	Nà Bủng	0	0	0
+44	Điện Biên	20197	Nà Hỳ	0	0	0
+44	Điện Biên	20176	Na Sang	0	0	0
+44	Điện Biên	21280	Na Son	0	0	0
+44	Điện Biên	20119	Nà Tấu	0	0	0
+44	Điện Biên	20186	Nậm Kè	0	0	0
+44	Điện Biên	20177	Nậm Nèn	0	0	0
+44	Điện Biên	20124	Núa Ngam	0	0	0
+44	Điện Biên	20178	Pa Ham	0	0	0
+44	Điện Biên	21284	Phình Giàng	0	0	0
+44	Điện Biên	21285	Pu Nhi	0	0	0
+44	Điện Biên	20229	Pú Nhung	0	0	0
+44	Điện Biên	20233	Quài Tở	0	0	0
+44	Điện Biên	20189	Quảng Lâm	0	0	0
+44	Điện Biên	20121	Sam Mứn	0	0	0
+44	Điện Biên	20212	Sáng Nhè	0	0	0
+44	Điện Biên	20205	Si Pa Phìn	0	0	0
+44	Điện Biên	20218	Sín Chải	0	0	0
+44	Điện Biên	20191	Sín Thầu	0	0	0
+44	Điện Biên	20213	Sính Phình	0	0	0
+44	Điện Biên	20130	Thanh An	3	0	3
+44	Điện Biên	20134	Thanh Nưa	6	0	6
+44	Điện Biên	20136	Thanh Yên	0	0	0
+44	Điện Biên	21286	Tìa Dình	0	0	0
+44	Điện Biên	20207	Tủa Chùa	0	0	0
+44	Điện Biên	20217	Tủa Thàng	0	0	0
+44	Điện Biên	20219	Tuần Giáo	0	0	0
+44	Điện Biên	21287	Xa Dung	0	0	0
+46	Đắk Lắk	7643	Bình Kiến	17	30	47
+46	Đắk Lắk	10679	Buôn Đôn	4	1	5
+46	Đắk Lắk	20014	Buôn Hồ	84	5	89
+46	Đắk Lắk	10680	Buôn Ma Thuột	1044	162	1206
+46	Đắk Lắk	20008	Cư Bao	180	5	185
+46	Đắk Lắk	20824	Cư M’gar	31	1	32
+46	Đắk Lắk	10819	Cư M’ta	2	0	2
+46	Đắk Lắk	10776	Cư Pơng	56	1	57
+46	Đắk Lắk	10820	Cư Prao	3	2	5
+46	Đắk Lắk	10762	Cư Pui	3	3	6
+46	Đắk Lắk	10734	Cư Yang	2	0	2
+46	Đắk Lắk	10703	Cuôr Đăng	123	12	135
+46	Đắk Lắk	10763	Dang Kang	6	0	6
+46	Đắk Lắk	10782	Dliê Ya	23	1	24
+46	Đắk Lắk	20805	Dray Bhăng	50	3	53
+46	Đắk Lắk	10756	Dur Kmăl	3	1	4
+46	Đắk Lắk	10811	Đắk Liêng	1	1	2
+46	Đắk Lắk	10813	Đắk Phơi	0	0	0
+46	Đắk Lắk	7667	Đông Hòa	1	0	1
+46	Đắk Lắk	7588	Đồng Xuân	0	0	0
+46	Đắk Lắk	7618	Đức Bình	3	4	7
+46	Đắk Lắk	7619	Ea Bá	0	1	1
+46	Đắk Lắk	10746	Ea Bung	1	1	2
+46	Đắk Lắk	10719	Ea Drăng	12	1	13
+46	Đắk Lắk	20010	Ea Drông	82	5	87
+46	Đắk Lắk	10721	Ea H’Leo	7	0	7
+46	Đắk Lắk	10720	Ea Hiao	3	1	4
+46	Đắk Lắk	10682	Ea Kao	451	35	486
+46	Đắk Lắk	20832	Ea Kar	46	3	49
+46	Đắk Lắk	10722	Ea Khăl	9	0	9
+46	Đắk Lắk	10706	Ea Kiết	49	3	52
+46	Đắk Lắk	10794	Ea Kly	22	2	24
+46	Đắk Lắk	10736	Ea Knốp	16	1	17
+46	Đắk Lắk	10795	Ea Knuếc	115	5	120
+46	Đắk Lắk	20808	Ea Ktur	119	5	124
+46	Đắk Lắk	7623	Ea Ly	0	0	0
+46	Đắk Lắk	10709	Ea M’Droh	63	6	69
+46	Đắk Lắk	10758	Ea Na	77	7	84
+46	Đắk Lắk	20809	Ea Ning	51	4	55
+46	Đắk Lắk	10677	Ea Nuôl	86	10	96
+46	Đắk Lắk	10738	Ea Ô	8	0	8
+46	Đắk Lắk	10739	Ea Păl	5	1	6
+46	Đắk Lắk	10797	Ea Phê	13	2	15
+46	Đắk Lắk	10826	Ea Riêng	2	1	3
+46	Đắk Lắk	10748	Ea Rốk	1	0	1
+46	Đắk Lắk	20833	Ea Súp	4	0	4
+46	Đắk Lắk	10827	Ea Trang	1	0	1
+46	Đắk Lắk	10713	Ea Tul	27	2	29
+46	Đắk Lắk	10678	Ea Wer	30	4	34
+46	Đắk Lắk	10728	Ea Wy	3	0	3
+46	Đắk Lắk	7665	Hòa Hiệp	11	16	27
+46	Đắk Lắk	7693	Hòa Mỹ	2	0	2
+46	Đắk Lắk	10685	Hòa Phú	488	17	505
+46	Đắk Lắk	10767	Hòa Sơn	4	1	5
+46	Đắk Lắk	7698	Hòa Thịnh	0	0	0
+46	Đắk Lắk	7671	Hòa Xuân	0	0	0
+46	Đắk Lắk	10750	Ia Lốp	3	1	4
+46	Đắk Lắk	10751	Ia Rvê	2	0	2
+46	Đắk Lắk	10828	Krông Á	1	0	1
+46	Đắk Lắk	10759	Krông Ana	4	4	8
+46	Đắk Lắk	10770	Krông Bông	2	1	3
+46	Đắk Lắk	10774	Krông Búk	18	2	20
+46	Đắk Lắk	20840	Krông Năng	25	1	26
+46	Đắk Lắk	10815	Krông Nô	2	0	2
+46	Đắk Lắk	10803	Krông Pắc	15	9	24
+46	Đắk Lắk	10808	Liên Sơn Lắk	0	0	0
+46	Đắk Lắk	20843	M’Drắk	2	2	4
+46	Đắk Lắk	10816	Nam Ka	0	1	1
+46	Đắk Lắk	7628	Ô Loan	40	2	42
+46	Đắk Lắk	21442	Phú Hòa 1	1	1	2
+46	Đắk Lắk	7715	Phú Hòa 2	0	2	2
+46	Đắk Lắk	7583	Phú Mỡ	0	0	0
+46	Đắk Lắk	10790	Phú Xuân	32	1	33
+46	Đắk Lắk	7647	Phú Yên	3	15	18
+46	Đắk Lắk	10779	Pơng Drang	17	7	24
+46	Đắk Lắk	10716	Quảng Phú	164	16	180
+46	Đắk Lắk	7603	Sơn Hòa	2	1	3
+46	Đắk Lắk	7701	Sơn Thành	0	2	2
+46	Đắk Lắk	7614	Sông Cầu	4	5	9
+46	Đắk Lắk	21448	Sông Hinh	0	1	1
+46	Đắk Lắk	7606	Suối Trai	0	0	0
+46	Đắk Lắk	10791	Tam Giang	12	0	12
+46	Đắk Lắk	10690	Tân An	467	73	540
+46	Đắk Lắk	10692	Tân Lập	348	58	406
+46	Đắk Lắk	10806	Tân Tiến	5	0	5
+46	Đắk Lắk	7690	Tây Hòa	1	0	1
+46	Đắk Lắk	7597	Tây Sơn	2	0	2
+46	Đắk Lắk	10698	Thành Nhất	275	41	316
+46	Đắk Lắk	7630	Tuy An Bắc	3	7	10
+46	Đắk Lắk	7638	Tuy An Đông	6	3	9
+46	Đắk Lắk	7627	Tuy An Nam	19	6	25
+46	Đắk Lắk	21450	Tuy An Tây	0	1	1
+46	Đắk Lắk	7649	Tuy Hòa	4	19	23
+46	Đắk Lắk	7598	Vân Hòa	3	1	4
+46	Đắk Lắk	10807	Vụ Bổn	9	0	9
+46	Đắk Lắk	7608	Xuân Cảnh	1	2	3
+46	Đắk Lắk	21438	Xuân Đài	1	1	2
+46	Đắk Lắk	7584	Xuân Lãnh	0	0	0
+46	Đắk Lắk	7612	Xuân Lộc	0	3	3
+46	Đắk Lắk	7586	Xuân Phước	1	0	1
+46	Đắk Lắk	7616	Xuân Thọ	0	1	1
+46	Đắk Lắk	10772	Yang Mao	0	0	0
+47	Cao Bằng	3049	Bạch Đằng	0	0	0
+47	Cao Bằng	21102	Bảo Lạc	0	0	0
+47	Cao Bằng	7541	Bảo Lâm	0	0	0
+47	Cao Bằng	21141	Bế Văn Đàn	0	0	0
+47	Cao Bằng	3070	Ca Thành	0	0	0
+47	Cao Bằng	21123	Cần Yên	0	0	0
+47	Cao Bằng	3086	Canh Tân	0	0	0
+47	Cao Bằng	3004	Cô Ba	0	0	0
+47	Cao Bằng	3005	Cốc Pàng	0	0	0
+47	Cao Bằng	3121	Đàm Thủy	0	0	0
+47	Cao Bằng	3123	Đình Phong	0	0	0
+47	Cao Bằng	3133	Đoài Dương	0	0	0
+47	Cao Bằng	7661	Độc Lập	0	0	0
+47	Cao Bằng	3088	Đông Khê	0	0	0
+47	Cao Bằng	21164	Đức Long	0	0	0
+47	Cao Bằng	3028	Hạ Lang	0	0	0
+47	Cao Bằng	3037	Hà Quảng	0	0	0
+47	Cao Bằng	7662	Hạnh Phúc	0	0	0
+47	Cao Bằng	3061	Hòa An	0	0	0
+47	Cao Bằng	21103	Hưng Đạo	0	0	0
+47	Cao Bằng	3010	Huy Giáp	0	0	0
+47	Cao Bằng	3011	Khánh Xuân	0	0	0
+47	Cao Bằng	3090	Kim Đồng	0	0	0
+47	Cao Bằng	3036	Lũng Nặm	0	0	0
+47	Cao Bằng	7515	Lý Bôn	0	0	0
+47	Cao Bằng	3022	Lý Quốc	0	0	0
+47	Cao Bằng	3093	Minh Khai	0	0	0
+47	Cao Bằng	3074	Minh Tâm	0	0	0
+47	Cao Bằng	7517	Nam Quang	0	0	0
+47	Cao Bằng	3063	Nam Tuấn	0	0	0
+47	Cao Bằng	3076	Nguyên Bình	0	0	0
+47	Cao Bằng	3065	Nguyễn Huệ	0	0	0
+47	Cao Bằng	8865	Nùng Trí Cao	6	0	6
+47	Cao Bằng	21135	Phan Thanh	0	0	0
+47	Cao Bằng	21143	Phục Hòa	0	0	0
+47	Cao Bằng	21182	Quang Hán	0	0	0
+47	Cao Bằng	7524	Quảng Lâm	0	0	0
+47	Cao Bằng	3024	Quang Long	0	0	0
+47	Cao Bằng	21183	Quang Trung	0	0	0
+47	Cao Bằng	21138	Quảng Uyên	0	0	0
+47	Cao Bằng	3014	Sơn Lộ	0	0	0
+47	Cao Bằng	3078	Tam Kim	0	0	0
+47	Cao Bằng	8867	Tân Giang	0	0	0
+47	Cao Bằng	7566	Thạch An	0	0	0
+47	Cao Bằng	3079	Thành Công	0	0	0
+47	Cao Bằng	21122	Thanh Long	0	0	0
+47	Cao Bằng	21114	Thông Nông	0	0	0
+47	Cao Bằng	3060	Thục Phán	2	3	5
+47	Cao Bằng	3082	Tĩnh Túc	0	0	0
+47	Cao Bằng	3045	Tổng Cọt	0	0	0
+47	Cao Bằng	21172	Trà Lĩnh	0	0	0
+47	Cao Bằng	21171	Trùng Khánh	0	0	0
+47	Cao Bằng	3046	Trường Hà	0	0	0
+47	Cao Bằng	3030	Vinh Quý	0	0	0
+47	Cao Bằng	3016	Xuân Trường	0	0	0
+47	Cao Bằng	7546	Yên Thổ	0	0	0
+48	Cà Mau	2350	An Trạch	0	0	0
+48	Cà Mau	3153	An Xuyên	8	8	16
+48	Cà Mau	2306	Bạc Liêu	49	16	65
+48	Cà Mau	3194	Biển Bạch	0	0	0
+48	Cà Mau	3240	Cái Đôi Vàm	2	0	2
+48	Cà Mau	20684	Cái Nước	1	0	1
+48	Cà Mau	2328	Châu Thới	3	0	3
+48	Cà Mau	3202	Đá Bạc	0	0	0
+48	Cà Mau	20685	Đầm Dơi	1	3	4
+48	Cà Mau	3221	Đất Mới	2	1	3
+48	Cà Mau	3187	Đất Mũi	0	0	0
+48	Cà Mau	2353	Định Thành	0	0	0
+48	Cà Mau	20650	Đông Hải	1	0	1
+48	Cà Mau	2348	Gành Hào	2	0	2
+48	Cà Mau	20645	Giá Rai	5	5	10
+48	Cà Mau	2302	Hiệp Thành	7	0	7
+48	Cà Mau	3196	Hồ Thị Kỷ	1	1	2
+48	Cà Mau	20652	Hoà Bình	3	13	16
+48	Cà Mau	3148	Hoà Thành	5	1	6
+48	Cà Mau	2321	Hồng Dân	3	0	3
+48	Cà Mau	2329	Hưng Hội	0	0	0
+48	Cà Mau	3164	Hưng Mỹ	0	2	2
+48	Cà Mau	3212	Khánh An	4	1	5
+48	Cà Mau	3200	Khánh Bình	1	0	1
+48	Cà Mau	3205	Khánh Hưng	1	0	1
+48	Cà Mau	3214	Khánh Lâm	2	0	2
+48	Cà Mau	20647	Láng Tròn	1	0	1
+48	Cà Mau	2355	Long Điền	1	0	1
+48	Cà Mau	3165	Lương Thế Trân	10	4	14
+48	Cà Mau	3149	Lý Văn Lâm	14	14	28
+48	Cà Mau	20686	Năm Căn	1	0	1
+48	Cà Mau	20696	Nguyễn Phích	0	0	0
+48	Cà Mau	3253	Nguyễn Việt Khái	0	0	0
+48	Cà Mau	2322	Ninh Quới	0	0	0
+48	Cà Mau	2324	Ninh Thạnh Lợi	0	0	0
+48	Cà Mau	3190	Phan Ngọc Hiển	0	0	0
+48	Cà Mau	2340	Phong Hiệp	0	0	0
+48	Cà Mau	2318	Phong Thạnh	3	1	4
+48	Cà Mau	3242	Phú Mỹ	0	0	0
+48	Cà Mau	20687	Phú Tân	0	0	0
+48	Cà Mau	20656	Phước Long	1	0	1
+48	Cà Mau	3174	Quách Phẩm	0	0	0
+48	Cà Mau	3210	Sông Đốc	1	0	1
+48	Cà Mau	3176	Tạ An Khương	1	0	1
+48	Cà Mau	3234	Tam Giang	1	0	1
+48	Cà Mau	3191	Tân Ân	0	0	0
+48	Cà Mau	3167	Tân Hưng	0	0	0
+48	Cà Mau	3197	Tân Lộc	0	0	0
+48	Cà Mau	3156	Tân Thành	21	12	33
+48	Cà Mau	3182	Tân Thuận	2	0	2
+48	Cà Mau	3183	Tân Tiến	0	1	1
+48	Cà Mau	3185	Thanh Tùng	0	0	0
+48	Cà Mau	20692	Thới Bình	5	0	5
+48	Cà Mau	3186	Trần Phán	0	1	1
+48	Cà Mau	20695	Trần Văn Thời	2	1	3
+48	Cà Mau	3199	Trí Phải	0	0	0
+48	Cà Mau	3213	U Minh	3	1	4
+48	Cà Mau	2363	Vĩnh Hậu	4	0	4
+48	Cà Mau	2325	Vĩnh Lộc	0	0	0
+48	Cà Mau	2326	Vĩnh Lợi	3	3	6
+48	Cà Mau	2366	Vĩnh Mỹ	1	2	3
+48	Cà Mau	20655	Vĩnh Phước	1	3	4
+48	Cà Mau	2347	Vĩnh Thanh	0	0	0
+48	Cà Mau	2304	Vĩnh Trạch	7	7	14
+54	Bắc Ninh	2500	An Lạc	0	0	0
+54	Bắc Ninh	2388	Bắc Giang	18	55	73
+54	Bắc Ninh	2441	Bắc Lũng	7	1	8
+54	Bắc Ninh	2442	Bảo Đài	4	0	4
+54	Bắc Ninh	2466	Biển Động	0	0	0
+54	Bắc Ninh	2467	Biên Sơn	0	0	0
+54	Bắc Ninh	2587	Bố Hạ	1	2	3
+54	Bắc Ninh	2777	Bồng Lai	7	3	10
+54	Bắc Ninh	2445	Cẩm Lý	0	1	1
+54	Bắc Ninh	2561	Cảnh Thụy	3	2	5
+54	Bắc Ninh	2749	Cao Đức	4	1	5
+54	Bắc Ninh	2780	Chi Lăng	5	1	6
+54	Bắc Ninh	2469	Chũ	3	2	5
+54	Bắc Ninh	2505	Dương Hưu	0	0	0
+54	Bắc Ninh	2381	Đa Mai	11	7	18
+54	Bắc Ninh	2818	Đại Đồng	60	23	83
+54	Bắc Ninh	2751	Đại Lai	8	1	9
+54	Bắc Ninh	2501	Đại Sơn	0	0	0
+54	Bắc Ninh	2782	Đào Viên	23	2	25
+54	Bắc Ninh	2470	Đèo Gia	1	0	1
+54	Bắc Ninh	2753	Đông Cứu	13	1	14
+54	Bắc Ninh	2591	Đồng Kỳ	18	0	18
+54	Bắc Ninh	2834	Đồng Nguyên	29	12	41
+54	Bắc Ninh	2450	Đông Phú	1	0	1
+54	Bắc Ninh	2564	Đồng Việt	9	3	12
+54	Bắc Ninh	20985	Gia Bình	58	15	73
+54	Bắc Ninh	2731	Hạp Lĩnh	74	3	77
+54	Bắc Ninh	2414	Hiệp Hòa	39	20	59
+54	Bắc Ninh	2404	Hoàng Vân	6	0	6
+54	Bắc Ninh	2405	Hợp Thịnh	7	3	10
+54	Bắc Ninh	2429	Kép	2	0	2
+54	Bắc Ninh	2474	Kiên Lao	1	0	1
+54	Bắc Ninh	2736	Kinh Bắc	202	10	212
+54	Bắc Ninh	2765	Lâm Thao	4	1	5
+54	Bắc Ninh	2437	Lạng Giang	5	2	7
+54	Bắc Ninh	2822	Liên Bão	31	3	34
+54	Bắc Ninh	2456	Lục Nam	5	2	7
+54	Bắc Ninh	2480	Lục Ngạn	0	0	0
+54	Bắc Ninh	2454	Lục Sơn	0	0	0
+54	Bắc Ninh	2772	Lương Tài	11	3	14
+54	Bắc Ninh	2806	Mão Điền	29	8	37
+54	Bắc Ninh	2426	Mỹ Thái	2	1	3
+54	Bắc Ninh	2478	Nam Dương	0	0	0
+54	Bắc Ninh	2737	Nam Sơn	150	11	161
+54	Bắc Ninh	2548	Nếnh	16	18	34
+54	Bắc Ninh	2455	Nghĩa Phương	2	0	2
+54	Bắc Ninh	2531	Ngọc Thiện	15	3	18
+54	Bắc Ninh	2533	Nhã Nam	8	3	11
+54	Bắc Ninh	2788	Nhân Hòa	4	1	5
+54	Bắc Ninh	2756	Nhân Thắng	12	5	17
+54	Bắc Ninh	2810	Ninh Xá	40	14	54
+54	Bắc Ninh	2826	Phật Tích	16	4	20
+54	Bắc Ninh	2838	Phù Khê	104	65	169
+54	Bắc Ninh	2790	Phù Lãng	28	2	30
+54	Bắc Ninh	2534	Phúc Hoà	1	0	1
+54	Bắc Ninh	2792	Phương Liễu	0	5	5
+54	Bắc Ninh	2484	Phượng Sơn	0	2	2
+54	Bắc Ninh	2535	Quang Trung	3	1	4
+54	Bắc Ninh	2789	Quế Võ	45	3	48
+54	Bắc Ninh	2486	Sa Lý	0	0	0
+54	Bắc Ninh	2498	Sơn Động	0	1	1
+54	Bắc Ninh	2487	Sơn Hải	0	0	0
+54	Bắc Ninh	2812	Song Liễu	106	15	121
+54	Bắc Ninh	2850	Tam Đa	42	5	47
+54	Bắc Ninh	2851	Tam Giang	10	0	10
+54	Bắc Ninh	2839	Tam Sơn	1	7	8
+54	Bắc Ninh	2601	Tam Tiến	1	0	1
+54	Bắc Ninh	2574	Tân An	16	1	17
+54	Bắc Ninh	2828	Tân Chi	9	2	11
+54	Bắc Ninh	2431	Tân Dĩnh	7	1	8
+54	Bắc Ninh	2494	Tân Sơn	0	0	0
+54	Bắc Ninh	2578	Tân Tiến	15	9	24
+54	Bắc Ninh	2521	Tân Yên	6	5	11
+54	Bắc Ninh	2518	Tây Yên Tử	0	0	0
+54	Bắc Ninh	2811	Thuận Thành	49	7	56
+54	Bắc Ninh	2823	Tiên Du	18	3	21
+54	Bắc Ninh	2436	Tiên Lục	2	0	2
+54	Bắc Ninh	2581	Tiền Phong	21	5	26
+54	Bắc Ninh	2814	Trạm Lộ	34	7	41
+54	Bắc Ninh	2815	Trí Quả	38	6	44
+54	Bắc Ninh	2773	Trung Chính	39	6	45
+54	Bắc Ninh	2774	Trung Kênh	10	1	11
+54	Bắc Ninh	2462	Trường Sơn	0	0	0
+54	Bắc Ninh	2557	Tự Lạn	8	4	12
+54	Bắc Ninh	2833	Từ Sơn	124	159	283
+54	Bắc Ninh	2515	Tuấn Đạo	0	0	0
+54	Bắc Ninh	2558	Vân Hà	2	8	10
+54	Bắc Ninh	2854	Văn Môn	15	9	24
+54	Bắc Ninh	2517	Vân Sơn	0	0	0
+54	Bắc Ninh	2542	Việt Yên	7	10	17
+54	Bắc Ninh	2746	Võ Cường	684	35	719
+54	Bắc Ninh	2747	Vũ Ninh	90	8	98
+54	Bắc Ninh	2417	Xuân Cẩm	6	8	14
+54	Bắc Ninh	2605	Xuân Lương	25	1	26
+54	Bắc Ninh	2576	Yên Dũng	4	2	6
+54	Bắc Ninh	2519	Yên Định	0	0	0
+54	Bắc Ninh	2843	Yên Phong	69	10	79
+54	Bắc Ninh	2599	Yên Thế	1	0	1
+54	Bắc Ninh	2856	Yên Trung	57	2	59
+59	An Giang	5395	An Biên	0	2	2
+59	An Giang	1368	An Châu	0	6	6
+59	An Giang	1447	An Cư	0	1	1
+59	An Giang	5402	An Minh	1	0	1
+59	An Giang	20565	An Phú	0	0	0
+59	An Giang	1461	Ba Chúc	1	1	2
+59	An Giang	5407	Bình An	11	10	21
+59	An Giang	1397	Bình Đức	14	31	45
+59	An Giang	5449	Bình Giang	0	0	0
+59	An Giang	1370	Bình Hòa	0	5	5
+59	An Giang	1357	Bình Mỹ	0	2	2
+59	An Giang	5450	Bình Sơn	0	0	0
+59	An Giang	1408	Bình Thạnh Đông	0	0	0
+59	An Giang	1372	Cần Đăng	0	2	2
+59	An Giang	127	Châu Đốc	10	17	27
+59	An Giang	20557	Châu Phong	0	0	0
+59	An Giang	1360	Châu Phú	2	4	6
+59	An Giang	5410	Châu Thành	4	6	10
+59	An Giang	1451	Chi Lăng	0	1	1
+59	An Giang	20566	Chợ Mới	1	2	3
+59	An Giang	1409	Chợ Vàm	0	0	0
+59	An Giang	1463	Cô Tô	0	0	0
+59	An Giang	1396	Cù Lao Giêng	0	3	3
+59	An Giang	5416	Định Hòa	0	0	0
+59	An Giang	1432	Định Mỹ	2	2	4
+59	An Giang	5396	Đông Hòa	0	0	0
+59	An Giang	5398	Đông Hưng	0	0	0
+59	An Giang	5387	Đông Thái	0	1	1
+59	An Giang	20589	Giang Thành	0	0	0
+59	An Giang	20593	Giồng Riềng	0	1	1
+59	An Giang	20595	Gò Quao	1	2	3
+59	An Giang	5442	Hà Tiên	2	16	18
+59	An Giang	20602	Hòa Điền	0	0	0
+59	An Giang	5428	Hòa Hưng	0	1	1
+59	An Giang	1411	Hòa Lạc	0	0	0
+59	An Giang	5430	Hòa Thuận	0	0	0
+59	An Giang	1385	Hội An	1	6	7
+59	An Giang	20596	Hòn Đất	1	0	1
+59	An Giang	20603	Hòn Nghệ	0	0	0
+59	An Giang	116	Khánh Bình	1	0	1
+59	An Giang	5464	Kiên Hải	0	4	4
+59	An Giang	20598	Kiên Lương	2	3	5
+59	An Giang	1388	Long Điền	1	2	3
+59	An Giang	1391	Long Kiến	0	1	1
+59	An Giang	1427	Long Phú	2	2	4
+59	An Giang	5431	Long Thạnh	0	0	0
+59	An Giang	1407	Long Xuyên	70	70	140
+59	An Giang	1363	Mỹ Đức	0	2	2
+59	An Giang	1401	Mỹ Hòa Hưng	0	0	0
+59	An Giang	1406	Mỹ Thới	10	23	33
+59	An Giang	5456	Mỹ Thuận	0	1	1
+59	An Giang	5432	Ngọc Chúc	0	0	0
+59	An Giang	118	Nhơn Hội	2	1	3
+59	An Giang	1395	Nhơn Mỹ	1	0	1
+59	An Giang	1455	Núi Cấm	2	0	2
+59	An Giang	1468	Ô Lâm	1	1	2
+59	An Giang	1436	Óc Eo	0	3	3
+59	An Giang	1414	Phú An	0	0	0
+59	An Giang	1437	Phú Hòa	3	10	13
+59	An Giang	120	Phú Hữu	0	1	1
+59	An Giang	1418	Phú Lâm	0	0	0
+59	An Giang	5469	Phú Quốc	1	70	71
+59	An Giang	1420	Phú Tân	0	1	1
+59	An Giang	5483	Rạch Giá	31	45	76
+59	An Giang	20605	Sơn Hải	0	0	0
+59	An Giang	5460	Sơn Kiên	1	1	2
+59	An Giang	20562	Tân An	1	2	3
+59	An Giang	3230	Tân Châu	0	1	1
+59	An Giang	20606	Tân Hiệp	3	2	5
+59	An Giang	5490	Tân Hội	1	0	1
+59	An Giang	5401	Tân Thạnh	0	0	0
+59	An Giang	1439	Tây Phú	1	1	2
+59	An Giang	5393	Tây Yên	1	0	1
+59	An Giang	5493	Thạnh Đông	5	1	6
+59	An Giang	5437	Thạnh Hưng	1	0	1
+59	An Giang	5413	Thạnh Lộc	19	3	22
+59	An Giang	1366	Thạnh Mỹ Tây	0	5	5
+59	An Giang	5474	Thổ Châu	0	0	0
+59	An Giang	1435	Thoại Sơn	0	4	4
+59	An Giang	1457	Thới Sơn	1	1	2
+59	An Giang	5447	Tiên Hải	0	0	0
+59	An Giang	20564	Tịnh Biên	2	4	6
+59	An Giang	5448	Tô Châu	0	0	0
+59	An Giang	20568	Tri Tôn	6	5	11
+59	An Giang	5368	U Minh Thượng	0	1	1
+59	An Giang	5404	Vân Khánh	0	0	0
+59	An Giang	1375	Vĩnh An	0	2	2
+59	An Giang	5498	Vĩnh Bình	0	2	2
+59	An Giang	20591	Vĩnh Điều	0	0	0
+59	An Giang	1471	Vĩnh Gia	0	0	0
+59	An Giang	1377	Vĩnh Hanh	0	0	0
+59	An Giang	123	Vĩnh Hậu	0	1	1
+59	An Giang	5374	Vĩnh Hòa	0	0	0
+59	An Giang	5419	Vĩnh Hòa Hưng	0	0	0
+59	An Giang	5500	Vĩnh Phong	0	0	0
+59	An Giang	133	Vĩnh Tế	2	3	5
+59	An Giang	1367	Vĩnh Thạnh Trung	6	2	8
+59	An Giang	5486	Vĩnh Thông	3	1	4
+59	An Giang	5501	Vĩnh Thuận	0	0	0
+59	An Giang	1444	Vĩnh Trạch	0	1	1
+59	An Giang	5424	Vĩnh Tuy	0	0	0
+59	An Giang	1429	Vĩnh Xương	1	2	3
+60	Hải Phòng	4477	Ái Quốc	2	0	2
+60	Hải Phòng	4728	An Biên	567	187	754
+60	Hải Phòng	20436	An Dương	419	13	432
+60	Hải Phòng	20424	An Hải	399	86	485
+60	Hải Phòng	4673	An Hưng	31	7	38
+60	Hải Phòng	4679	An Khánh	42	17	59
+60	Hải Phòng	20439	An Lão	64	21	85
+60	Hải Phòng	20425	An Phong	84	28	112
+60	Hải Phòng	4517	An Phú	1	0	1
+60	Hải Phòng	4675	An Quang	86	31	117
+60	Hải Phòng	4503	An Thành	51	15	66
+60	Hải Phòng	20441	An Trường	238	43	281
+60	Hải Phòng	4454	Bắc An Phụ	0	1	1
+60	Hải Phòng	4619	Bắc Thanh Miện	5	1	6
+60	Hải Phòng	4684	Bạch Đằng	113	42	155
+60	Hải Phòng	4656	Bạch Long Vĩ	0	0	0
+60	Hải Phòng	4409	Bình Giang	5	2	7
+60	Hải Phòng	4429	Cẩm Giang	0	0	0
+60	Hải Phòng	4422	Cẩm Giàng	10	1	11
+60	Hải Phòng	4843	Cát Hải	30	10	40
+60	Hải Phòng	4798	Chấn Hưng	4	0	4
+60	Hải Phòng	4449	Chí Linh	1	0	1
+60	Hải Phòng	4628	Chí Minh	44	0	44
+60	Hải Phòng	4453	Chu Văn An	17	4	21
+60	Hải Phòng	20412	Dương Kinh	572	103	675
+60	Hải Phòng	4637	Đại Sơn	48	1	49
+60	Hải Phòng	4686	Đồ Sơn	71	25	96
+60	Hải Phòng	20043	Đông Hải	239	42	281
+60	Hải Phòng	4411	Đường An	1	0	1
+60	Hải Phòng	4476	Gia Lộc	1	0	1
+60	Hải Phòng	4474	Gia Phúc	0	0	0
+60	Hải Phòng	4746	Gia Viên	626	88	714
+60	Hải Phòng	4594	Hà Bắc	0	0	0
+60	Hải Phòng	4589	Hà Đông	3	0	3
+60	Hải Phòng	4605	Hà Nam	0	0	0
+60	Hải Phòng	4593	Hà Tây	0	1	1
+60	Hải Phòng	20416	Hải An	814	176	990
+60	Hải Phòng	21008	Hải Dương	26	2	28
+60	Hải Phòng	4623	Hải Hưng	7	0	7
+60	Hải Phòng	20449	Hòa Bình	69	9	78
+60	Hải Phòng	4471	Hồng An	51	5	56
+60	Hải Phòng	4690	Hồng Bàng	831	105	936
+60	Hải Phòng	4556	Hồng Châu	1	0	1
+60	Hải Phòng	4524	Hợp Tiến	0	0	0
+60	Hải Phòng	20411	Hưng Đạo	246	29	275
+60	Hải Phòng	4795	Hùng Thắng	2	0	2
+60	Hải Phòng	4414	Kẻ Sặt	0	0	0
+60	Hải Phòng	4400	Khúc Thừa Dụ	0	0	0
+60	Hải Phòng	4709	Kiến An	178	69	247
+60	Hải Phòng	4713	Kiến Hải	146	13	159
+60	Hải Phòng	4723	Kiến Hưng	37	1	38
+60	Hải Phòng	4718	Kiến Minh	323	19	342
+60	Hải Phòng	4721	Kiến Thụy	170	6	176
+60	Hải Phòng	4763	Kim Thành	5	24	29
+60	Hải Phòng	4575	Kinh Môn	0	0	0
+60	Hải Phòng	4651	Lạc Phượng	24	0	24
+60	Hải Phòng	4514	Lai Khê	1	3	4
+60	Hải Phòng	4734	Lê Chân	510	48	558
+60	Hải Phòng	4441	Lê Đại Hành	10	0	10
+60	Hải Phòng	4782	Lê Ích Mộc	149	5	154
+60	Hải Phòng	4493	Lê Thanh Nghị	18	6	24
+60	Hải Phòng	4492	Lưu Kiếm	132	10	142
+60	Hải Phòng	4420	Mao Điền	4	1	5
+60	Hải Phòng	4499	Nam An Phụ	0	1	1
+60	Hải Phòng	4683	Nam Đồ Sơn	284	34	318
+60	Hải Phòng	21015	Nam Đồng	0	0	0
+60	Hải Phòng	21037	Nam Sách	1	5	6
+60	Hải Phòng	4626	Nam Thanh Miện	1	0	1
+60	Hải Phòng	4772	Nam Triệu	39	19	58
+60	Hải Phòng	4715	Nghi Dương	29	5	34
+60	Hải Phòng	4753	Ngô Quyền	136	37	173
+60	Hải Phòng	4821	Nguyễn Bỉnh Khiêm	2	0	2
+60	Hải Phòng	21021	Nguyễn Đại Năng	0	0	0
+60	Hải Phòng	4636	Nguyên Giáp	3	0	3
+60	Hải Phòng	4615	Nguyễn Lương Bằng	0	2	2
+60	Hải Phòng	4442	Nguyễn Trãi	1	3	4
+60	Hải Phòng	4579	Nhị Chiểu	3	3	6
+60	Hải Phòng	4551	Ninh Giang	1	0	1
+60	Hải Phòng	4578	Phạm Sư Mạnh	0	0	0
+60	Hải Phòng	4704	Phù Liễn	46	24	70
+60	Hải Phòng	4585	Phú Thái	3	4	7
+60	Hải Phòng	4792	Quyết Thắng	5	5	10
+60	Hải Phòng	4535	Tân An	7	0	7
+60	Hải Phòng	4488	Tân Hưng	27	8	35
+60	Hải Phòng	4632	Tân Kỳ	28	0	28
+60	Hải Phòng	4793	Tân Minh	7	3	10
+60	Hải Phòng	4489	Thạch Khôi	3	1	4
+60	Hải Phòng	4533	Thái Tân	1	0	1
+60	Hải Phòng	4480	Thành Đông	3	5	8
+60	Hải Phòng	4596	Thanh Hà	10	0	10
+60	Hải Phòng	4610	Thanh Miện	7	7	14
+60	Hải Phòng	4764	Thiên Hương	1039	49	1088
+60	Hải Phòng	4412	Thượng Hồng	0	0	0
+60	Hải Phòng	4760	Thủy Nguyên	484	50	534
+60	Hải Phòng	20446	Tiên Lãng	10	2	12
+60	Hải Phòng	4804	Tiên Minh	2	1	3
+60	Hải Phòng	4447	Trần Hưng Đạo	48	1	49
+60	Hải Phòng	4569	Trần Liễu	1	1	2
+60	Hải Phòng	4444	Trần Nhân Tông	22	2	24
+60	Hải Phòng	4522	Trần Phú	22	0	22
+60	Hải Phòng	4468	Trường Tân	4	1	5
+60	Hải Phòng	4646	Tứ Kỳ	43	0	43
+60	Hải Phòng	4419	Tứ Minh	20	0	20
+60	Hải Phòng	4425	Tuệ Tĩnh	1	0	1
+60	Hải Phòng	4430	Việt Hòa	13	4	17
+60	Hải Phòng	4757	Việt Khê	60	0	60
+60	Hải Phòng	4820	Vĩnh Am	0	2	2
+60	Hải Phòng	20447	Vĩnh Bảo	1	1	2
+60	Hải Phòng	4828	Vĩnh Hải	0	0	0
+60	Hải Phòng	4819	Vĩnh Hòa	7	0	7
+60	Hải Phòng	4548	Vĩnh Lại	4	0	4
+60	Hải Phòng	4831	Vĩnh Thịnh	1	0	1
+60	Hải Phòng	4832	Vĩnh Thuận	3	2	5
+60	Hải Phòng	4456	Yết Kiêu	0	0	0
+61	Đà Nẵng	3553	An Hải	45	1034	1079
+61	Đà Nẵng	3560	An Khê	10	679	689
+61	Đà Nẵng	7933	An Thắng	0	31	31
+61	Đà Nẵng	20816	Avương	0	0	0
+61	Đà Nẵng	3539	Bà Nà	2	138	140
+61	Đà Nẵng	8037	Bàn Thạch	0	15	15
+61	Đà Nẵng	20784	Bến Giằng	0	1	1
+61	Đà Nẵng	20775	Bến Hiên	0	0	0
+61	Đà Nẵng	3573	Cẩm Lệ	14	639	653
+61	Đà Nẵng	20802	Chiên Đàn	0	2	2
+61	Đà Nẵng	7942	Duy Nghĩa	0	18	18
+61	Đà Nẵng	7949	Duy Xuyên	0	7	7
+61	Đà Nẵng	7981	Đắc Pring	0	0	0
+61	Đà Nẵng	7912	Đại Lộc	0	63	63
+61	Đà Nẵng	7938	Điện Bàn	0	19	19
+61	Đà Nẵng	7932	Điện Bàn Bắc	0	38	38
+61	Đà Nẵng	7924	Điện Bàn Đông	2	248	250
+61	Đà Nẵng	7929	Điện Bàn Tây	0	17	17
+61	Đà Nẵng	8058	Đồng Dương	0	1	1
+61	Đà Nẵng	20779	Đông Giang	0	0	0
+61	Đà Nẵng	7997	Đức Phú	0	0	0
+61	Đà Nẵng	7931	Gò Nổi	0	5	5
+61	Đà Nẵng	7914	Hà Nha	0	2	2
+61	Đà Nẵng	3522	Hải Châu	53	465	518
+61	Đà Nẵng	3538	Hải Vân	4	220	224
+61	Đà Nẵng	7960	Hiệp Đức	0	0	0
+61	Đà Nẵng	3526	Hòa Cường	19	481	500
+61	Đà Nẵng	3544	Hòa Khánh	8	826	834
+61	Đà Nẵng	3545	Hòa Tiến	11	219	230
+61	Đà Nẵng	3541	Hòa Vang	2	169	171
+61	Đà Nẵng	3543	Hòa Xuân	11	923	934
+61	Đà Nẵng	3512	Hoàng Sa	0	0	0
+61	Đà Nẵng	7968	Hội An	0	62	62
+61	Đà Nẵng	7971	Hội An Đông	0	99	99
+61	Đà Nẵng	7967	Hội An Tây	1	87	88
+61	Đà Nẵng	20817	Hùng Sơn	0	0	0
+61	Đà Nẵng	8032	Hương Trà	0	10	10
+61	Đà Nẵng	8002	Khâm Đức	0	0	0
+61	Đà Nẵng	7982	La Dêê	0	0	0
+61	Đà Nẵng	7983	La Êê	0	0	0
+61	Đà Nẵng	8070	Lãnh Ngọc	0	0	0
+61	Đà Nẵng	20405	Liên Chiểu	11	78	89
+61	Đà Nẵng	7979	Nam Giang	0	0	0
+61	Đà Nẵng	7952	Nam Phước	0	18	18
+61	Đà Nẵng	20246	Nam Trà My	0	0	0
+61	Đà Nẵng	3549	Ngũ Hành Sơn	52	2841	2893
+61	Đà Nẵng	20790	Nông Sơn	0	0	0
+61	Đà Nẵng	20792	Núi Thành	0	10	10
+61	Đà Nẵng	20799	Phú Ninh	0	1	1
+61	Đà Nẵng	7918	Phú Thuận	0	1	1
+61	Đà Nẵng	8003	Phước Chánh	0	0	0
+61	Đà Nẵng	8006	Phước Hiệp	0	0	0
+61	Đà Nẵng	8011	Phước Năng	0	0	0
+61	Đà Nẵng	8012	Phước Thành	0	0	0
+61	Đà Nẵng	7958	Phước Trà	0	1	1
+61	Đà Nẵng	8036	Quảng Phú	0	9	9
+61	Đà Nẵng	20788	Quế Phước	0	0	0
+61	Đà Nẵng	8023	Quế Sơn	0	14	14
+61	Đà Nẵng	8018	Quế Sơn Trung	0	1	1
+61	Đà Nẵng	8066	Sơn Cẩm Hà	0	0	0
+61	Đà Nẵng	3556	Sơn Trà	5	766	771
+61	Đà Nẵng	20776	Sông Kôn	0	0	0
+61	Đà Nẵng	20778	Sông Vàng	0	6	6
+61	Đà Nẵng	7987	Tam Anh	1	1	2
+61	Đà Nẵng	7989	Tam Hải	0	6	6
+61	Đà Nẵng	8040	Tam Kỳ	0	13	13
+61	Đà Nẵng	7999	Tam Mỹ	0	0	0
+61	Đà Nẵng	7998	Tam Xuân	0	1	1
+61	Đà Nẵng	7976	Tân Hiệp	0	0	0
+61	Đà Nẵng	20822	Tây Giang	0	0	0
+61	Đà Nẵng	20800	Tây Hồ	0	0	0
+61	Đà Nẵng	8046	Thăng An	1	29	30
+61	Đà Nẵng	8054	Thăng Bình	0	17	17
+61	Đà Nẵng	8061	Thăng Điền	0	1	1
+61	Đà Nẵng	8055	Thăng Phú	0	4	4
+61	Đà Nẵng	8057	Thăng Trường	0	5	5
+61	Đà Nẵng	8065	Thạnh Bình	0	0	0
+61	Đà Nẵng	20408	Thanh Khê	8	758	766
+61	Đà Nẵng	20781	Thạnh Mỹ	0	2	2
+61	Đà Nẵng	7946	Thu Bồn	0	10	10
+61	Đà Nẵng	7915	Thượng Đức	0	1	1
+61	Đà Nẵng	8077	Tiên Phước	0	0	0
+61	Đà Nẵng	20254	Trà Đốc	0	0	0
+61	Đà Nẵng	20259	Trà Giáp	0	0	0
+61	Đà Nẵng	20244	Trà Leng	0	0	0
+61	Đà Nẵng	20261	Trà Liên	0	0	0
+61	Đà Nẵng	20245	Trà Linh	0	0	0
+61	Đà Nẵng	20252	Trà My	0	0	0
+61	Đà Nẵng	20264	Trà Tân	0	0	0
+61	Đà Nẵng	20248	Trà Tập	0	0	0
+61	Đà Nẵng	20249	Trà Vân	0	0	0
+61	Đà Nẵng	7953	Việt An	0	1	1
+61	Đà Nẵng	7904	Vu Gia	0	3	3
+61	Đà Nẵng	8024	Xuân Phú	0	15	15
+62	Cần Thơ	3281	An Bình	230	199	429
+62	Cần Thơ	8576	An Lạc Thôn	6	0	6
+62	Cần Thơ	10839	An Ninh	31	2	33
+62	Cần Thơ	10856	An Thạnh	13	2	15
+62	Cần Thơ	20066	Bình Thủy	120	125	245
+62	Cần Thơ	20062	Cái Khế	269	178	447
+62	Cần Thơ	3297	Cái Răng	488	457	945
+62	Cần Thơ	4856	Châu Thành	13	25	38
+62	Cần Thơ	20465	Cờ Đỏ	1	0	1
+62	Cần Thơ	10857	Cù Lao Dung	4	2	6
+62	Cần Thơ	8579	Đại Hải	1	0	1
+62	Cần Thơ	8589	Đại Ngãi	3	1	4
+62	Cần Thơ	4913	Đại Thành	1	4	5
+62	Cần Thơ	20466	Đông Hiệp	3	0	3
+62	Cần Thơ	20617	Đông Phước	8	17	25
+62	Cần Thơ	3308	Đông Thuận	1	0	1
+62	Cần Thơ	8613	Gia Hòa	4	2	6
+62	Cần Thơ	4870	Hiệp Hưng	1	3	4
+62	Cần Thơ	10842	Hồ Đắc Kiện	0	2	2
+62	Cần Thơ	4871	Hòa An	0	0	0
+62	Cần Thơ	4879	Hỏa Lựu	0	5	5
+62	Cần Thơ	8614	Hòa Tú	2	1	3
+62	Cần Thơ	3295	Hưng Phú	356	341	697
+62	Cần Thơ	8581	Kế Sách	8	1	9
+62	Cần Thơ	8645	Khánh Hòa	4	1	5
+62	Cần Thơ	8647	Lai Hòa	0	1	1
+62	Cần Thơ	8637	Lâm Tân	1	0	1
+62	Cần Thơ	20670	Lịch Hội Thượng	3	0	3
+62	Cần Thơ	8592	Liêu Tú	3	0	3
+62	Cần Thơ	4864	Long Bình	0	1	1
+62	Cần Thơ	8604	Long Hưng	10	1	11
+62	Cần Thơ	20613	Long Mỹ	3	1	4
+62	Cần Thơ	8594	Long Phú	7	1	8
+62	Cần Thơ	4865	Long Phú 1	0	0	0
+62	Cần Thơ	3302	Long Tuyền	74	43	117
+62	Cần Thơ	2359	Lương Tâm	0	0	0
+62	Cần Thơ	8605	Mỹ Hương	5	0	5
+62	Cần Thơ	8606	Mỹ Phước	0	0	0
+62	Cần Thơ	10876	Mỹ Quới	2	1	3
+62	Cần Thơ	8608	Mỹ Tú	5	4	9
+62	Cần Thơ	8611	Mỹ Xuyên	92	17	109
+62	Cần Thơ	20610	Ngã Bảy	11	57	68
+62	Cần Thơ	20658	Ngã Năm	4	1	5
+62	Cần Thơ	8617	Ngọc Tố	7	2	9
+62	Cần Thơ	3343	Nhơn Ái	48	0	48
+62	Cần Thơ	8582	Nhơn Mỹ	2	0	2
+62	Cần Thơ	8612	Nhu Gia	8	1	9
+62	Cần Thơ	3291	Ninh Kiều	285	111	396
+62	Cần Thơ	3311	Ô Môn	6	10	16
+62	Cần Thơ	3340	Phong Điền	18	0	18
+62	Cần Thơ	8583	Phong Nẫm	0	0	0
+62	Cần Thơ	4862	Phú Hữu	5	2	7
+62	Cần Thơ	8638	Phú Lộc	2	2	4
+62	Cần Thơ	8628	Phú Lợi	307	67	374
+62	Cần Thơ	20664	Phú Tâm	1	3	4
+62	Cần Thơ	4875	Phụng Hiệp	0	0	0
+62	Cần Thơ	3268	Phước Thới	27	19	46
+62	Cần Thơ	4876	Phương Bình	0	7	7
+62	Cần Thơ	8632	Sóc Trăng	154	34	188
+62	Cần Thơ	8619	Tài Văn	14	3	17
+62	Cần Thơ	3290	Tân An	416	455	871
+62	Cần Thơ	4877	Tân Bình	4	0	4
+62	Cần Thơ	4905	Tân Hòa	6	2	8
+62	Cần Thơ	3274	Tân Lộc	2	2	4
+62	Cần Thơ	10880	Tân Long	1	0	1
+62	Cần Thơ	3238	Tân Phước Hưng	0	0	0
+62	Cần Thơ	8598	Tân Thạnh	8	1	9
+62	Cần Thơ	20455	Thạnh An	0	0	0
+62	Cần Thơ	4878	Thạnh Hòa	0	11	11
+62	Cần Thơ	20468	Thạnh Phú	1	0	1
+62	Cần Thơ	3322	Thạnh Quới	1	0	1
+62	Cần Thơ	8623	Thạnh Thới An	3	0	3
+62	Cần Thơ	4909	Thạnh Xuân	9	9	18
+62	Cần Thơ	3304	Thới An Đông	50	40	90
+62	Cần Thơ	8584	Thới An Hội	1	0	1
+62	Cần Thơ	20470	Thới Hưng	0	0	0
+62	Cần Thơ	20456	Thới Lai	3	0	3
+62	Cần Thơ	3271	Thới Long	3	2	5
+62	Cần Thơ	3277	Thốt Nốt	4	1	5
+62	Cần Thơ	20615	Thuận Hòa	11	0	11
+62	Cần Thơ	3278	Thuận Hưng	1	8	9
+62	Cần Thơ	8599	Trần Đề	30	9	39
+62	Cần Thơ	20473	Trung Hưng	5	0	5
+62	Cần Thơ	3280	Trung Nhứt	1	3	4
+62	Cần Thơ	8601	Trường Khánh	5	0	5
+62	Cần Thơ	20458	Trường Long	4	0	4
+62	Cần Thơ	4912	Trường Long Tây	1	0	1
+62	Cần Thơ	3313	Trường Thành	3	0	3
+62	Cần Thơ	3316	Trường Xuân	12	0	12
+62	Cần Thơ	4882	Vị Tân	4	3	7
+62	Cần Thơ	4883	Vị Thanh	1	0	1
+62	Cần Thơ	4892	Vị Thanh 1	1	2	3
+62	Cần Thơ	4894	Vị Thủy	3	0	3
+62	Cần Thơ	8646	Vĩnh Châu	5	4	9
+62	Cần Thơ	8649	Vĩnh Hải	1	1	2
+62	Cần Thơ	8642	Vĩnh Lợi	1	0	1
+62	Cần Thơ	8651	Vĩnh Phước	3	1	4
+62	Cần Thơ	20454	Vĩnh Thạnh	9	0	9
+62	Cần Thơ	2368	Vĩnh Thuận Đông	0	2	2
+62	Cần Thơ	3326	Vĩnh Trinh	3	0	3
+62	Cần Thơ	4897	Vĩnh Tường	0	0	0
+62	Cần Thơ	20619	Vĩnh Viễn	0	2	2
+62	Cần Thơ	2370	Xà Phiên	0	0	0
+63	TP. Hồ Chí Minh	203	An Đông	148	106	254
+63	TP. Hồ Chí Minh	362	An Hội Đông	158	247	405
+63	TP. Hồ Chí Minh	358	An Hội Tây	455	554	1009
+63	TP. Hồ Chí Minh	158	An Khánh	2059	0	2059
+63	TP. Hồ Chí Minh	338	An Lạc	567	321	888
+63	TP. Hồ Chí Minh	1338	An Long	728	32	760
+63	TP. Hồ Chí Minh	352	An Nhơn	377	260	637
+63	TP. Hồ Chí Minh	450	An Nhơn Tây	608	48	656
+63	TP. Hồ Chí Minh	1326	An Phú	36	178	214
+63	TP. Hồ Chí Minh	304	An Phú Đông	272	366	638
+63	TP. Hồ Chí Minh	476	An Thới Đông	286	1	287
+63	TP. Hồ Chí Minh	483	Bà Điểm	45	109	154
+63	TP. Hồ Chí Minh	1876	Bà Rịa	343	3	346
+63	TP. Hồ Chí Minh	1305	Bắc Tân Uyên	129	21	150
+63	TP. Hồ Chí Minh	169	Bàn Cờ	479	286	765
+63	TP. Hồ Chí Minh	20081	Bàu Bàng	287	62	349
+63	TP. Hồ Chí Minh	1904	Bàu Lâm	180	4	184
+63	TP. Hồ Chí Minh	385	Bảy Hiền	517	471	988
+63	TP. Hồ Chí Minh	1273	Bến Cát	224	29	253
+63	TP. Hồ Chí Minh	149	Bến Thành	553	493	1046
+63	TP. Hồ Chí Minh	20349	Bình Chánh	3	18	21
+63	TP. Hồ Chí Minh	1905	Bình Châu	107	2	109
+63	TP. Hồ Chí Minh	1294	Bình Cơ	142	12	154
+63	TP. Hồ Chí Minh	1322	Bình Dương	49	364	413
+63	TP. Hồ Chí Minh	249	Bình Đông	88	69	157
+63	TP. Hồ Chí Minh	7858	Bình Giã	146	4	150
+63	TP. Hồ Chí Minh	1330	Bình Hòa	18	263	281
+63	TP. Hồ Chí Minh	436	Bình Hưng	96	77	173
+63	TP. Hồ Chí Minh	339	Bình Hưng Hòa	446	726	1172
+63	TP. Hồ Chí Minh	477	Bình Khánh	293	6	299
+63	TP. Hồ Chí Minh	437	Bình Lợi	11	31	42
+63	TP. Hồ Chí Minh	395	Bình Lợi Trung	797	695	1492
+63	TP. Hồ Chí Minh	452	Bình Mỹ	9	66	75
+63	TP. Hồ Chí Minh	222	Bình Phú	428	115	543
+63	TP. Hồ Chí Minh	417	Bình Quới	54	16	70
+63	TP. Hồ Chí Minh	341	Bình Tân	276	527	803
+63	TP. Hồ Chí Minh	215	Bình Tây	349	33	382
+63	TP. Hồ Chí Minh	402	Bình Thạnh	497	430	927
+63	TP. Hồ Chí Minh	290	Bình Thới	159	106	265
+63	TP. Hồ Chí Minh	214	Bình Tiên	38	30	68
+63	TP. Hồ Chí Minh	342	Bình Trị Đông	173	468	641
+63	TP. Hồ Chí Minh	163	Bình Trưng	311	0	311
+63	TP. Hồ Chí Minh	478	Cần Giờ	0	20	20
+63	TP. Hồ Chí Minh	165	Cát Lái	373	0	373
+63	TP. Hồ Chí Minh	419	Cầu Kiệu	590	492	1082
+63	TP. Hồ Chí Minh	154	Cầu Ông Lãnh	401	260	661
+63	TP. Hồ Chí Minh	1313	Chánh Hiệp	1099	105	1204
+63	TP. Hồ Chí Minh	247	Chánh Hưng	222	188	410
+63	TP. Hồ Chí Minh	1259	Chánh Phú Hòa	5	32	37
+63	TP. Hồ Chí Minh	7860	Châu Đức	34	3	37
+63	TP. Hồ Chí Minh	1877	Châu Pha	382	0	382
+63	TP. Hồ Chí Minh	209	Chợ Lớn	152	102	254
+63	TP. Hồ Chí Minh	199	Chợ Quán	142	135	277
+63	TP. Hồ Chí Minh	107	Côn Đảo	0	0	0
+63	TP. Hồ Chí Minh	462	Củ Chi	25	177	202
+63	TP. Hồ Chí Minh	20463	Dầu Tiếng	147	15	162
+63	TP. Hồ Chí Minh	1293	Dĩ An	37	438	475
+63	TP. Hồ Chí Minh	278	Diên Hồng	428	254	682
+63	TP. Hồ Chí Minh	1936	Đất Đỏ	838	1	839
+63	TP. Hồ Chí Minh	1290	Đông Hòa	123	434	557
+63	TP. Hồ Chí Minh	305	Đông Hưng Thuận	432	309	741
+63	TP. Hồ Chí Minh	502	Đông Thạnh	29	176	205
+63	TP. Hồ Chí Minh	422	Đức Nhuận	794	344	1138
+63	TP. Hồ Chí Minh	391	Gia Định	526	432	958
+63	TP. Hồ Chí Minh	356	Gò Vấp	319	289	608
+63	TP. Hồ Chí Minh	347	Hạnh Thông	309	205	514
+63	TP. Hồ Chí Minh	328	Hiệp Bình	232	725	957
+63	TP. Hồ Chí Minh	470	Hiệp Phước	23	13	36
+63	TP. Hồ Chí Minh	1912	Hồ Tràm	604	2	606
+63	TP. Hồ Chí Minh	292	Hòa Bình	64	92	156
+63	TP. Hồ Chí Minh	1909	Hòa Hiệp	77	3	80
+63	TP. Hồ Chí Minh	1910	Hòa Hội	203	1	204
+63	TP. Hồ Chí Minh	284	Hòa Hưng	753	465	1218
+63	TP. Hồ Chí Minh	1262	Hòa Lợi	261	20	281
+63	TP. Hồ Chí Minh	20351	Hóc Môn	11	120	131
+63	TP. Hồ Chí Minh	439	Hưng Long	3	11	14
+63	TP. Hồ Chí Minh	190	Khánh Hội	297	115	412
+63	TP. Hồ Chí Minh	7869	Kim Long	184	13	197
+63	TP. Hồ Chí Minh	1333	Lái Thiêu	7	430	437
+63	TP. Hồ Chí Minh	334	Linh Xuân	152	557	709
+63	TP. Hồ Chí Minh	261	Long Bình	148	423	571
+63	TP. Hồ Chí Minh	20064	Long Điền	531	4	535
+63	TP. Hồ Chí Minh	20069	Long Hải	238	17	255
+63	TP. Hồ Chí Minh	1280	Long Hòa	130	14	144
+63	TP. Hồ Chí Minh	1870	Long Hương	138	1	139
+63	TP. Hồ Chí Minh	20078	Long Nguyên	369	33	402
+63	TP. Hồ Chí Minh	262	Long Phước	112	0	112
+63	TP. Hồ Chí Minh	1887	Long Sơn	14	2	16
+63	TP. Hồ Chí Minh	264	Long Trường	269	0	269
+63	TP. Hồ Chí Minh	288	Minh Phụng	37	48	85
+63	TP. Hồ Chí Minh	1282	Minh Thạnh	198	12	210
+63	TP. Hồ Chí Minh	7871	Ngãi Giao	345	0	345
+63	TP. Hồ Chí Minh	20085	Nghĩa Thành	407	0	407
+63	TP. Hồ Chí Minh	20352	Nhà Bè	232	99	331
+63	TP. Hồ Chí Minh	177	Nhiêu Lộc	629	250	879
+63	TP. Hồ Chí Minh	454	Nhuận Đức	2	44	46
+63	TP. Hồ Chí Minh	1271	Phú An	532	84	616
+63	TP. Hồ Chí Minh	257	Phú Định	9	34	43
+63	TP. Hồ Chí Minh	1348	Phú Giáo	173	7	180
+63	TP. Hồ Chí Minh	456	Phú Hòa Đông	3	34	37
+63	TP. Hồ Chí Minh	224	Phú Lâm	245	148	393
+63	TP. Hồ Chí Minh	1321	Phú Lợi	27	131	158
+63	TP. Hồ Chí Minh	1880	Phú Mỹ	480	6	486
+63	TP. Hồ Chí Minh	426	Phú Nhuận	436	432	868
+63	TP. Hồ Chí Minh	367	Phú Thạnh	359	401	760
+63	TP. Hồ Chí Minh	298	Phú Thọ	66	98	164
+63	TP. Hồ Chí Minh	368	Phú Thọ Hòa	437	620	1057
+63	TP. Hồ Chí Minh	236	Phú Thuận	543	159	702
+63	TP. Hồ Chí Minh	1933	Phước Hải	1074	1	1075
+63	TP. Hồ Chí Minh	1346	Phước Hòa	133	14	147
+63	TP. Hồ Chí Minh	267	Phước Long	185	0	185
+63	TP. Hồ Chí Minh	1902	Phước Thắng	379	3	382
+63	TP. Hồ Chí Minh	1339	Phước Thành	1320	20	1340
+63	TP. Hồ Chí Minh	1889	Rạch Dừa	956	13	969
+63	TP. Hồ Chí Minh	146	Sài Gòn	724	451	1175
+63	TP. Hồ Chí Minh	335	Tam Bình	70	384	454
+63	TP. Hồ Chí Minh	20056	Tam Long	737	7	744
+63	TP. Hồ Chí Minh	1898	Tam Thắng	2306	9	2315
+63	TP. Hồ Chí Minh	461	Tân An Hội	29	82	111
+63	TP. Hồ Chí Minh	388	Tân Bình	588	433	1021
+63	TP. Hồ Chí Minh	157	Tân Định	398	347	745
+63	TP. Hồ Chí Minh	1307	Tân Đông Hiệp	201	4	205
+63	TP. Hồ Chí Minh	1883	Tân Hải	189	8	197
+63	TP. Hồ Chí Minh	20460	Tân Hiệp	247	19	266
+63	TP. Hồ Chí Minh	381	Tân Hòa	141	195	336
+63	TP. Hồ Chí Minh	237	Tân Hưng	1932	277	2209
+63	TP. Hồ Chí Minh	1304	Tân Khánh	234	11	245
+63	TP. Hồ Chí Minh	240	Tân Mỹ	1830	201	2031
+63	TP. Hồ Chí Minh	445	Tân Nhựt	45	68	113
+63	TP. Hồ Chí Minh	369	Tân Phú	474	227	701
+63	TP. Hồ Chí Minh	1885	Tân Phước	177	7	184
+63	TP. Hồ Chí Minh	390	Tân Sơn	471	271	742
+63	TP. Hồ Chí Minh	376	Tân Sơn Hòa	561	465	1026
+63	TP. Hồ Chí Minh	379	Tân Sơn Nhất	427	272	699
+63	TP. Hồ Chí Minh	372	Tân Sơn Nhì	138	271	409
+63	TP. Hồ Chí Minh	21525	Tân Tạo	1504	0	1504
+63	TP. Hồ Chí Minh	1878	Tân Thành	482	1	483
+63	TP. Hồ Chí Minh	309	Tân Thới Hiệp	85	307	392
+63	TP. Hồ Chí Minh	242	Tân Thuận	384	151	535
+63	TP. Hồ Chí Minh	20071	Tân Uyên	280	22	302
+63	TP. Hồ Chí Minh	449	Tân Vĩnh Lộc	12	63	75
+63	TP. Hồ Chí Minh	270	Tăng Nhơn Phú	335	0	335
+63	TP. Hồ Chí Minh	1254	Tây Nam	177	10	187
+63	TP. Hồ Chí Minh	375	Tây Thạnh	139	263	402
+63	TP. Hồ Chí Minh	466	Thái Mỹ	13	63	76
+63	TP. Hồ Chí Minh	1285	Thanh An	0	6	6
+63	TP. Hồ Chí Minh	482	Thạnh An	0	0	0
+63	TP. Hồ Chí Minh	415	Thạnh Mỹ Tây	846	720	1566
+63	TP. Hồ Chí Minh	313	Thới An	272	392	664
+63	TP. Hồ Chí Minh	1274	Thới Hòa	25	72	97
+63	TP. Hồ Chí Minh	354	Thông Tây Hội	284	315	599
+63	TP. Hồ Chí Minh	1319	Thủ Dầu Một	575	65	640
+63	TP. Hồ Chí Minh	327	Thủ Đức	145	468	613
+63	TP. Hồ Chí Minh	1332	Thuận An	10	47	57
+63	TP. Hồ Chí Minh	1334	Thuận Giao	309	136	445
+63	TP. Hồ Chí Minh	1310	Thường Tân	46	8	54
+63	TP. Hồ Chí Minh	20068	Trừ Văn Thố	391	7	398
+63	TP. Hồ Chí Minh	314	Trung Mỹ Tây	174	250	424
+63	TP. Hồ Chí Minh	183	Vĩnh Hội	133	47	180
+63	TP. Hồ Chí Minh	448	Vĩnh Lộc	6	26	32
+63	TP. Hồ Chí Minh	1312	Vĩnh Tân	10	196	206
+63	TP. Hồ Chí Minh	1892	Vũng Tàu	3694	9	3703
+63	TP. Hồ Chí Minh	282	Vườn Lài	200	203	403
+63	TP. Hồ Chí Minh	195	Xóm Chiếu	69	159	228
+63	TP. Hồ Chí Minh	20266	Xuân Hòa	609	487	1096
+63	TP. Hồ Chí Minh	7885	Xuân Sơn	161	5	166
+63	TP. Hồ Chí Minh	492	Xuân Thới Sơn	28	78	106
+63	TP. Hồ Chí Minh	1916	Xuyên Mộc	500	0	500

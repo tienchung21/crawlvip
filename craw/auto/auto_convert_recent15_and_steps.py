@@ -65,6 +65,7 @@ DOMAIN_VALUE_MAP = {
     "mogi": "mogi",
     "nhatot": "nhatot",
     "nhadat": "nhadat",
+    "guland": "guland.vn",
     "meeyland": "meeyland",
     "homedy": "homedy.com",
 }
@@ -592,6 +593,21 @@ def run_once(days: int, batch_size: int, domains: List[str], skip_steps: bool, r
                     summary[d] = convert_nhatot_recent(conn, cutoff, batch_size)
                 elif d == "nhadat":
                     summary[d] = convert_nhadat_recent(conn, cutoff, batch_size)
+                elif d == "guland":
+                    import subprocess
+                    res = subprocess.run(
+                        [
+                            "/home/chungnt/crawlvip/venv/bin/python",
+                            "/home/chungnt/crawlvip/craw/auto/convert_guland_to_data_clean_v1.py",
+                            "--insert",
+                        ],
+                        capture_output=True,
+                        text=True,
+                    )
+                    print(f"[GULAND ETL output]: \n{res.stdout}")
+                    if res.stderr:
+                        print(f"[GULAND ETL Error]: \n{res.stderr}")
+                    summary[d] = {"batches": 1, "selected": 0, "inserted": 0, "updated": 0, "marked": 0}
                 elif d == "meeyland":
                     import subprocess
                     res = subprocess.run(["/home/chungnt/crawlvip/venv/bin/python", "/home/chungnt/crawlvip/craw/auto/run_meeyland_etl_linear.py"], capture_output=True, text=True)
@@ -642,6 +658,9 @@ def run_once(days: int, batch_size: int, domains: List[str], skip_steps: bool, r
         if d in failed_domains:
             print(f"[{d.upper()}] Skip step pipeline due to convert failure in current cycle.")
             continue
+        if d not in PIPELINES:
+            print(f"[{d.upper()}] No step pipeline configured; skip.")
+            continue
         marked = summary[d].get("marked", 0)
         backlog = backlog_counts.get(d, 0)
         if marked > 0 or backlog > 0 or run_steps_even_if_no_new:
@@ -663,8 +682,8 @@ def main():
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE_DEFAULT, help="Batch size (default 5000)")
     parser.add_argument(
         "--domains",
-        default="batdongsan,mogi,nhatot,nhadat,meeyland,homedy",
-        help="Comma list: batdongsan,mogi,nhatot,nhadat,meeyland,homedy (default all)",
+        default="batdongsan,mogi,nhatot,nhadat,guland,meeyland,homedy",
+        help="Comma list: batdongsan,mogi,nhatot,nhadat,guland,meeyland,homedy (default all)",
     )
     parser.add_argument(
         "--skip-steps",
@@ -689,11 +708,11 @@ def main():
     )
     args = parser.parse_args()
 
-    allowed = {"batdongsan", "mogi", "nhatot", "nhadat", "meeyland", "homedy"}
+    allowed = {"batdongsan", "mogi", "nhatot", "nhadat", "guland", "meeyland", "homedy"}
     domains = [d.strip().lower() for d in args.domains.split(",") if d.strip()]
     domains = [d for d in domains if d in allowed]
     if not domains:
-        raise SystemExit("No valid domains selected. Use --domains batdongsan,mogi,nhatot,nhadat,meeyland,homedy")
+        raise SystemExit("No valid domains selected. Use --domains batdongsan,mogi,nhatot,nhadat,guland,meeyland,homedy")
 
     if not args.loop:
         run_once(

@@ -283,6 +283,10 @@ def get_pending_images(
             FROM scraped_detail_images sdi
             JOIN {table_name} df ON df.id_img = sdi.detail_id
             WHERE sdi.status = 'PENDING'
+              AND (
+                    df.images_status IS NULL
+                    OR df.images_status IN ('PENDING', 'UPLOAD_FAILED', 'PROCESSING')
+                  )
         """
         params = []
         if start_id > 0:
@@ -321,6 +325,10 @@ def get_pending_images(
             JOIN {table_name} df ON df.id_img = sdi.detail_id
             WHERE sdi.status = 'PROCESSING'
               AND sdi.id IN ({ph})
+              AND (
+                    df.images_status IS NULL
+                    OR df.images_status IN ('PENDING', 'UPLOAD_FAILED', 'PROCESSING')
+                  )
         """
         cursor.execute(sql_select + " ORDER BY df.id, sdi.idx, sdi.id", picked)
         rows = cursor.fetchall()

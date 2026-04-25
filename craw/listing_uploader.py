@@ -303,16 +303,39 @@ def get_ready_listings(
     order_sql = "ASC" if str(order).lower() != "desc" else "DESC"
     table_name = _validate_table_name(table_name)
     exclude_province_ids = [int(x) for x in (exclude_province_ids or [])]
+
+    # Danh sách các domain được phép upload, trừ meeyland theo yêu cầu
+    ALLOWED_DOMAINS = [
+        "mogi.vn",
+        "alonhadat.com.vn",
+        "guland.vn",
+        "batdongsan.com.vn",
+        "nhatot.com",
+        "homedy.com",
+        "sosanhnha.com",
+        "dothi.net",
+        "bds.com.vn",
+        "cenhomes.vn",
+        "meeyland.com"
+    ]
+
     def _run():
         conn = db.get_connection()
         cursor = conn.cursor()
         try:
             province_filter = ""
             province_filter_params = []
+            source_filter = ""
+            source_filter_params = []
             if exclude_province_ids:
                 placeholders = ",".join(["%s"] * len(exclude_province_ids))
                 province_filter = f" AND df.province_id NOT IN ({placeholders})"
                 province_filter_params.extend(exclude_province_ids)
+            
+            if ALLOWED_DOMAINS:
+                placeholders = ",".join(["%s"] * len(ALLOWED_DOMAINS))
+                source_filter = f" AND df.source IN ({placeholders})"
+                source_filter_params.extend(ALLOWED_DOMAINS)
 
             custom_area_join = ""
             custom_area_where = ""
@@ -350,14 +373,16 @@ def get_ready_listings(
                         {join_area}
                         WHERE df.images_status = 'IMAGES_READY'
                           AND df.uploaded_at IS NULL
+                          AND COALESCE(df.price, 0) > 0
                           AND (df.source <> 'vinhome' OR df.ward_id IS NOT NULL)
                           {area_where}
                           {province_filter}
+                          {source_filter}
                         ORDER BY df.id {order_sql}
                         LIMIT %s
                     ) picked ON picked.id = {table_name}.id
                     SET {table_name}.images_status = 'UPLOADING'
-                """, tuple(custom_area_params + province_filter_params + [limit]))
+                """, tuple(custom_area_params + province_filter_params + source_filter_params + [limit]))
                 affected = cursor.rowcount
                 conn.commit()
                 if affected == 0:
@@ -420,12 +445,14 @@ def get_ready_listings(
                 ON df.ward_id = tcm_ward.new_city_id 
                 AND tcm_ward.action_type = 0
             WHERE df.images_status = '{where_status}'
+              AND COALESCE(df.price, 0) > 0
               AND (df.source <> 'vinhome' OR df.ward_id IS NOT NULL)
               {custom_area_where}
               {province_filter}
+              {source_filter}
             ORDER BY df.id {order_sql}
             LIMIT %s
-            """, tuple(custom_area_params + province_filter_params + [limit]))
+            """, tuple(custom_area_params + province_filter_params + source_filter_params + [limit]))
             return cursor.fetchall()
         except Exception:
             try:
@@ -501,6 +528,7 @@ def get_listing_by_id(db: Database, listing_id: int, dry_run: bool = False, tabl
                     ON df.ward_id = tcm_ward.new_city_id 
                     AND tcm_ward.action_type = 0
                 WHERE df.id = %s
+                  AND COALESCE(df.price, 0) > 0
                 LIMIT 1
                 """,
                 (listing_id,),
@@ -512,7 +540,7 @@ def get_listing_by_id(db: Database, listing_id: int, dry_run: bool = False, tabl
             f"""
             UPDATE {table_name}
             SET images_status='UPLOADING'
-            WHERE id=%s AND images_status='IMAGES_READY'
+            WHERE id=%s AND images_status='IMAGES_READY' AND COALESCE(price, 0) > 0
             """,
             (listing_id,),
             )
@@ -571,6 +599,7 @@ def get_listing_by_id(db: Database, listing_id: int, dry_run: bool = False, tabl
                 ON df.ward_id = tcm_ward.new_city_id 
                 AND tcm_ward.action_type = 0
             WHERE df.id = %s AND df.images_status='UPLOADING'
+              AND COALESCE(df.price, 0) > 0
             LIMIT 1
             """,
             (listing_id,),
@@ -878,6 +907,12 @@ def process_one_listing(db: Database, listing: dict, dry_run: bool, retries: int
     """Process 1 listing with retries. Returns (success, listing_id, error_or_none)."""
     listing_id = listing['id'] if isinstance(listing, dict) else listing[0]
     id_img = listing['id_img'] if isinstance(listing, dict) else listing[11]
+    try:
+        price_val = float(listing.get('price') or 0)
+    except Exception:
+        price_val = 0.0
+    if price_val <= 0:
+        return (False, listing_id, "NO_PRICE")
 
     # Anti duplicate by source_post_id (if already uploaded)
     if not dry_run and isinstance(listing, dict) and is_duplicate_uploaded(db, listing, table_name=table_name):
@@ -987,6 +1022,9 @@ def run_uploader(args):
                             if error == "NO_IMAGES":
                                 update_listing_status(db, lid, 'NO_IMAGES', table_name=args.table)
                                 logger.warning(f"⚠️ Listing {lid} has no images, skipping")
+                            elif error == "NO_PRICE":
+                                update_listing_status(db, lid, 'NO_PRICE', table_name=args.table)
+                                logger.warning(f"⚠️ Listing {lid} has no price, skipping")
                             else:
                                 update_listing_status(db, lid, 'UPLOAD_FAILED', table_name=args.table)
                         logger.error(f"❌ Listing {lid} failed: {error}")
@@ -1025,6 +1063,7 @@ def main():
     parser.add_argument('--area-filter-lt20', action='store_true', help='Only upload province/ward pairs where data_full + nhadat_data < 20')
     parser.add_argument('--area-filter-table', type=str, default='', help='Optional custom area filter table to join by province_id + ward_id')
     parser.add_argument('--area-filter-max-total', type=int, default=None, help='Optional max total_count threshold when using --area-filter-table')
+    parser.add_argument('--allow-source', type=str, default='', help='Comma-separated source values to allow for upload, e.g. meeyland.com,nhadat')
     parser.add_argument('--exclude-province-ids', type=str, default='', help='Comma-separated province_id list to exclude, e.g. 63,1')
     
     args = parser.parse_args()

@@ -1,44 +1,50 @@
-import pymysql
+import csv
+import re
 from pathlib import Path
+import pymysql
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path("/home/chungnt/crawlvip")
 REPORT_DIR = ROOT / 'report_data'
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
-in_file = ROOT / 'uploaded_by_ward_full_no_full_pretty.txt'
-out_file = REPORT_DIR / 'uploaded_by_ward_full_no_full_updated.txt'
+# 1. Đọc thứ tự danh sách ward_id từ file 
+order_file = REPORT_DIR / 'ward_order.txt'
+ordered_ward_ids = []
+if order_file.exists():
+    with open(order_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            match = re.match(r'^(\d+)', line.strip())
+            if match:
+                ordered_ward_ids.append(int(match.group(1)))
 
-ordered_wards = []
-stats = {}
-
-with in_file.open('r', encoding='utf-8') as f:
-    for line in f:
-        # Bỏ qua các dòng tiêu đề hoặc kẻ ngang
-        if line.startswith('---') or '-+-' in line or 'ward_id' in line:
-            continue
-            
-        parts = [x.strip() for x in line.split('|')]
-        if len(parts) >= 4 and parts[0].isdigit():
-            try:
-                w_id = int(parts[2])
-                if w_id not in stats:
-                    ordered_wards.append(w_id)
-                    stats[w_id] = {
-                        'p_id': parts[0],
-                        'p_name': parts[1],
-                        'w_id': parts[2],
-                        'w_name': parts[3],
-                        'df': 0,
-                        'dnf': 0
-                    }
-            except ValueError:
-                continue
-
-conn = pymysql.connect(host='127.0.0.1', user='root', password='', database='craw_db',
-                       charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+conn = pymysql.connect(host='127.0.0.1', user='root', password='', database='craw_db', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+wards_dict = {}
 
 try:
     with conn.cursor() as cur:
+        # Lấy thông tin phường/xã từ DB để map tên và province
+        cur.execute("""
+            SELECT 
+                p.new_city_id AS province_id, 
+                p.new_city_name AS province_name,
+                w.new_city_id AS ward_id,
+                w.new_city_name AS ward_name
+            FROM transaction_city_merge w
+            JOIN transaction_city_merge p ON w.new_city_parent_id = p.new_city_id
+            WHERE w.new_city_parent_id > 0 AND p.new_city_parent_id = 0
+        """)
+        for r in cur.fetchall():
+            wards_dict[r['ward_id']] = {
+                'province_id': r['province_id'],
+                'province_name': r['province_name'],
+                'ward_id': r['ward_id'],
+                'ward_name': r['ward_name'],
+                'df': 0,
+                'dnf': 0
+            }
+
+    with conn.cursor() as cur:
+        # Kéo từ data_full
         cur.execute("""
             SELECT ward_id, COUNT(*) as c
             FROM data_full
@@ -47,10 +53,11 @@ try:
             GROUP BY ward_id
         """)
         for r in cur.fetchall():
-            wid = r['ward_id']
-            if wid in stats:
-                stats[wid]['df'] += r['c']
+            w_id = r['ward_id']
+            if w_id in wards_dict:
+                wards_dict[w_id]['df'] += r['c']
                 
+        # Kéo từ data_no_full
         cur.execute("""
             SELECT ward_id, COUNT(*) as c
             FROM data_no_full
@@ -59,24 +66,36 @@ try:
             GROUP BY ward_id
         """)
         for r in cur.fetchall():
-            wid = r['ward_id']
-            if wid in stats:
-                stats[wid]['dnf'] += r['c']
+            w_id = r['ward_id']
+            if w_id in wards_dict:
+                wards_dict[w_id]['dnf'] += r['c']
 finally:
     conn.close()
 
+out_file = REPORT_DIR / 'uploaded_by_ward_full_no_full_updated.tsv'
 with out_file.open('w', encoding='utf-8') as f:
-    f.write(f"{'province_id':<11} | {'province_name':<15} | {'ward_id':<7} | {'ward_name':<23} | {'data_full_uploaded':<18} | {'data_no_full_uploaded':<21} | {'total_uploaded'}\n")
-    f.write("-" * 11 + "-+-" + "-" * 15 + "-+-" + "-" * 7 + "-+-" + "-" * 23 + "-+-" + "-" * 18 + "-+-" + "-" * 21 + "-+-" + "-" * 15 + "\n")
-    for wid in ordered_wards:
-        s = stats[wid]
-        total = s['df'] + s['dnf']
-        f.write(f"{s['p_id']:<11} | {s['p_name']:<15} | {s['w_id']:<7} | {s['w_name']:<23} | {s['df']:<18} | {s['dnf']:<21} | {total}\n")
+    f.write("province_id\tprovince_name\tward_id\tward_name\tdata_full_uploaded\tdata_no_full_uploaded\ttotal_uploaded\n")
+    
+    # Chỉ in ra theo đúng danh sách được yêu cầu
+    for w_id in ordered_ward_ids:
+        if w_id in wards_dict:
+            s = wards_dict[w_id]
+            total = s['df'] + s['dnf']
+            f.write(f"{s['province_id']}\t{s['province_name']}\t{s['ward_id']}\t{s['ward_name']}\t{s['df']}\t{s['dnf']}\t{total}\n")
+        else:
+            # Nếu id nằm ngoài CSDL nhưng user yêu cầu, in số 0
+            f.write(f"N/A\tUnknown\t{w_id}\tUnknown\t0\t0\t0\n")
 
-print(f"\nĐã lưu kết quả theo Xã All-Time tại: {out_file}")
-print("Trích xuất 5 xã đầu tiên:")
-print(f"{'province_name':<15} | {'ward_name':<23} | DF | DNF | TOTAL")
-for wid in ordered_wards[:5]:
-    s = stats[wid]
-    total = s['df'] + s['dnf']
-    print(f"{s['p_name']:<15} | {s['w_name']:<23} | {s['df']} | {s['dnf']} | {total}")
+print("\n--- KẾT QUẢ UPLOAD ALL-TIME (FULL/NO_FULL) THEO PHƯỜNG/XÃ ---")
+print(f"Đã xuất ra {len(ordered_ward_ids)} khu vực theo đúng thứ tự file yêu cầu!")
+print(f"Chi tiết lưu tại: {out_file}")
+
+# Hiển thị demo một vài dòng đầu:
+print("\n[Preview 5 records]")
+print("province_name | ward_name | df | dnf | total")
+for i, w_id in enumerate(ordered_ward_ids[:5]):
+    if w_id in wards_dict:
+        s = wards_dict[w_id]
+        total = s['df'] + s['dnf']
+        print(f"{s['province_name']} | {s['ward_name']} | {s['df']} | {s['dnf']} | {total}")
+
